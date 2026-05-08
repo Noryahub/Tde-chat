@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexora – Chatbot intégré</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f3;
+      --bg-tertiary: #eeede9;
+      --text-primary: #1a1a18;
+      --text-secondary: #6b6b67;
+      --text-tertiary: #a0a09c;
+      --border-light: rgba(0,0,0,0.10);
+      --border-mid: rgba(0,0,0,0.18);
+      --green: #1D9E75;
+      --green-dark: #0F6E56;
+      --green-light: #E1F5EE;
+      --green-text: #085041;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --font: 'DM Sans', sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ───────────────────────────────────────────────── */
+    nav {
+      background: var(--bg-primary);
+      border-bottom: 0.5px solid var(--border-light);
+      padding: 0 28px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 26px; height: 26px;
+      background: var(--green);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .nav-logo-icon span {
+      width: 9px; height: 9px;
+      background: white;
+      border-radius: 50%;
+      display: block;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 24px;
+    }
+
+    nav ul a {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color .15s;
+    }
+
+    nav ul a:hover, nav ul a.active { color: var(--text-primary); font-weight: 500; }
+
+    .nav-cta {
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 16px;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .nav-cta:hover { background: var(--green-dark); }
+
+    /* ── HERO ──────────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 48px 20px 36px;
+    }
+
+    .hero h1 {
+      font-size: 28px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── DUMMY CONTENT ─────────────────────────────────────── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      max-width: 860px;
+      margin: 0 auto 60px;
+      padding: 0 20px;
+    }
+
+    .dummy-card {
+      background: var(--bg-primary);
+      border: 0.5px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+    }
+
+    .bar { height: 9px; border-radius: 5px; background: var(--bg-tertiary); margin-bottom: 7px; }
+    .bar.s { width: 50%; }
+    .bar.m { width: 72%; }
+    .bar.l { width: 100%; }
+    .block { height: 54px; border-radius: 6px; background: var(--bg-secondary); margin-top: 12px; }
+
+    /* ── CHAT FLOAT BUTTON ─────────────────────────────────── */
+    #floatBtn {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      background: var(--green);
+      border: none;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(29,158,117,.35);
+      z-index: 100;
+      transition: transform .2s;
+    }
+
+    #floatBtn:hover { transform: scale(1.07); }
+    #floatBtn:active { transform: scale(0.95); }
+    #floatBtn svg { width: 24px; height: 24px; }
+
+    .badge {
+      position: absolute;
+      top: -3px; right: -3px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: #D85A30;
+      border: 2px solid var(--bg-secondary);
+      font-size: 10px;
+      font-weight: 500;
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── CHAT PANEL ────────────────────────────────────────── */
+    #chatPanel {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 340px;
+      height: 480px;
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      border: 0.5px solid var(--border-mid);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 100;
+      transform-origin: bottom right;
+      transition: opacity .22s ease, transform .25s ease;
+      box-shadow: 0 8px 32px rgba(0,0,0,.10);
+    }
+
+    #chatPanel.hidden {
+      opacity: 0;
+      transform: scale(0.87) translateY(14px);
+      pointer-events: none;
+    }
+
+    /* header */
+    .ch-header {
+      background: var(--green);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .ch-info { display: flex; align-items: center; gap: 10px; }
+
+    .ch-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.18);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .ch-avatar svg { width: 17px; height: 17px; }
+
+    .ch-name { font-size: 13px; font-weight: 500; color: white; line-height: 1.2; }
+    .ch-status {
+      font-size: 11px;
+      color: rgba(255,255,255,.75);
+      display: flex; align-items: center; gap: 5px;
+    }
+
+    .online-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #9FE1CB;
+      display: inline-block;
+    }
+
+    .ch-actions { display: flex; gap: 2px; }
+
+    .icon-btn {
+      width: 30px; height: 30px;
+      border-radius: 6px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+
+    .icon-btn:hover { background: rgba(255,255,255,.18); }
+    .icon-btn svg { width: 14px; height: 14px; }
+
+    /* messages */
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 12px 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      scroll-behavior: smooth;
+    }
+
+    #messages::-webkit-scrollbar { width: 3px; }
+    #messages::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    .msg-row { display: flex; gap: 7px; animation: fadeUp .2s ease; }
+    .msg-row.user { flex-direction: row-reverse; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(7px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .av {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .av.bot { background: var(--green-light); color: var(--green-text); }
+    .av.me  { background: var(--bg-tertiary); color: var(--text-secondary); }
+
+    .bubble {
+      max-width: 218px;
+      padding: 9px 12px;
+      border-radius: 13px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .bubble.bot {
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border-light);
+      color: var(--text-primary);
+      border-bottom-left-radius: 3px;
+    }
+
+    .bubble.user {
+      background: var(--green);
+      color: white;
+      border-bottom-right-radius: 3px;
+    }
+
+    .msg-time {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      margin-top: 3px;
+    }
+
+    .msg-time.right { text-align: right; }
+
+    /* typing */
+    .typing { display: flex; gap: 5px; padding: 2px 0; align-items: center; }
+    .td {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-tertiary);
+      animation: bounce 1.2s infinite ease-in-out;
+    }
+    .td:nth-child(2) { animation-delay: .2s; }
+    .td:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce {
+      0%,60%,100% { transform: translateY(0); opacity:.5; }
+      30%          { transform: translateY(-5px); opacity:1; }
+    }
+
+    /* error bubble */
+    .bubble.error { background: #FCEBEB; border-color: #F7C1C1; color: #A32D2D; }
+
+    /* suggestions */
+    #suggestions {
+      padding: 2px 12px 8px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+
+    .pill {
+      font-family: var(--font);
+      font-size: 11px;
+      padding: 5px 11px;
+      border-radius: 20px;
+      border: 0.5px solid var(--border-mid);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+
+    .pill:hover { border-color: var(--green); color: var(--green-dark); }
+
+    /* input row */
+    .ch-input-row {
+      border-top: 0.5px solid var(--border-light);
+      padding: 10px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    #chatInput {
+      flex: 1;
+      font-family: var(--font);
+      font-size: 13px;
+      border: 0.5px solid var(--border-mid);
+      border-radius: 18px;
+      padding: 8px 13px;
+      resize: none;
+      height: 36px;
+      max-height: 90px;
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+      outline: none;
+      line-height: 1.4;
+      overflow: hidden;
+      transition: border-color .15s;
+    }
+
+    #chatInput:focus { border-color: var(--green); }
+    #chatInput::placeholder { color: var(--text-tertiary); }
+
+    #sendBtn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--green);
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background .15s, transform .1s;
+    }
+
+    #sendBtn:hover { background: var(--green-dark); }
+    #sendBtn:active { transform: scale(0.94); }
+    #sendBtn:disabled { background: var(--text-tertiary); cursor: not-allowed; }
+    #sendBtn svg { width: 15px; height: 15px; }
+
+    .ch-footer {
+      padding: 5px 12px 8px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .ch-footer span {
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+
+    /* ── LOADER overlay ────────────────────────────────────── */
+    #loadingOverlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-lg);
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ────────────────────────────────────────────────── -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-icon"><span></span></div>
+    Nexora
+  </a>
+  <ul>
+    <li><a href="#" class="active">Accueil</a></li>
+    <li><a href="#">Produits</a></li>
+    <li><a href="#">Tarifs</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <button class="nav-cta">Démarrer</button>
+</nav>
+
+<!-- ── HERO ───────────────────────────────────────────────── -->
+<div class="hero">
+  <h1>Bienvenue sur notre plateforme</h1>
+  <p>Découvrez nos solutions adaptées à vos besoins.<br>Notre assistant est disponible 24h/24 pour vous aider.</p>
+</div>
+
+<!-- ── DUMMY CARDS ─────────────────────────────────────────── -->
+<div class="cards-grid">
+  <div class="dummy-card"><div class="bar s"></div><div class="bar l"></div><div class="block"></div></div>
+  <div class="dummy-card"><div class="bar m"></div><div class="bar l"></div><div class="block"></div></div>
+  <div class="dummy-card"><div class="bar s"></div><div class="bar m"></div><div class="block"></div></div>
+</div>
+
+<!-- ── FLOAT BUTTON ───────────────────────────────────────── -->
+<button id="floatBtn" onclick="openChat()" aria-label="Ouvrir le chat">
+  <div style="position:relative">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <div class="badge" id="badge">1</div>
+  </div>
+</button>
+
+<!-- ── CHAT PANEL ──────────────────────────────────────────── -->
+<div id="chatPanel" role="dialog" aria-label="Assistant Nexora">
+
+  <div id="loadingOverlay">
+    <div class="typing" style="gap:6px">
+      <div class="td"></div><div class="td"></div><div class="td"></div>
+    </div>
+  </div>
+
+  <!-- header -->
+  <div class="ch-header">
+    <div class="ch-info">
+      <div class="ch-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+          <line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+        </svg>
+      </div>
+      <div>
+        <div class="ch-name">Assistant Nexora</div>
+        <div class="ch-status"><span class="online-dot"></span> En ligne</div>
+      </div>
+    </div>
+    <div class="ch-actions">
+      <button class="icon-btn" onclick="closeChat()" title="Réduire" aria-label="Réduire">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </button>
+      <button class="icon-btn" onclick="closeChat()" title="Fermer" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- messages -->
+  <div id="messages" aria-live="polite"></div>
+
+  <!-- suggestions -->
+  <div id="suggestions">
+    <button class="pill" onclick="useSuggestion(this)">Voir les tarifs</button>
+    <button class="pill" onclick="useSuggestion(this)">Créer un compte</button>
+    <button class="pill" onclick="useSuggestion(this)">Support technique</button>
+  </div>
+
+  <!-- input -->
+  <div class="ch-input-row">
+    <textarea id="chatInput" placeholder="Votre message…" rows="1"
+      onkeydown="handleKey(event)" oninput="autoResize(this)" aria-label="Message"></textarea>
+    <button id="sendBtn" onclick="sendMessage()" aria-label="Envoyer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="ch-footer">
+    <span>Propulsé par Nexora AI &nbsp;·&nbsp; Chiffré de bout en bout</span>
+  </div>
+</div>
+
+<!-- ── SCRIPT ──────────────────────────────────────────────── -->
+<script>
+  /* ── CONFIG : adaptez ces valeurs à votre backend ── */
+  const API_ENDPOINT = "/api/chat";        // URL de votre endpoint FastAPI / Flask
+  const SESSION_ID   = "session_1";        // ou généré dynamiquement
+  const USER_ID      = "user_1";           // ou issu de votre système d'auth
+
+  /* ── ÉTAT ─────────────────────────────────────────── */
+  let isSending = false;
+
+  /* ── INIT ─────────────────────────────────────────── */
+  document.addEventListener("DOMContentLoaded", () => {
+    appendBot("Bonjour ! Je suis l'assistant Nexora. Comment puis-je vous aider aujourd'hui ?");
+  });
+
+  /* ── TOGGLE PANEL ─────────────────────────────────── */
+  function openChat() {
+    document.getElementById("chatPanel").classList.remove("hidden");
+    document.getElementById("floatBtn").style.display = "none";
+    document.getElementById("chatInput").focus();
+  }
+
+  function closeChat() {
+    document.getElementById("chatPanel").classList.add("hidden");
+    const fb = document.getElementById("floatBtn");
+    fb.style.display = "flex";
+  }
+
+  /* ── SUGGESTIONS ──────────────────────────────────── */
+  function useSuggestion(btn) {
+    document.getElementById("chatInput").value = btn.textContent;
+    document.getElementById("suggestions").style.display = "none";
+    sendMessage();
+  }
+
+  /* ── INPUT HELPERS ────────────────────────────────── */
+  function handleKey(e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  }
+
+  function autoResize(el) {
+    el.style.height = "36px";
+    el.style.height = Math.min(el.scrollHeight, 90) + "px";
+  }
+
+  function getTime() {
+    const d = new Date();
+    return d.getHours() + ":" + String(d.getMinutes()).padStart(2, "0");
+  }
+
+  /* ── APPEND MESSAGES ──────────────────────────────── */
+  function appendBot(text, isError = false) {
+    const msgs = document.getElementById("messages");
+    const row = document.createElement("div");
+    row.className = "msg-row";
+    row.innerHTML = `
+      <div class="av bot">N</div>
+      <div>
+        <div class="bubble bot${isError ? " error" : ""}">${escapeHtml(text)}</div>
+        <div class="msg-time">${getTime()}</div>
+      </div>`;
+    msgs.appendChild(row);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function appendUser(text) {
+    const msgs = document.getElementById("messages");
+    const row = document.createElement("div");
+    row.className = "msg-row user";
+    row.innerHTML = `
+      <div>
+        <div class="bubble user">${escapeHtml(text)}</div>
+        <div class="msg-time right">${getTime()}</div>
+      </div>
+      <div class="av me">V</div>`;
+    msgs.appendChild(row);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  /* ── TYPING INDICATOR ─────────────────────────────── */
+  function showTyping() {
+    const msgs = document.getElementById("messages");
+    const row = document.createElement("div");
+    row.id = "typingRow";
+    row.className = "msg-row";
+    row.innerHTML = `
+      <div class="av bot">N</div>
+      <div class="bubble bot">
+        <div class="typing">
+          <div class="td"></div><div class="td"></div><div class="td"></div>
+        </div>
+      </div>`;
+    msgs.appendChild(row);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function removeTyping() {
+    const t = document.getElementById("typingRow");
+    if (t) t.remove();
+  }
+
+  /* ── SEND & CALL BACKEND ──────────────────────────── */
+  async function sendMessage() {
+    if (isSending) return;
+    const input = document.getElementById("chatInput");
+    const text  = input.value.trim();
+    if (!text) return;
+
+    // reset UI
+    input.value = "";
+    input.style.height = "36px";
+    document.getElementById("suggestions").style.display = "none";
+    document.getElementById("sendBtn").disabled = true;
+    isSending = true;
+
+    appendUser(text);
+    showTyping();
+
+    try {
+      /*
+       * ── APPEL BACKEND ────────────────────────────────
+       * Adapté pour votre backend Python (FastAPI ou Flask).
+       *
+       * Le backend doit exposer un endpoint POST à API_ENDPOINT
+       * qui accepte { user_message, session_id, user_id }
+       * et retourne { response: "..." }
+       *
+       * Exemple FastAPI :
+       *   @app.post("/api/chat")
+       *   def chat(payload: ChatPayload):
+       *       reply = process_message(
+       *           user_message = payload.user_message,
+       *           session_id   = payload.session_id,
+       *           user_id      = payload.user_id
+       *       )
+       *       return { "response": reply }
+       * ─────────────────────────────────────────────── */
+      const res = await fetch(API_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_message: text,
+          session_id:   SESSION_ID,
+          user_id:      USER_ID
+        })
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const data = await res.json();
+      removeTyping();
+      appendBot(data.response || "Réponse reçue.");
+
+    } catch (err) {
+      console.error("Erreur chatbot :", err);
+      removeTyping();
+      appendBot("Une erreur est survenue. Veuillez réessayer.", true);
+    } finally {
+      document.getElementById("sendBtn").disabled = false;
+      isSending = false;
+      input.focus();
+    }
+  }
+
+  /* ── UTILS ────────────────────────────────────────── */
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/\n/g, "<br>");
+  }
+</script>
+</body>
+</html>

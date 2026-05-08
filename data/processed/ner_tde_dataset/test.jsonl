@@ -1,0 +1,500 @@
+{"tokens": ["bonjour", "eau", "sale", "et", "fuite", "à", "hedzranawoe"], "ner_tags": [0, 1, 2, 0, 1, 0, 3]}
+{"tokens": ["s'il", "vous", "plait", "absence", "d'eau", "au", "niveau", "de", "agoe-assiyey", "depuis", "ce", "matin"], "ner_tags": [0, 0, 0, 1, 2, 0, 0, 0, 3, 0, 0, 0]}
+{"tokens": ["agbodrafo", "j'ai", "absence", "d'eau", "merci"], "ner_tags": [3, 0, 1, 2, 0]}
+{"tokens": ["svp", "basse", "pression", "vers", "tokoin", "merci"], "ner_tags": [0, 1, 2, 0, 3, 0]}
+{"tokens": ["bonjour", "absence", "d'eau", "et", "faible", "pression", "à", "lome"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "kara", "nous", "avons", "robinet", "sec"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["quels", "sont", "les", "tarifs"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["ya", "pas", "d'eau", "vers", "nyekonakpoe"], "ner_tags": [1, 2, 2, 0, 3]}
+{"tokens": ["tokoin", "coupure", "d'ea", "merci"], "ner_tags": [3, 1, 2, 0]}
+{"tokens": ["il", "y", "a", "débit", "faible", "vers", "agoe-assiyeye"], "ner_tags": [0, 0, 0, 1, 2, 0, 3]}
+{"tokens": ["bonjour", "eau", "sale", "et", "tuyau", "cassé", "à", "agoe"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["faible", "pression", "vers", "kara"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["je", "remarque", "eau", "marron", "au", "niveau", "de", "agoe", "depuis", "ce", "matin"], "ner_tags": [0, 0, 1, 2, 0, 0, 0, 3, 0, 0, 0]}
+{"tokens": ["bonjour", "fuite", "et", "robinet", "sec", "à", "agoe"], "ner_tags": [0, 1, 0, 1, 2, 0, 3]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["coupure", "dans", "hedzranawoe"], "ner_tags": [1, 0, 3]}
+{"tokens": ["svp", "je", "remarque", "faible", "pression", "vers", "atakpame"], "ner_tags": [0, 0, 0, 1, 2, 0, 3]}
+{"tokens": ["canal", "cassé", "dans", "kara"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["pouvez-vous", "m'aider"], "ner_tags": [0, 0]}
+{"tokens": ["svp", "il", "y", "a", "eau", "sale", "au", "niveau", "de", "baguida", "depuis", "ce", "matin"], "ner_tags": [0, 0, 0, 0, 1, 2, 0, 0, 0, 3, 0, 0, 0]}
+{"tokens": ["adidogome", "on", "constate", "débit", "faible"], "ner_tags": [3, 0, 0, 1, 2]}
+{"tokens": ["bonjour", "eau", "sale", "et", "basse", "pression", "à", "kara"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "lycee", "nous", "avons", "coupure", "d'eau"], "ner_tags": [0, 0, 0, 3, 4, 0, 0, 1, 2]}
+{"tokens": ["robinet", "sec", "vers", "lome"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["urgent", "nous", "avons", "tuyau", "cassé", "au", "niveau", "de", "kara"], "ner_tags": [0, 0, 0, 1, 2, 0, 0, 0, 3]}
+{"tokens": ["eau", "sale", "à", "lome"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["j'ai", "robinet", "sec", "dans", "tokoin"], "ner_tags": [0, 1, 2, 0, 3]}
+{"tokens": ["débit", "faible", "dans", "agoe"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "agoe-assiyeye", "nous", "avons", "tuyau", "cassé"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["agbodrafo", "on", "constate", "débit", "faible", "svp"], "ner_tags": [3, 0, 0, 1, 2, 0]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["pouvez-vous", "m'aider"], "ner_tags": [0, 0]}
+{"tokens": ["tokoin", "lycee", "nous", "avons", "plus", "d'eau"], "ner_tags": [3, 4, 0, 0, 1, 2]}
+{"tokens": ["faible", "pression", "vers", "atakpame"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["absence", "d'eau", "dans", "adidogome"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["svp", "j'ai", "coupure", "à", "nyekonakpoe", "svp"], "ner_tags": [0, 0, 1, 0, 3, 0]}
+{"tokens": ["quels", "sont", "les", "tarifs"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["svp", "nous", "avons", "eau", "marron", "à", "agbodrafo", "merci"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["agoe-assiyeye", "débit", "faible", "depuis", "hier"], "ner_tags": [3, 1, 2, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "kara", "nous", "avons", "eau", "trouble"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "agoe", "nous", "avons", "ya", "pas", "d'eau"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2, 2]}
+{"tokens": ["tuyau", "cassé", "dans", "tokoin"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["pouvez-vous", "m'aider"], "ner_tags": [0, 0]}
+{"tokens": ["dans", "mon", "quartier", "nyekonakpoe", "nous", "avons", "basse", "pression"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["pouvez-vous", "m'aider"], "ner_tags": [0, 0]}
+{"tokens": ["j'ai", "coupure", "au", "niveau", "de", "agbodrafo"], "ner_tags": [0, 1, 0, 0, 0, 3]}
+{"tokens": ["on", "constate", "eau", "marron", "au", "niveau", "de", "tokoin", "lycee", "merci"], "ner_tags": [0, 0, 1, 2, 0, 0, 0, 3, 4, 0]}
+{"tokens": ["atakpame", "il", "y", "a", "eau", "coupée", "depuis", "hier"], "ner_tags": [3, 0, 0, 0, 1, 2, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "hedzranawoe", "nous", "avons", "robinet", "sec"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["eau", "trouble", "au", "niveau", "de", "kara"], "ner_tags": [1, 2, 0, 0, 0, 3]}
+{"tokens": ["bonjour", "tuyau", "cassé", "et", "coupure", "à", "atakpame"], "ner_tags": [0, 1, 2, 0, 1, 0, 3]}
+{"tokens": ["s'il", "vous", "plait", "on", "constate", "ya", "pas", "d'eau", "à", "kara", "depuis", "ce", "matin"], "ner_tags": [0, 0, 0, 0, 0, 1, 2, 2, 0, 3, 0, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "baguida", "nous", "avons", "robinet", "sec"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["lome", "nous", "avons", "débit", "faible", "merci"], "ner_tags": [3, 0, 0, 1, 2, 0]}
+{"tokens": ["aidez-moi", "il", "y", "a", "eau", "marron", "dans", "adidogome", "depuis", "ce", "matin"], "ner_tags": [0, 0, 0, 0, 1, 2, 0, 3, 0, 0, 0]}
+{"tokens": ["nous", "avons", "coupure", "d'eau", "à", "adidogome"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["agbodrafo", "il", "y", "a", "eau", "marron", "depuis", "hier"], "ner_tags": [3, 0, 0, 0, 1, 2, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "kara", "nous", "avons", "plus", "d'eau"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "lycee", "nous", "avons", "débit", "faible"], "ner_tags": [0, 0, 0, 3, 4, 0, 0, 1, 2]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["robinet", "sec", "vers", "atakpame"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "agbodrafo", "nous", "avons", "basse", "pression"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["bjr", "on", "constate", "basse", "pression", "au", "niveau", "de", "tokoin", "merc"], "ner_tags": [0, 0, 0, 1, 2, 0, 0, 0, 3, 0]}
+{"tokens": ["agoe", "j'ai", "coupure", "d'eau", "svp"], "ner_tags": [3, 0, 1, 2, 0]}
+{"tokens": ["bonjour", "robinet", "sec", "et", "fuite", "à", "baguida"], "ner_tags": [0, 1, 2, 0, 1, 0, 3]}
+{"tokens": ["bonjour", "canal", "cassé", "dans", "agoe", "svp"], "ner_tags": [0, 1, 2, 0, 3, 0]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["cana", "cassé", "à", "agbodrafo"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "nyekonakpo", "nous", "avons", "canal", "cassé"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["absence", "d'eau", "dans", "agoe"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["robinet", "sec", "dans", "tokoi", "lycee"], "ner_tags": [1, 2, 0, 3, 4]}
+{"tokens": ["robinet", "sec", "à", "adidogome"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["quels", "sont", "les", "tarifs"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["agoe-assiyeye", "j'ai", "coupure", "d'eau", "depuis", "ce", "matin"], "ner_tags": [3, 0, 1, 2, 0, 0, 0]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["aidez-moi", "j'ai", "coupure", "d'eau", "vers", "tokoin"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["dans", "mon", "quartier", "agoe-assiyeye", "nous", "avons", "ya", "pas", "d'eau"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2, 2]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["eau", "marro", "vers", "kara"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["tokoin", "lycee", "je", "remarque", "ya", "pas", "d'eau", "depuis", "hier"], "ner_tags": [3, 4, 0, 0, 1, 2, 2, 0, 0]}
+{"tokens": ["il", "y", "a", "coupure", "d'eau", "à", "agoe"], "ner_tags": [0, 0, 0, 1, 2, 0, 3]}
+{"tokens": ["eau", "coupée", "dans", "adidogome"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "lycee", "nous", "avons", "eau", "sale"], "ner_tags": [0, 0, 0, 3, 4, 0, 0, 1, 2]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["agbodrafo", "je", "remarque", "eau", "marron", "depuis", "hier"], "ner_tags": [3, 0, 0, 1, 2, 0, 0]}
+{"tokens": ["svp", "nous", "avons", "fuite", "à", "agbodrafo"], "ner_tags": [0, 0, 0, 1, 0, 3]}
+{"tokens": ["j'ai", "fuite", "dans", "tokoin"], "ner_tags": [0, 1, 0, 3]}
+{"tokens": ["s'il", "vous", "plait", "j'ai", "robinet", "sec", "au", "niveau", "de", "nyekonakpoe", "depuis", "hier"], "ner_tags": [0, 0, 0, 0, 1, 2, 0, 0, 0, 3, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "agoe", "nous", "avons", "eau", "sale"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "nous", "avons", "eau", "sale"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["pouvez-vous", "m'aider"], "ner_tags": [0, 0]}
+{"tokens": ["je", "remarque", "basse", "pression", "dans", "atakpame"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["nous", "avons", "plus", "d'eau", "dans", "hedzranawoe"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "agoe-assiyeye", "nous", "avons", "robinet", "sec"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "lycee", "nous", "avons", "eau", "coupée"], "ner_tags": [0, 0, 0, 3, 4, 0, 0, 1, 2]}
+{"tokens": ["il", "y", "a", "absence", "d'eau", "au", "niveau", "de", "tokoin", "lycee"], "ner_tags": [0, 0, 0, 1, 2, 0, 0, 0, 3, 4]}
+{"tokens": ["nous", "avons", "canal", "cassé", "dans", "atakpame"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["pouvez-vous", "m'aider"], "ner_tags": [0, 0]}
+{"tokens": ["urgent", "j'ai", "eau", "sale", "à", "lome"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["nous", "avons", "robinet", "sec", "au", "niveau", "de", "tokoin"], "ner_tags": [0, 0, 1, 2, 0, 0, 0, 3]}
+{"tokens": ["absence", "d'eau", "à", "atakpame"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["il", "y", "a", "robine", "sec", "à", "agbodrafo"], "ner_tags": [0, 0, 0, 1, 2, 0, 3]}
+{"tokens": ["bonjour", "il", "y", "a", "robinet", "sec", "dans", "tokoin"], "ner_tags": [0, 0, 0, 0, 1, 2, 0, 3]}
+{"tokens": ["je", "remarque", "coupure", "vers", "lome"], "ner_tags": [0, 0, 1, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "atakpame", "nous", "avons", "tuyau", "cassé"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "nous", "avons", "tuyau", "cassé"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["atakpame", "on", "constate", "basse", "pression", "depuis", "hier"], "ner_tags": [3, 0, 0, 1, 2, 0, 0]}
+{"tokens": ["nyekonakpoe", "nous", "avons", "coupure", "depuis", "ce", "matin"], "ner_tags": [3, 0, 0, 1, 0, 0, 0]}
+{"tokens": ["nyekonakpoe", "on", "constat", "eau", "marron", "depuis", "ce", "matin"], "ner_tags": [3, 0, 0, 1, 2, 0, 0, 0]}
+{"tokens": ["il", "y", "a", "robinet", "sec", "à", "lome"], "ner_tags": [0, 0, 0, 1, 2, 0, 3]}
+{"tokens": ["tokoin", "lycee", "il", "y", "a", "coupure", "d'eau", "svp"], "ner_tags": [3, 4, 0, 0, 0, 1, 2, 0]}
+{"tokens": ["dans", "mon", "quartier", "agoe", "nous", "avons", "coupure", "d'eau"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["eau", "marron", "au", "niveau", "de", "agbodrafo"], "ner_tags": [1, 2, 0, 0, 0, 3]}
+{"tokens": ["plus", "d'eau", "à", "agbodrafo"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "kara", "nous", "avons", "absence", "d'eau"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["bonjour", "faible", "pression", "et", "coupure", "à", "agbodrafo"], "ner_tags": [0, 1, 2, 0, 1, 0, 3]}
+{"tokens": ["il", "y", "a", "débit", "faible", "dans", "baguida"], "ner_tags": [0, 0, 0, 1, 2, 0, 3]}
+{"tokens": ["il", "y", "a", "coupure", "dans", "hedzranawoe"], "ner_tags": [0, 0, 0, 1, 0, 3]}
+{"tokens": ["débit", "faibl", "à", "kara"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["adidogome", "il", "y", "a", "fuite", "svp"], "ner_tags": [3, 0, 0, 0, 1, 0]}
+{"tokens": ["tokoin", "je", "remarque", "eau", "sale", "merci"], "ner_tags": [3, 0, 0, 1, 2, 0]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["lome", "on", "constate", "eau", "trouble"], "ner_tags": [3, 0, 0, 1, 2]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["quels", "sont", "les", "tarifs"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["bonjour", "faible", "pression", "et", "fuite", "à", "lome"], "ner_tags": [0, 1, 2, 0, 1, 0, 3]}
+{"tokens": ["svp", "nous", "avons", "fuite", "vers", "tokoin", "lycee"], "ner_tags": [0, 0, 0, 1, 0, 3, 4]}
+{"tokens": ["urgent", "j'ai", "robinet", "sec", "à", "nyekonakpoe", "merci"], "ner_tags": [0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["agbodrafo", "il", "y", "a", "coupure", "merci"], "ner_tags": [3, 0, 0, 0, 1, 0]}
+{"tokens": ["il", "y", "a", "canal", "cassé", "au", "niveau", "de", "agoe-assiyeye"], "ner_tags": [0, 0, 0, 1, 2, 0, 0, 0, 3]}
+{"tokens": ["hedzranawoe", "on", "constate", "basse", "pression", "svp"], "ner_tags": [3, 0, 0, 1, 2, 0]}
+{"tokens": ["dans", "mon", "quartier", "adidogome", "nous", "avons", "o", "sale"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["adidogome", "il", "y", "a", "robinet", "sec", "merci"], "ner_tags": [3, 0, 0, 0, 1, 2, 0]}
+{"tokens": ["svp", "nous", "avons", "absence", "d'eau", "au", "niveau", "de", "agoe", "depuis", "hier"], "ner_tags": [0, 0, 0, 1, 2, 0, 0, 0, 3, 0, 0]}
+{"tokens": ["quels", "sont", "les", "tarifs"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["dans", "mon", "quartie", "agbodrafo", "nous", "avons", "eau", "marron"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "hedzranawoe", "nous", "avons", "plus", "d'eau"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["bonjour", "tuyau", "cassé", "et", "absence", "d'eau", "à", "lome"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["urgent", "j'ai", "débit", "faible", "au", "niveau", "de", "nyekonakpoe", "svp"], "ner_tags": [0, 0, 1, 2, 0, 0, 0, 3, 0]}
+{"tokens": ["bonjour", "robinet", "sec", "et", "fuite", "à", "tokoin", "lycee"], "ner_tags": [0, 1, 2, 0, 1, 0, 3, 4]}
+{"tokens": ["dans", "mon", "quartier", "adidogome", "nous", "avons", "eau", "trouble"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["svp", "il", "y", "a", "absence", "d'eau", "vers", "kara", "merci"], "ner_tags": [0, 0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["bonjour", "eau", "marron", "et", "basse", "pression", "à", "baguida"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["il", "y", "a", "fuite", "à", "agoe"], "ner_tags": [0, 0, 0, 1, 0, 3]}
+{"tokens": ["j'ai", "eau", "coupée", "à", "lome"], "ner_tags": [0, 1, 2, 0, 3]}
+{"tokens": ["urgent", "nous", "avons", "plus", "d'eau", "vers", "lome", "depuis", "ce", "matin"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 0, 0, 0]}
+{"tokens": ["bonjour", "eau", "sale", "et", "tuyau", "cassé", "à", "hedzranawoe"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["bonjour", "il", "y", "a", "coupure", "vers", "tokoin", "lycee", "depuis", "hier"], "ner_tags": [0, 0, 0, 0, 1, 0, 3, 4, 0, 0]}
+{"tokens": ["on", "constate", "eau", "sale", "au", "niveau", "de", "lome"], "ner_tags": [0, 0, 1, 2, 0, 0, 0, 3]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["faible", "pression", "vers", "tokoin"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "atakpame", "nous", "avons", "robinet", "sec"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["débit", "faible", "au", "niveau", "de", "agoe-assiyeye"], "ner_tags": [1, 2, 0, 0, 0, 3]}
+{"tokens": ["svp", "robinet", "sec", "au", "niveau", "de", "tokoin", "svp"], "ner_tags": [0, 1, 2, 0, 0, 0, 3, 0]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "nous", "avons", "eau", "coupée"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "lycee", "nous", "avons", "coupure"], "ner_tags": [0, 0, 0, 3, 4, 0, 0, 1]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["atakpam", "il", "y", "a", "coupure", "d'eau", "stp"], "ner_tags": [3, 0, 0, 0, 1, 2, 0]}
+{"tokens": ["bonjour", "absence", "d'eau", "et", "coupure", "d'eau", "à", "hedzranawoe"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["pouvez-vous", "m'aider"], "ner_tags": [0, 0]}
+{"tokens": ["plus", "d'eau", "au", "niveau", "de", "agoe-assiyeye"], "ner_tags": [1, 2, 0, 0, 0, 3]}
+{"tokens": ["s'il", "vous", "plait", "robinet", "sec", "à", "kara"], "ner_tags": [0, 0, 0, 1, 2, 0, 3]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["tokoin", "je", "remarque", "plus", "d'eau", "merc"], "ner_tags": [3, 0, 0, 1, 2, 0]}
+{"tokens": ["robinet", "sec", "vers", "hedzranawoe"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "atakpame", "nous", "avons", "robinet", "sec"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["bonjour", "tuyau", "cassé", "et", "eau", "marron", "à", "lome"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "baguida", "nous", "avons", "absence", "d'eau"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["dans", "mon", "quartier", "kara", "nous", "avons", "faible", "pression"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "atakpame", "nous", "avons", "eau", "trouble"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["s'il", "vous", "plait", "on", "constate", "plus", "d'eau", "vers", "hedzranawoe", "merci"], "ner_tags": [0, 0, 0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["agoe", "j'ai", "plus", "d'eau", "svp"], "ner_tags": [3, 0, 1, 2, 0]}
+{"tokens": ["ya", "pas", "d'eau", "dans", "agoe"], "ner_tags": [1, 2, 2, 0, 3]}
+{"tokens": ["il", "y", "a", "eau", "marron", "à", "agoe"], "ner_tags": [0, 0, 0, 1, 2, 0, 3]}
+{"tokens": ["nous", "avons", "faible", "pression", "vers", "agbodrafo"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["s'il", "vous", "plait", "je", "remarque", "absence", "d'eau", "à", "lome", "svp"], "ner_tags": [0, 0, 0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["aidez-moi", "j'ai", "eau", "marron", "dans", "kara", "depuis", "hier"], "ner_tags": [0, 0, 1, 2, 0, 3, 0, 0]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["bonjour", "fuite", "et", "eau", "marron", "à", "tokoin", "lycee"], "ner_tags": [0, 1, 0, 1, 2, 0, 3, 4]}
+{"tokens": ["bonjour", "basse", "pression", "et", "basse", "pression", "à", "agoe-assiyeye"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["bonjour", "fuite", "et", "coupure", "à", "agoe-assiyeye"], "ner_tags": [0, 1, 0, 1, 0, 3]}
+{"tokens": ["basse", "pression", "dans", "adidogome"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["quels", "sont", "les", "tarifs"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["eau", "troubl", "au", "nivea", "de", "kara"], "ner_tags": [1, 2, 0, 0, 0, 3]}
+{"tokens": ["quels", "sont", "les", "tarifs"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["il", "y", "a", "eau", "coupée", "vers", "adidogome"], "ner_tags": [0, 0, 0, 1, 2, 0, 3]}
+{"tokens": ["on", "constate", "eau", "marron", "vers", "tokoin", "lycee"], "ner_tags": [0, 0, 1, 2, 0, 3, 4]}
+{"tokens": ["j'ai", "eau", "marron", "à", "tokoin"], "ner_tags": [0, 1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "adidogome", "nous", "avons", "eau", "marron"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["agbodrafo", "tuyau", "cassé", "svp"], "ner_tags": [3, 1, 2, 0]}
+{"tokens": ["faible", "pression", "dans", "adidogome"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["atakpame", "j'ai", "ya", "pas", "d'eau", "depuis", "ce", "matin"], "ner_tags": [3, 0, 1, 2, 2, 0, 0, 0]}
+{"tokens": ["svp", "nous", "avons", "eau", "sale", "au", "niveau", "de", "nyekonakpoe"], "ner_tags": [0, 0, 0, 1, 2, 0, 0, 0, 3]}
+{"tokens": ["tokoin", "lycee", "ya", "pas", "d'eau", "merci"], "ner_tags": [3, 4, 1, 2, 2, 0]}
+{"tokens": ["agbodrafo", "il", "y", "a", "absence", "d'eau"], "ner_tags": [3, 0, 0, 0, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "nyekonakpoe", "nous", "avons", "eau", "trouble"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["s'il", "vous", "plait", "il", "y", "a", "tuyau", "cassé", "à", "hedzranawoe", "svp"], "ner_tags": [0, 0, 0, 0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["canal", "cassé", "au", "niveau", "de", "baguida"], "ner_tags": [1, 2, 0, 0, 0, 3]}
+{"tokens": ["faible", "pression", "vers", "lome"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["bonjour", "on", "constate", "absence", "d'eau", "vers", "agoe"], "ner_tags": [0, 0, 0, 1, 2, 0, 3]}
+{"tokens": ["tuyau", "cassé", "dans", "atakpame"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["coupure", "d'eau", "vers", "baguida"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["dans", "mon", "quartier", "agoe", "nous", "avons", "débit", "faible"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["aidez-moi", "il", "y", "a", "basse", "pression", "vers", "tokoin", "depuis", "ce", "matin"], "ner_tags": [0, 0, 0, 0, 1, 2, 0, 3, 0, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "hedzranawoe", "nous", "avons", "faible", "pression"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["coupure", "d'eau", "au", "niveau", "de", "atakpame", "depuis", "ce", "matin"], "ner_tags": [1, 2, 0, 0, 0, 3, 0, 0, 0]}
+{"tokens": ["baguida", "eau", "marron", "svp"], "ner_tags": [3, 1, 2, 0]}
+{"tokens": ["eau", "trouble", "à", "agoe"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["dans", "mon", "quartier", "baguida", "nous", "avons", "plus", "d'eau"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["eau", "marron", "au", "niveau", "de", "agoe"], "ner_tags": [1, 2, 0, 0, 0, 3]}
+{"tokens": ["on", "constate", "fuite", "au", "niveau", "de", "nyekonakpoe"], "ner_tags": [0, 0, 1, 0, 0, 0, 3]}
+{"tokens": ["basse", "pression", "vers", "kara"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["eau", "marron", "dans", "nyekonakpoe"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["s'il", "vous", "plait", "nous", "avons", "plus", "d'eau", "à", "atakpame", "svp"], "ner_tags": [0, 0, 0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["canal", "cassé", "vers", "baguida"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["urgent", "je", "remarque", "canal", "cassé", "dans", "lome", "merci"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["dans", "mon", "quartier", "hedzranawoe", "nous", "avons", "eau", "sale"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["aidez-moi", "on", "constate", "coupure", "d'eau", "vers", "atakpame", "svp"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["atakpame", "je", "remarque", "eau", "sale", "svp"], "ner_tags": [3, 0, 0, 1, 2, 0]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "lycee", "nous", "avons", "débit", "faible"], "ner_tags": [0, 0, 0, 3, 4, 0, 0, 1, 2]}
+{"tokens": ["tokoin", "j'ai", "fuite", "svp"], "ner_tags": [3, 0, 1, 0]}
+{"tokens": ["agoe", "je", "remarqu", "absence", "d'eau", "depuis", "hier"], "ner_tags": [3, 0, 0, 1, 2, 0, 0]}
+{"tokens": ["bonjour", "on", "constate", "eau", "marron", "dans", "agoe-assiyeye", "merci"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["agbodrafo", "il", "y", "a", "coupure", "merci"], "ner_tags": [3, 0, 0, 0, 1, 0]}
+{"tokens": ["aidez-moi", "je", "remarque", "absence", "d'eau", "à", "kara", "svp"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["dans", "mon", "quartier", "kara", "nous", "avon", "eau", "marron"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "adidogome", "nous", "avons", "eau", "sale"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["bonjour", "coupure", "et", "eau", "sale", "à", "nyekonakpoe"], "ner_tags": [0, 1, 0, 1, 2, 0, 3]}
+{"tokens": ["aidez-moi", "nous", "avons", "plus", "d'eau", "vers", "tokoin", "depuis", "ce", "matin"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 0, 0, 0]}
+{"tokens": ["bonjour", "coupure", "et", "fuite", "à", "baguida"], "ner_tags": [0, 1, 0, 1, 0, 3]}
+{"tokens": ["eau", "sale", "à", "agoe-assiyeye"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["agbodrafo", "j'ai", "absence", "d'eau"], "ner_tags": [3, 0, 1, 2]}
+{"tokens": ["agoe-assiyeye", "j'ai", "eau", "coupée", "depuis", "ce", "matin"], "ner_tags": [3, 0, 1, 2, 0, 0, 0]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "agbodrafo", "nous", "avons", "canal", "cassé"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "adidogome", "nous", "avons", "cana", "cassé"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["nous", "avons", "faible", "pression", "à", "tokoi", "lycee"], "ner_tags": [0, 0, 1, 2, 0, 3, 4]}
+{"tokens": ["coupure", "d'eau", "vers", "hedzranawoe"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "agoe-assiyeye", "nous", "avons", "débit", "faible"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "atakpame", "nous", "avons", "tuyau", "cassé"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["hedzranawoe", "j'ai", "absence", "d'eau", "svp"], "ner_tags": [3, 0, 1, 2, 0]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "nous", "avons", "robinet", "sec"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["il", "y", "a", "coupure", "à", "nyekonakpoe"], "ner_tags": [0, 0, 0, 1, 0, 3]}
+{"tokens": ["tokoin", "lycee", "je", "remarque", "absence", "d'eau", "svp"], "ner_tags": [3, 4, 0, 0, 1, 2, 0]}
+{"tokens": ["pouvez-vous", "m'aider"], "ner_tags": [0, 0]}
+{"tokens": ["s'il", "vous", "plait", "je", "remarque", "eau", "coupée", "vers", "lome", "depuis", "ce", "matin"], "ner_tags": [0, 0, 0, 0, 0, 1, 2, 0, 3, 0, 0, 0]}
+{"tokens": ["bonjour", "coupure", "d'eau", "et", "plus", "d'eau", "à", "agoe"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartie", "lome", "nous", "avons", "robinet", "sec"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "lycee", "nous", "avons", "coupure", "d'eau"], "ner_tags": [0, 0, 0, 3, 4, 0, 0, 1, 2]}
+{"tokens": ["eau", "marron", "dans", "kara"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["on", "constate", "ya", "pas", "d'eau", "au", "niveau", "de", "atakpame"], "ner_tags": [0, 0, 1, 2, 2, 0, 0, 0, 3]}
+{"tokens": ["débit", "faible", "au", "niveau", "de", "baguida"], "ner_tags": [1, 2, 0, 0, 0, 3]}
+{"tokens": ["agbodrafo", "j'ai", "basse", "pression", "merci"], "ner_tags": [3, 0, 1, 2, 0]}
+{"tokens": ["j'ai", "eau", "marron", "à", "tokoin"], "ner_tags": [0, 1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "baguida", "nous", "avons", "ya", "pas", "d'eau"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2, 2]}
+{"tokens": ["bonjour", "fuite", "et", "coupure", "à", "baguida"], "ner_tags": [0, 1, 0, 1, 0, 3]}
+{"tokens": ["coupure", "d'eau", "à", "agoe-assiyeye"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["bonjour", "faible", "pression", "et", "faible", "pression", "à", "tokoin", "lycee"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3, 4]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["bonjour", "coupure", "d'eau", "et", "eau", "sale", "à", "atakpame"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["pouvez-vous", "m'aider"], "ner_tags": [0, 0]}
+{"tokens": ["atakpame", "canal", "cassé", "depuis", "ce", "matin"], "ner_tags": [3, 1, 2, 0, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "agbodrafo", "nous", "avons", "basse", "pression"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["agoe", "tuyau", "cassé"], "ner_tags": [3, 1, 2]}
+{"tokens": ["bonjour", "nous", "avons", "eau", "coupée", "vers", "adidogome", "merci"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["on", "constate", "eau", "marron", "dans", "kara"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["agbodrafo", "j'ai", "eau", "marron", "depuis", "hier"], "ner_tags": [3, 0, 1, 2, 0, 0]}
+{"tokens": ["adidogome", "on", "constate", "canal", "cassé", "svp"], "ner_tags": [3, 0, 0, 1, 2, 0]}
+{"tokens": ["nous", "avons", "eau", "trouble", "à", "kara"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["pouvez-vous", "m'aider"], "ner_tags": [0, 0]}
+{"tokens": ["basse", "pression", "dans", "agoe-assiyeye"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "hedzranawoe", "nous", "avons", "eau", "trouble"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["plus", "d'eau", "dans", "lome"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["j'ai", "débit", "faible", "au", "niveau", "de", "baguida"], "ner_tags": [0, 1, 2, 0, 0, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "atakpame", "nous", "avons", "tuyau", "cassé"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["coupure", "d'eau", "à", "nyekonakpoe"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["agoe", "je", "remarque", "eau", "trouble", "svp"], "ner_tags": [3, 0, 0, 1, 2, 0]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["bonjour", "je", "remarque", "absence", "d'eau", "dans", "tokoin", "lycee", "merci"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 4, 0]}
+{"tokens": ["nous", "avons", "plus", "d'eau", "à", "baguida", "depuis", "ce", "matin"], "ner_tags": [0, 0, 1, 2, 0, 3, 0, 0, 0]}
+{"tokens": ["bonjour", "fuite", "et", "basse", "pression", "à", "nyekonakpoe"], "ner_tags": [0, 1, 0, 1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "lome", "nous", "avons", "absence", "d'eau"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["urgent", "nous", "avons", "eau", "trouble", "vers", "agoe", "depui", "hier"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 0, 0]}
+{"tokens": ["robinet", "sec", "à", "agoe"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["bonjour", "basse", "pression", "et", "faible", "pression", "à", "nyekonakpoe"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["eau", "trouble", "à", "lome"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "agbodrafo", "nous", "avons", "eau", "marron"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["adidogome", "je", "remarque", "débit", "faible", "svp"], "ner_tags": [3, 0, 0, 1, 2, 0]}
+{"tokens": ["kara", "je", "remarque", "plus", "d'ea", "depui", "hier"], "ner_tags": [3, 0, 0, 1, 2, 0, 0]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["svp", "on", "constate", "ya", "pas", "d'eau", "au", "niveau", "de", "baguida", "merci"], "ner_tags": [0, 0, 0, 1, 2, 2, 0, 0, 0, 3, 0]}
+{"tokens": ["bonjour", "nous", "avons", "fuite", "au", "niveau", "de", "nyekonakpoe", "depuis", "hier"], "ner_tags": [0, 0, 0, 1, 0, 0, 0, 3, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "adidogome", "nous", "avons", "fuite"], "ner_tags": [0, 0, 0, 3, 0, 0, 1]}
+{"tokens": ["dans", "mon", "quartier", "baguida", "nous", "avons", "débit", "faible"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["absence", "d'eau", "à", "nyekonakpoe"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "hedzranawoe", "nous", "avons", "coupure"], "ner_tags": [0, 0, 0, 3, 0, 0, 1]}
+{"tokens": ["s'il", "vous", "plait", "ya", "pas", "d'eau", "dans", "agoe", "merci"], "ner_tags": [0, 0, 0, 1, 2, 2, 0, 3, 0]}
+{"tokens": ["bonjour", "coupure", "d'eau", "et", "absence", "d'eau", "à", "agoe"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["agbodrafo", "il", "y", "a", "débit", "faible", "svp"], "ner_tags": [3, 0, 0, 0, 1, 2, 0]}
+{"tokens": ["il", "y", "a", "coupure", "dans", "tokoin", "lycee"], "ner_tags": [0, 0, 0, 1, 0, 3, 4]}
+{"tokens": ["dans", "mon", "quartier", "kara", "nous", "avons", "tuyau", "cassé"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["basse", "pression", "à", "agoe"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["kara", "j'ai", "canal", "cassé", "svp"], "ner_tags": [3, 0, 1, 2, 0]}
+{"tokens": ["svp", "il", "y", "a", "canal", "cassé", "vers", "hedzranawoe", "depuis", "hier"], "ner_tags": [0, 0, 0, 0, 1, 2, 0, 3, 0, 0]}
+{"tokens": ["je", "remarque", "coupure", "d'eau", "dans", "lome"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["aidez-moi", "il", "y", "a", "eau", "trouble", "vers", "agoe-assiyeye"], "ner_tags": [0, 0, 0, 0, 1, 2, 0, 3]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "lycee", "nous", "avons", "eau", "marron"], "ner_tags": [0, 0, 0, 3, 4, 0, 0, 1, 2]}
+{"tokens": ["quels", "sont", "les", "tarifs"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["bonjour", "nous", "avons", "faible", "pression", "vers", "hedzranawoe", "depuis", "hier"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 0, 0]}
+{"tokens": ["bonjour", "faible", "pression", "et", "eau", "sale", "à", "tokoin"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["lome", "on", "constate", "eau", "coupée", "depuis", "hier"], "ner_tags": [3, 0, 0, 1, 2, 0, 0]}
+{"tokens": ["bonjour", "eau", "trouble", "à", "nyekonakpoe", "svp"], "ner_tags": [0, 1, 2, 0, 3, 0]}
+{"tokens": ["pouvez-vous", "m'aider"], "ner_tags": [0, 0]}
+{"tokens": ["stp", "il", "y", "a", "canal", "cassé", "vers", "baguida", "merci"], "ner_tags": [0, 0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["bonjour", "coupure", "et", "coupure", "à", "nyekonakpoe"], "ner_tags": [0, 1, 0, 1, 0, 3]}
+{"tokens": ["ya", "pas", "d'eau", "vers", "agoe-assiyeye"], "ner_tags": [1, 2, 2, 0, 3]}
+{"tokens": ["aidez-moi", "eau", "trouble", "à", "adidogome", "depuis", "hier"], "ner_tags": [0, 1, 2, 0, 3, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "nous", "avons", "robinet", "sec"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["agoe", "on", "constate", "eau", "coupée", "merci"], "ner_tags": [3, 0, 0, 1, 2, 0]}
+{"tokens": ["aidez-moi", "j'ai", "absence", "d'eau", "vers", "agoe", "svp"], "ner_tags": [0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["j'ai", "coupure", "au", "niveau", "de", "nyekonakpoe"], "ner_tags": [0, 1, 0, 0, 0, 3]}
+{"tokens": ["lome", "nous", "avons", "absence", "d'eau", "depuis", "hier"], "ner_tags": [3, 0, 0, 1, 2, 0, 0]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["eau", "trouble", "au", "niveau", "de", "agbodrafo"], "ner_tags": [1, 2, 0, 0, 0, 3]}
+{"tokens": ["canal", "cassé", "au", "niveau", "de", "agoe"], "ner_tags": [1, 2, 0, 0, 0, 3]}
+{"tokens": ["nous", "avons", "eau", "coupée", "au", "niveau", "de", "nyekonakpoe"], "ner_tags": [0, 0, 1, 2, 0, 0, 0, 3]}
+{"tokens": ["ya", "pas", "d'eau", "au", "niveau", "de", "lome"], "ner_tags": [1, 2, 2, 0, 0, 0, 3]}
+{"tokens": ["j'ai", "absence", "d'eau", "au", "niveau", "de", "agoe-assiyeye"], "ner_tags": [0, 1, 2, 0, 0, 0, 3]}
+{"tokens": ["eau", "sale", "dans", "adidogome"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["bonjour", "faible", "pression", "et", "tuyau", "cassé", "à", "kara"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["bonjour", "basse", "pression", "et", "basse", "pression", "à", "tokoin", "lycee"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3, 4]}
+{"tokens": ["eau", "marron", "au", "niveau", "de", "atakpame"], "ner_tags": [1, 2, 0, 0, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "nous", "avons", "débit", "faible"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["tuyau", "cassé", "au", "niveau", "de", "baguida"], "ner_tags": [1, 2, 0, 0, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "nous", "avons", "robinet", "sec"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["quels", "sont", "les", "tarifs"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["ya", "pas", "d'eau", "à", "agbodrafo"], "ner_tags": [1, 2, 2, 0, 3]}
+{"tokens": ["nyekonakpoe", "il", "y", "a", "ya", "pas", "d'eau", "depuis", "hier"], "ner_tags": [3, 0, 0, 0, 1, 2, 2, 0, 0]}
+{"tokens": ["nyekonakpoe", "je", "remarque", "fuite", "depuis", "ce", "matin"], "ner_tags": [3, 0, 0, 1, 0, 0, 0]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["robinet", "sec", "à", "agoe"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["hedzranawoe", "on", "constate", "coupure", "d'eau", "depuis", "ce", "matin"], "ner_tags": [3, 0, 0, 1, 2, 0, 0, 0]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["bonjour", "absence", "d'eau", "et", "plus", "d'eau", "à", "agoe"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["j'ai", "faible", "pression", "vers", "nyekonakpoe"], "ner_tags": [0, 1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "agoe", "nous", "avons", "fuite"], "ner_tags": [0, 0, 0, 3, 0, 0, 1]}
+{"tokens": ["eau", "sale", "à", "tokoin", "lycee"], "ner_tags": [1, 2, 0, 3, 4]}
+{"tokens": ["dans", "mon", "quartier", "adidogome", "nous", "avons", "coupure"], "ner_tags": [0, 0, 0, 3, 0, 0, 1]}
+{"tokens": ["basse", "pression", "à", "agoe"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["quels", "sont", "les", "tarifs"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["bonjour", "robinet", "sec", "et", "basse", "pression", "à", "baguida"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["absence", "d'eau", "à", "atakpame"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["aidez-moi", "on", "constat", "débit", "faible", "vers", "atakpame", "depui", "hier"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 0, 0]}
+{"tokens": ["aidez-moi", "je", "remarque", "débit", "faible", "dans", "kara", "merci"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["quels", "sont", "les", "tarifs"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["bonjour", "fuite", "et", "plus", "d'eau", "à", "hedzranawoe"], "ner_tags": [0, 1, 0, 1, 2, 0, 3]}
+{"tokens": ["il", "y", "a", "eau", "trouble", "à", "agoe-assiyeye"], "ner_tags": [0, 0, 0, 1, 2, 0, 3]}
+{"tokens": ["nous", "avons", "plus", "d'eau", "à", "agoe-assiyeye"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["coupure", "d'eau", "vers", "agoe-assiyeye"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["atakpame", "on", "constate", "eau", "sale", "merci"], "ner_tags": [3, 0, 0, 1, 2, 0]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "nous", "avons", "basse", "pression"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["coupure", "dans", "nyekonakpoe"], "ner_tags": [1, 0, 3]}
+{"tokens": ["adidogome", "je", "remarque", "ya", "pas", "d'eau", "depuis", "ce", "matin"], "ner_tags": [3, 0, 0, 1, 2, 2, 0, 0, 0]}
+{"tokens": ["bonjour", "faible", "pression", "et", "absence", "d'eau", "à", "nyekonakpoe"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["je", "remarque", "tuyau", "cassé", "au", "niveau", "de", "agoe-assiyeye"], "ner_tags": [0, 0, 1, 2, 0, 0, 0, 3]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["je", "remarque", "eau", "coupée", "vers", "agoe-assiyeye"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["canal", "cassé", "dans", "agbodrafo"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["agoe", "robinet", "sec", "merci"], "ner_tags": [3, 1, 2, 0]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["nous", "avons", "fuite", "dans", "lome"], "ner_tags": [0, 0, 1, 0, 3]}
+{"tokens": ["agoe-assiyeye", "il", "y", "a", "coupure", "d'eau", "merc"], "ner_tags": [3, 0, 0, 0, 1, 2, 0]}
+{"tokens": ["lome", "nous", "avons", "absenc", "d'eau", "depuis", "hier"], "ner_tags": [3, 0, 0, 1, 2, 0, 0]}
+{"tokens": ["eau", "sale", "à", "tokoin"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["pouvez-vous", "m'aider"], "ner_tags": [0, 0]}
+{"tokens": ["dans", "mon", "quartier", "hedzranawoe", "nous", "avons", "plus", "d'eau"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["atakpame", "il", "y", "a", "eau", "marron", "depuis", "hier"], "ner_tags": [3, 0, 0, 0, 1, 2, 0, 0]}
+{"tokens": ["bonjour", "absence", "d'eau", "et", "tuyau", "cassé", "à", "atakpame"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["nyekonakpoe", "j'ai", "coupure", "d'eau", "merci"], "ner_tags": [3, 0, 1, 2, 0]}
+{"tokens": ["dans", "mon", "quartier", "adidogome", "nous", "avons", "canal", "cassé"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["pouvez-vous", "m'aider"], "ner_tags": [0, 0]}
+{"tokens": ["aidez-mo", "il", "y", "a", "absence", "d'eau", "à", "baguida", "svp"], "ner_tags": [0, 0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["svp", "je", "remarque", "plus", "d'eau", "au", "niveau", "de", "agoe-assiyeye", "depuis", "hier"], "ner_tags": [0, 0, 0, 1, 2, 0, 0, 0, 3, 0, 0]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["pouvez-vous", "m'aider"], "ner_tags": [0, 0]}
+{"tokens": ["il", "y", "a", "tuyau", "cassé", "dans", "kara", "depuis", "ce", "matin"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 0, 0, 0]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["ya", "pas", "d'eau", "au", "niveau", "de", "agoe"], "ner_tags": [1, 2, 2, 0, 0, 0, 3]}
+{"tokens": ["hedzranawoe", "il", "y", "a", "eau", "sale", "svp"], "ner_tags": [3, 0, 0, 0, 1, 2, 0]}
+{"tokens": ["dans", "mon", "quartier", "agbodraf", "nous", "avon", "coupure"], "ner_tags": [0, 0, 0, 3, 0, 0, 1]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["nyekonakpoe", "il", "y", "a", "basse", "pression"], "ner_tags": [3, 0, 0, 0, 1, 2]}
+{"tokens": ["urgent", "robinet", "sec", "au", "niveau", "de", "lome", "merci"], "ner_tags": [0, 1, 2, 0, 0, 0, 3, 0]}
+{"tokens": ["bonjour", "robinet", "sec", "au", "niveau", "de", "nyekonakpoe"], "ner_tags": [0, 1, 2, 0, 0, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "agbodrafo", "nous", "avons", "débit", "faibl"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["aidez-moi", "je", "remarque", "basse", "pression", "dans", "atakpame", "svp"], "ner_tags": [0, 0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["nous", "avons", "coupure", "d'ea", "au", "nivea", "de", "hedzranawoe"], "ner_tags": [0, 0, 1, 2, 0, 0, 0, 3]}
+{"tokens": ["nyekonakpo", "je", "remarque", "canal", "cassé", "depuis", "ce", "matin"], "ner_tags": [3, 0, 0, 1, 2, 0, 0, 0]}
+{"tokens": ["bonjour", "coupure", "d'eau", "et", "eau", "marron", "à", "agoe-assiyeye"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["lome", "nous", "avons", "faible", "pression", "svp"], "ner_tags": [3, 0, 0, 1, 2, 0]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["bonjour", "faible", "pression", "dans", "tokoin", "depuis", "ce", "matin"], "ner_tags": [0, 1, 2, 0, 3, 0, 0, 0]}
+{"tokens": ["baguida", "basse", "pression"], "ner_tags": [3, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "kara", "nous", "avons", "eau", "trouble"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["merci"], "ner_tags": [0]}
+{"tokens": ["on", "constate", "coupure", "d'eau", "vers", "baguida"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["lome", "nous", "avons", "basse", "pression"], "ner_tags": [3, 0, 0, 1, 2]}
+{"tokens": ["bonjour", "fuite", "et", "coupure", "d'eau", "à", "atakpame"], "ner_tags": [0, 1, 0, 1, 2, 0, 3]}
+{"tokens": ["hedzranawoe", "on", "constate", "eau", "sale", "depuis", "ce", "matin"], "ner_tags": [3, 0, 0, 1, 2, 0, 0, 0]}
+{"tokens": ["aidez-moi", "robinet", "sec", "dans", "tokoin", "lycee"], "ner_tags": [0, 1, 2, 0, 3, 4]}
+{"tokens": ["dans", "mon", "quartier", "hedzranawo", "nous", "avons", "plus", "d'eau"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["agoe", "nous", "avons", "absence", "d'eau", "depuis", "ce", "matin"], "ner_tags": [3, 0, 0, 1, 2, 0, 0, 0]}
+{"tokens": ["bonjour", "coupure", "et", "coupure", "d'eau", "à", "agbodrafo"], "ner_tags": [0, 1, 0, 1, 2, 0, 3]}
+{"tokens": ["tuyau", "cassé", "à", "atakpam"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["canal", "cassé", "à", "nyekonakpoe"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "agoe-assiyeye", "nous", "avons", "coupure"], "ner_tags": [0, 0, 0, 3, 0, 0, 1]}
+{"tokens": ["s'il", "vous", "plait", "j'ai", "coupure", "vers", "agbodrafo", "merci"], "ner_tags": [0, 0, 0, 0, 1, 0, 3, 0]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["aidez-moi", "il", "y", "a", "tuyau", "cassé", "vers", "kara"], "ner_tags": [0, 0, 0, 0, 1, 2, 0, 3]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["urgent", "on", "constate", "ya", "pas", "d'eau", "à", "lome", "merci"], "ner_tags": [0, 0, 0, 1, 2, 2, 0, 3, 0]}
+{"tokens": ["nyekonakpoe", "j'ai", "absence", "d'eau", "merci"], "ner_tags": [3, 0, 1, 2, 0]}
+{"tokens": ["canal", "cassé", "au", "niveau", "de", "agoe-assiyeye"], "ner_tags": [1, 2, 0, 0, 0, 3]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "lome", "nous", "avons", "coupure"], "ner_tags": [0, 0, 0, 3, 0, 0, 1]}
+{"tokens": ["bonjour"], "ner_tags": [0]}
+{"tokens": ["dans", "mon", "quartier", "agoe", "nous", "avons", "débit", "faibl"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "atakpame", "nous", "avons", "coupure", "d'eau"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["basse", "pression", "à", "tokoin"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "baguida", "nous", "avons", "tuyau", "cassé"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["je", "ne", "comprends", "pas"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "agoe-assiyeye", "nous", "avons", "fuite"], "ner_tags": [0, 0, 0, 3, 0, 0, 1]}
+{"tokens": ["tuyau", "cassé", "à", "lome"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["plus", "d'eau", "au", "niveau", "de", "agoe-assiyeye"], "ner_tags": [1, 2, 0, 0, 0, 3]}
+{"tokens": ["je", "veux", "des", "informations"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["svp", "j'ai", "eau", "marron", "vers", "tokoin", "svp"], "ner_tags": [0, 0, 1, 2, 0, 3, 0]}
+{"tokens": ["agbodrafo", "il", "y", "a", "faible", "pression", "merci"], "ner_tags": [3, 0, 0, 0, 1, 2, 0]}
+{"tokens": ["je", "remarque", "canal", "cassé", "vers", "nyekonakpoe"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["bonjour", "plus", "d'eau", "et", "faible", "pression", "à", "adidogome"], "ner_tags": [0, 1, 2, 0, 1, 2, 0, 3]}
+{"tokens": ["lome", "je", "remarque", "plus", "d'eau", "merci"], "ner_tags": [3, 0, 0, 1, 2, 0]}
+{"tokens": ["quels", "sont", "les", "tarifs"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["canal", "cassé", "vers", "tokoin"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["tuyau", "cassé", "dans", "tokoin", "lycee"], "ner_tags": [1, 2, 0, 3, 4]}
+{"tokens": ["agoe", "j'ai", "eau", "trouble", "merci"], "ner_tags": [3, 0, 1, 2, 0]}
+{"tokens": ["bonjour", "eau", "sale", "et", "coupure", "à", "adidogome"], "ner_tags": [0, 1, 2, 0, 1, 0, 3]}
+{"tokens": ["quels", "sont", "les", "tarifs"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["coupure", "d'eau", "à", "kara"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["on", "constate", "eau", "coupée", "vers", "agbodrafo"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["on", "constate", "plus", "d'eau", "à", "adidogome"], "ner_tags": [0, 0, 1, 2, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "lome", "nous", "avons", "robinet", "sec"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "agbodrafo", "nous", "avons", "débit", "faible"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["tuyau", "cassé", "dans", "tokoin"], "ner_tags": [1, 2, 0, 3]}
+{"tokens": ["quels", "sont", "les", "tarifs"], "ner_tags": [0, 0, 0, 0]}
+{"tokens": ["s'il", "vous", "plait", "je", "remarque", "plus", "d'eau", "au", "niveau", "de", "kara", "depuis", "ce", "matin"], "ner_tags": [0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 3, 0, 0, 0]}
+{"tokens": ["j'ai", "tuyau", "cassé", "au", "niveau", "de", "tokoin"], "ner_tags": [0, 1, 2, 0, 0, 0, 3]}
+{"tokens": ["dans", "mon", "quartier", "lome", "nous", "avons", "faible", "pression"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["aidez-moi", "nous", "avons", "fuite", "à", "adidogome", "depuis", "hier"], "ner_tags": [0, 0, 0, 1, 0, 3, 0, 0]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "lycee", "nous", "avons", "débit", "faible"], "ner_tags": [0, 0, 0, 3, 4, 0, 0, 1, 2]}
+{"tokens": ["je", "remarque", "ya", "pas", "d'eau", "vers", "baguida", "merci"], "ner_tags": [0, 0, 1, 2, 2, 0, 3, 0]}
+{"tokens": ["dans", "mon", "quartier", "tokoin", "nous", "avons", "tuyau", "cassé"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}
+{"tokens": ["dans", "mon", "quartier", "adidogome", "nous", "avons", "plus", "d'eau"], "ner_tags": [0, 0, 0, 3, 0, 0, 1, 2]}

@@ -1,0 +1,28 @@
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# HuggingFace / Transformers
+*.bin
+*.safetensors
+checkpoints/
+checkpoint-*/
+
+# Models
+backend/app/models/
+
+# Logs
+logs/
+wandb/
+
+# IDE
+.idea/
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
