@@ -30,6 +30,22 @@ PROJECT_STRUCTURE = {
                     "conversation_service.py",
                 ]
             },
+            "rag":{
+                "__files__": [
+                    "__init__.py",
+                    "scraper.py",
+                    "indexer.py",
+                    "retriever.py",
+                ]
+            },
+
+            "llm":{
+                "__files__": [
+                    "__init__.py",
+                    "groq_client.py",
+                    "prompt_builder.py"
+                ]
+            },
 
             "models": {
                 "__files__": [

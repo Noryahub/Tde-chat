@@ -62,3 +62,26 @@ def process_predict(text):
         "intent": label,
         "confidence": round(confidence, 3)
     }
+# Après le chargement du modèle
+# Remplace le bloc MAPPING_PATH par ceci
+model.config.id2label = {
+    0:  "conseil_consommation",
+    1:  "contact_service_client",
+    2:  "demande_branchement",
+    3:  "demande_documents",
+    4:  "eligibilite_branchement",
+    5:  "fallback",
+    6:  "gestion_abonnement",
+    7:  "gestion_facture",
+    8:  "horaire_agence",
+    9:  "info_branchement",
+    10: "info_consommation",
+    11: "info_generale",
+    12: "info_tarif",
+    13: "signaler_probleme",
+    14: "suivi_branchement",
+    15: "zone_couverture"
+}
+model.config.label2id = {v: k for k, v in model.config.id2label.items()}
+print("Mapping chargé :", model.config.id2label)
+print("ID2LABEL :", model.config.id2label)

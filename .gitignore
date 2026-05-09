@@ -2,7 +2,7 @@
 .venv/
 venv/
 env/
-
+.env
 # Python cache
 __pycache__/
 *.pyc
@@ -26,3 +26,35 @@ wandb/
 
 # Jupyter
 .ipynb_checkpoints/
+# Environnement virtuel
+
+# Modèles ML — trop lourds pour Git (442MB + 440MB)
+backend/app/models/intent_model/model.safetensors
+backend/app/models/ner_model/model.safetensors
+
+# Index FAISS — régénérable avec build_knowledge_base.py
+backend/app/rag/faiss_index.bin
+backend/app/rag/chunks.pkl
+backend/app/rag/crawled_docs.pkl
+
+# Variables d'environnement — NE JAMAIS committer
+
+
+# Cache Python
+*.pyo
+*.pyd
+.Python
+
+# Cache HuggingFace
+.cache/
+
+# PyCharm
+
+*.iml
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
