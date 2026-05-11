@@ -160,10 +160,17 @@ PROJECT_STRUCTURE = {
             "__files__": [
                 "__init__.py",
                 "index.html",
-                "app_streamlit.py"
+                "app_streamlit.py",
+                "dashboard.py"
             ]
         },
-
+        "pages":{
+            "__files__": [
+                "__init__.py",
+                "Chat.py",
+                "Dashboard.py",
+            ]
+        },
         "static": {
             "__files__": [
                 "__init__.py"
