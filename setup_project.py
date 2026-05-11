@@ -38,7 +38,12 @@ PROJECT_STRUCTURE = {
                     "retriever.py",
                 ]
             },
-
+            "validation": {
+                "__files__": [
+                    "__init__.py",
+                    "response_validator.py"
+                ]
+            },
             "llm":{
                 "__files__": [
                     "__init__.py",

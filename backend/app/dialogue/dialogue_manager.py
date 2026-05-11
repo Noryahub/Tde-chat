@@ -87,7 +87,7 @@ RESPONSES = {
 }
 
 
-def decision_process(intent, session_id=None, confidence=1.0):
+def decision_process(intent, session_id=None, confidence=1.0, user_message=""):
     print("INTENT RECU :", intent)
     print("CONFIDENCE :", confidence)
 
