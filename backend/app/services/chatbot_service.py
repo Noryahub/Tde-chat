@@ -9,6 +9,8 @@ from backend.app.llm.prompt_builder import build_prompt
 from backend.app.llm.groq_client import generate_response
 from backend.app.validation.response_validator import validate_response
 from backend.app.services.orientation_service import get_service, get_service_info
+
+
 def process_message(user_message, session_id, user_id):
 
     # 1. Mémoire — init ou reconstruction depuis DB
@@ -20,10 +22,16 @@ def process_message(user_message, session_id, user_id):
 
     # 2. NER — extraction des entités dès le début
     entities = extract_entities(user_message)
-    if entities["localisation"]:
-        memory.update_context({"localisation": entities["localisation"]})
-    if entities["probleme"]:
-        memory.update_context({"probleme": entities["probleme"]})
+
+    # Capture directe des entités détectées pour CE message (None si rien détecté)
+    localisation_detected = entities.get("localisation") or None
+    probleme_detected = entities.get("probleme") or None
+
+    # Mise à jour mémoire uniquement si détecté
+    if localisation_detected:
+        memory.update_context({"localisation": localisation_detected})
+    if probleme_detected:
+        memory.update_context({"probleme": probleme_detected})
 
     # 3. Vérifier si on attend un follow-up
     awaiting_state = memory.get_context().get("awaiting_state")
@@ -39,12 +47,13 @@ def process_message(user_message, session_id, user_id):
         memory.add_user_turn(content=user_message)
         memory.add_bot_turn(content=bot_response)
 
+        # Priorité aux entités du message courant, fallback sur le contexte mémoire
         session_ctx = memory.get_context()
         save_conversation(
             user_id, session_id, user_message,
             "followup", 1.0, service, bot_response,
-            localisation=session_ctx.get("localisation"),
-            probleme=session_ctx.get("probleme")
+            localisation=localisation_detected or session_ctx.get("localisation"),
+            probleme=probleme_detected or session_ctx.get("probleme")
         )
         return bot_response
 
@@ -70,11 +79,11 @@ def process_message(user_message, session_id, user_id):
             raw_response = generate_response(prompt)
 
             if raw_response:
-                #Validation avant envoi
+                # Validation avant envoi
                 validation = validate_response(raw_response, intent)
                 if validation["valid"]:
                     bot_response = validation["response"]
-                    print("Groq : réponse validée ")
+                    print("Groq : réponse validée")
                 else:
                     print(f"Groq : réponse rejetée — {validation['reason']}")
                     bot_response = None  # → fallback
@@ -90,7 +99,7 @@ def process_message(user_message, session_id, user_id):
                 intent, session_id=session_id,
                 confidence=confidence, user_message=user_message
             )
-        except:
+        except Exception:
             decision = None
 
         if not decision:
@@ -104,15 +113,16 @@ def process_message(user_message, session_id, user_id):
         bot_response = decision.get("response", "Je n'ai pas compris votre demande.")
         service = get_service(intent)
 
-    #7.Sauvegardes
+    # 7. Sauvegarde
     memory.add_bot_turn(content=bot_response)
 
+    # Priorité aux entités du message courant, fallback sur le contexte mémoire
     session_ctx = memory.get_context()
     save_conversation(
         user_id, session_id, user_message,
         intent, confidence, service, bot_response,
-        localisation=session_ctx.get("localisation"),
-        probleme=session_ctx.get("probleme")
+        localisation=localisation_detected or session_ctx.get("localisation"),
+        probleme=probleme_detected or session_ctx.get("probleme")
     )
 
     return bot_response

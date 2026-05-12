@@ -149,7 +149,7 @@ with col4:
         <div class="metric-value" style="color:#E53E3E;">
             {analytics.get('signalements_nouveaux', 0)}
         </div>
-        <div class="metric-label">Signalements en attente</div>
+        <div class="metric-label">⚠️Signalements en attente</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -261,52 +261,94 @@ if conv_jour:
 else:
     st.info("Pas encore de données")
 
-# ── PROBLEMES FREQUENTS ────────────────────────────────────────────────────────
+# ── PROBLEMES + SIGNALEMENTS ───────────────────────────────────────────────────
 col_prob, col_sig = st.columns(2)
 
+# ── PROBLÈMES FRÉQUENTS ────────────────────────────────────────────────────────
 with col_prob:
-    st.markdown('<div class="section-title">Problèmes les plus fréquents</div>',
-                unsafe_allow_html=True)
-    top_prob = analytics.get('top_problemes', [])
-    if top_prob:
-        df_prob = pd.DataFrame(top_prob)
-        total = analytics.get('total_conversations', 1)
-        for _, row in df_prob.iterrows():
-            pct = int(row['count'] / total * 100) if total > 0 else 0
-            col_a, col_b = st.columns([3, 1])
-            with col_a:
-                st.write(f"⚠️ {row['probleme']}")
-            with col_b:
-                st.write(f"**{row['count']}** ({pct}%)")
-            st.divider()
-    else:
-        st.info("Pas encore de données")
 
+    st.markdown(
+        '<div class="section-title">Problèmes les plus fréquents</div>',
+        unsafe_allow_html=True
+    )
+
+    top_prob = analytics.get('top_problemes', [])
+
+    with st.container(height=320):
+
+        if top_prob:
+
+            df_prob = pd.DataFrame(top_prob)
+
+            total = analytics.get('total_conversations', 1)
+
+            for _, row in df_prob.iterrows():
+
+                pct = int(row['count'] / total * 100) if total > 0 else 0
+
+                col_a, col_b = st.columns([3, 1])
+
+                with col_a:
+                    st.write(f"⚠️ {row['probleme']}")
+
+                with col_b:
+                    st.write(f"**{row['count']}** ({pct}%)")
+
+                st.divider()
+
+        else:
+            st.info("Pas encore de données")
+
+# ── DERNIERS SIGNALEMENTS ──────────────────────────────────────────────────────
 with col_sig:
-    st.markdown('<div class="section-title">Derniers signalements</div>',
-                unsafe_allow_html=True)
-    if signalements:
-        for s in signalements[:8]:
-            date_str = str(s['created_at'])[:16] if s['created_at'] else "—"
-            col_a, col_b = st.columns([3, 1])
-            with col_a:
-                st.write(f"📍 {s['localisation'] or '—'} — {s['probleme'] or '—'}")
-                st.caption(date_str)
-            with col_b:
-                statut = s['statut']
-                if statut == 'nouveau':
-                    st.warning(statut)
-                elif statut == 'en_cours':
-                    st.info(statut)
-                else:
-                    st.success(statut)
-            st.divider()
-    else:
-        st.info("Aucun signalement")
+
+    st.markdown(
+        '<div class="section-title">Derniers signalements</div>',
+        unsafe_allow_html=True
+    )
+
+    with st.container(height=320):
+
+        if signalements:
+
+            for s in signalements[:8]:
+
+                date_str = (
+                    str(s['created_at'])[:16]
+                    if s['created_at']
+                    else "—"
+                )
+
+                col_a, col_b = st.columns([3, 1])
+
+                with col_a:
+                    st.write(
+                        f"{s['localisation'] or '—'} — "
+                        f"{s['probleme'] or '—'}"
+                    )
+
+                    st.caption(date_str)
+
+                with col_b:
+
+                    statut = s['statut']
+
+                    if statut == 'nouveau':
+                        st.warning(statut)
+
+                    elif statut == 'en_cours':
+                        st.info(statut)
+
+                    else:
+                        st.success(statut)
+
+                st.divider()
+
+        else:
+            st.info("Aucun signalement")
 
 # ── REFRESH ────────────────────────────────────────────────────────────────────
 st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
 
 if st.button("Actualiser"):
     st.rerun()
-

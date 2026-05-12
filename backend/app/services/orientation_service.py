@@ -52,6 +52,16 @@ SERVICE_CONTACT = {
     },
 }
 
+# Mapping mots-clés → catégorie standard
+PROBLEME_MAP = {
+    "fuite":      ["fuite", "coule", "écoulement", "fuites"],
+    "coupure":    ["coupure", "coupé", "plus d'eau", "pas d'eau", "manque"],
+    "pression":   ["pression", "faible", "filet", "débit"],
+    "eau sale":   ["sale", "trouble", "couleur", "odeur", "marron"],
+    "tuyau":      ["tuyau", "tuyeau", "canalisation", "conduite", "cassé", "percé"],
+    "compteur":   ["compteur", "relevé", "index"],
+    "branchement":["branchement", "brancher", "raccordement"],
+}
 
 def get_service(intent: str) -> str:
     """Retourne le service compétent pour un intent donné."""
@@ -82,3 +92,20 @@ def get_orientation_message(intent: str) -> str:
         f"{info['description']}. "
         f"Horaires : {info['horaires']}."
     )
+
+def normalize_probleme(probleme: str) -> str:
+    """
+    Normalise un problème extrait par le NER
+    vers une catégorie standard pour le dashboard.
+    """
+    if not probleme:
+        return None
+
+    probleme_lower = probleme.lower()
+
+    for categorie, mots_cles in PROBLEME_MAP.items():
+        if any(mot in probleme_lower for mot in mots_cles):
+            return categorie
+
+    # Si aucune correspondance → tronquer proprement à 50 chars
+    return probleme[:50].strip()
