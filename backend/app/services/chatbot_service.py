@@ -27,6 +27,11 @@ def process_message(user_message, session_id, user_id):
     localisation_detected = entities.get("localisation") or None
     probleme_detected = normalize_probleme(entities.get("probleme")) or None  # ← normalisé
 
+    clean_entities = {
+        "localisation": localisation_detected,
+        "probleme": probleme_detected
+    }
+    print("NER ENTITES NETTOYEES :", clean_entities)
     # Mise à jour mémoire uniquement si détecté
     if localisation_detected:
         memory.update_context({"localisation": localisation_detected})
@@ -49,6 +54,13 @@ def process_message(user_message, session_id, user_id):
 
         # Priorité aux entités du message courant, fallback sur le contexte mémoire
         session_ctx = memory.get_context()
+
+        # Nettoyage sécurité du contexte mémoire
+
+        probleme_ctx = normalize_probleme(session_ctx.get("probleme"))
+        if not probleme_ctx:
+            memory.update_context({"probleme": None})
+
         save_conversation(
             user_id, session_id, user_message,
             "followup", 1.0, service, bot_response,
