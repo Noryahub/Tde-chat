@@ -1,31 +1,21 @@
 import re
 
-# Uniquement les hallucinations vraiment dangereuses
+# Uniquement les URLs non-TDE — le reste est géré par le prompt
 PATTERNS_HALLUCINATION = [
-    r"\+228\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}",  # numéros de téléphone inventés
-    r"\b0\d{1}\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}\b",  # format mobile inventé
-    r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+",  # emails inventés
-    r"(?:https?://|www\.)[^\s]+(?<!tde\.tg)[^\s]*",  # URLs autres que tde.tg
+    r"(?:https?://|www\.)[^\s]*(?<!\btde\.tg\b)[^\s]*",  # URLs autres que tde.tg
 ]
-
-# Mots interdits — promesses non tenables uniquement
-MOTS_INTERDITS = [
-    "je garantis",
-    "je vous assure que",
-    "dans l'heure",
-]
-
-# Remplacements pour mots interdits
-REPLACEMENTS = {
-    "je garantis": "nous vous informons",
-    "je vous assure que": "selon nos informations",
-    "dans l'heure": "dans les meilleurs délais",
-}
 
 MAX_RESPONSE_LENGTH = 1200
 MIN_RESPONSE_LENGTH = 10
 
 MOTS_FRANCAIS = ["vous", "votre", "nous", "pour", "est", "les", "des", "une", "que"]
+
+# Remplacements pour formulations non conformes
+REPLACEMENTS = {
+    "je garantis": "nous vous informons",
+    "je vous assure que": "selon nos informations",
+    "dans l'heure": "dans les meilleurs délais",
+}
 
 
 def _check_length(response: str) -> tuple:
@@ -43,8 +33,8 @@ def _check_length(response: str) -> tuple:
 def _check_hallucinations(response: str) -> tuple:
     for pattern in PATTERNS_HALLUCINATION:
         if re.search(pattern, response, re.IGNORECASE):
-            print(f"⚠️ Hallucination détectée — pattern : {pattern}")
-            return False, f"Pattern suspect : {pattern}"
+            print(f"⚠️ URL suspecte détectée")
+            return False, "URL non autorisée"
     return True, ""
 
 
@@ -57,7 +47,7 @@ def _clean_hallucinations(response: str) -> str:
     return response
 
 
-def _clean_mots_interdits(response: str) -> str:
+def _clean_formulations(response: str) -> str:
     for mot, replacement in REPLACEMENTS.items():
         response = response.replace(mot, replacement)
     return response
@@ -71,8 +61,8 @@ def _check_langue(response: str) -> bool:
 
 def validate_response(response: str, intent: str = None) -> dict:
     """
-    Valide et nettoie la réponse générée par le LLM.
-    Retourne : { valid, response, use_fallback, reason }
+    Validation légère — le prompt gère les règles métier principales.
+    Ce module reste un filet de sécurité pour les cas extrêmes.
     """
     if not response or not response.strip():
         return {"valid": False, "response": None,
@@ -84,21 +74,17 @@ def validate_response(response: str, intent: str = None) -> dict:
         return {"valid": False, "response": None,
                 "use_fallback": True, "reason": response}
 
-    # 2. Hallucinations
+    # 2. URLs suspectes
     hall_ok, reason = _check_hallucinations(response)
     if not hall_ok:
         response_cleaned = _clean_hallucinations(response)
-        if response_cleaned != response:
-            print("✅ Hallucination nettoyée")
-            response = response_cleaned
-        else:
-            return {"valid": False, "response": None,
-                    "use_fallback": True, "reason": reason}
+        print("URL nettoyée")
+        response = response_cleaned
 
-    # 3. Mots interdits
-    for mot in MOTS_INTERDITS:
+    # 3. Formulations non conformes
+    for mot in REPLACEMENTS:
         if mot in response.lower():
-            response = _clean_mots_interdits(response)
+            response = _clean_formulations(response)
             print("Formulation nettoyée")
             break
 

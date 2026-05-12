@@ -8,7 +8,7 @@ from backend.app.rag.retriever import retrieve
 from backend.app.llm.prompt_builder import build_prompt
 from backend.app.llm.groq_client import generate_response
 from backend.app.validation.response_validator import validate_response
-from backend.app.services.orientation_service import get_service, get_service_info
+from backend.app.services.orientation_service import get_service, get_service_info, normalize_probleme  # ← normalize_probleme ajouté
 
 
 def process_message(user_message, session_id, user_id):
@@ -25,7 +25,7 @@ def process_message(user_message, session_id, user_id):
 
     # Capture directe des entités détectées pour CE message (None si rien détecté)
     localisation_detected = entities.get("localisation") or None
-    probleme_detected = entities.get("probleme") or None
+    probleme_detected = normalize_probleme(entities.get("probleme")) or None  # ← normalisé
 
     # Mise à jour mémoire uniquement si détecté
     if localisation_detected:
@@ -75,7 +75,8 @@ def process_message(user_message, session_id, user_id):
 
         if retrieved_docs:
             history_text = memory.get_history_as_text()
-            prompt = build_prompt(user_message, intent, retrieved_docs, history_text)
+            session_ctx = memory.get_context()
+            prompt = build_prompt(user_message, intent, retrieved_docs, history_text, session_context=session_ctx)
             raw_response = generate_response(prompt)
 
             if raw_response:
@@ -95,10 +96,7 @@ def process_message(user_message, session_id, user_id):
     if not bot_response:
         print("→ Fallback Dialogue Manager")
         try:
-            decision = decision_process(
-                intent, session_id=session_id,
-                confidence=confidence, user_message=user_message
-            )
+            decision = get_response_from_db(intent, confidence)
         except Exception:
             decision = None
 
