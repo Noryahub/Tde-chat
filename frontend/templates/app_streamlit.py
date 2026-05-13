@@ -5,13 +5,14 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(BASE_DIR)
 
 import streamlit as st
+import streamlit.components.v1 as components
 from backend.app.services.chatbot_service import process_message
 from datetime import datetime
 
 # ── CONFIG ─────────────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Assistant", page_icon="💬", layout="centered")
 
-# ── CSS ────────────────────────────────────────────────────────────────────────
+# ── CSS global ─────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap');
@@ -21,7 +22,6 @@ html, body, [class*="css"] { font-family: 'DM Sans', sans-serif !important; }
 .block-container { padding: 1rem 1rem 0 !important; max-width: 700px !important; }
 .stApp { background: #f5f5f3; }
 
-/* header chat */
 .ch-header {
     background: #1D9E75;
     border-radius: 14px 14px 0 0;
@@ -34,54 +34,10 @@ html, body, [class*="css"] { font-family: 'DM Sans', sans-serif !important; }
     display: flex; align-items: center; justify-content: center;
     font-size: 18px;
 }
-.ch-name  { font-size: 14px; font-weight: 500; color: white; }
+.ch-name   { font-size: 14px; font-weight: 500; color: white; }
 .ch-status { font-size: 11px; color: rgba(255,255,255,.75); display: flex; align-items: center; gap: 5px; }
 .online-dot { width: 6px; height: 6px; border-radius: 50%; background: #9FE1CB; display: inline-block; }
 
-/* zone messages */
-.messages-zone {
-    background: #fafafa;
-    border-left: 0.5px solid rgba(0,0,0,.1);
-    border-right: 0.5px solid rgba(0,0,0,.1);
-    padding: 16px;
-    min-height: 380px;
-    max-height: 500px;
-    overflow-y: auto;
-    display: flex; flex-direction: column; gap: 12px;
-    scroll-behavior: smooth;
-}
-.messages-zone::-webkit-scrollbar { width: 4px; }
-.messages-zone::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 2px; }
-.messages-zone::-webkit-scrollbar-track { background: transparent; }
-
-/* bulles */
-.msg-row      { display: flex; gap: 8px; align-items: flex-end; }
-.msg-row.user { flex-direction: row-reverse; }
-.av {
-    width: 28px; height: 28px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 500; flex-shrink: 0;
-}
-.av.bot  { background: #E1F5EE; color: #085041; }
-.av.user { background: #eeede9; color: #6b6b67; }
-.bwrap      { display: flex; flex-direction: column; max-width: 75%; }
-.bwrap.user { align-items: flex-end; }
-.bubble {
-    padding: 10px 14px; border-radius: 14px;
-    font-size: 14px; line-height: 1.55; word-break: break-word;
-}
-.bubble.bot  {
-    background: #fff; border: 0.5px solid rgba(0,0,0,.10);
-    color: #1a1a18; border-bottom-left-radius: 3px;
-}
-.bubble.user {
-    background: #1D9E75; color: white;
-    border-bottom-right-radius: 3px;
-}
-.bubble.error { background: #FCEBEB; border-color: #F7C1C1; color: #A32D2D; }
-.msg-time { font-size: 10px; color: #a0a09c; margin-top: 3px; padding: 0 2px; }
-
-/* footer panel */
 .ch-footer {
     background: #fff;
     border: 0.5px solid rgba(0,0,0,.1);
@@ -92,7 +48,6 @@ html, body, [class*="css"] { font-family: 'DM Sans', sans-serif !important; }
 }
 .ch-footer span { font-size: 10px; color: #a0a09c; }
 
-/* input Streamlit */
 .stTextInput > div > div > input {
     border-radius: 24px !important;
     border: 0.5px solid rgba(0,0,0,.18) !important;
@@ -116,6 +71,7 @@ html, body, [class*="css"] { font-family: 'DM Sans', sans-serif !important; }
     box-shadow: none !important;
 }
 .stButton > button:hover { background: #0F6E56 !important; }
+iframe { border: none !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -124,6 +80,254 @@ if "messages" not in st.session_state:
     st.session_state.messages = [
         {"role": "bot", "content": "Bonjour ! Comment puis-je vous aider ?", "time": ""}
     ]
+
+
+# ── HELPER ────────────────────────────────────────────────────────────────────
+def build_chat_html(messages: list, show_typing: bool = False) -> str:
+    bubbles = ""
+    for msg in messages:
+        text = (
+            msg["content"]
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace("\n", "<br>")
+        )
+        t   = msg.get("time", "")
+        err = msg.get("error", False)
+        if msg["role"] == "bot":
+            cls = "bubble bot error" if err else "bubble bot"
+            bubbles += f"""
+            <div class="msg-row">
+              <div class="av bot">N</div>
+              <div class="bwrap">
+                <div class="{cls}">{text}</div>
+                <div class="msg-time">{t}</div>
+              </div>
+            </div>"""
+        else:
+            bubbles += f"""
+            <div class="msg-row user">
+              <div class="av user">V</div>
+              <div class="bwrap user">
+                <div class="bubble user">{text}</div>
+                <div class="msg-time">{t}</div>
+              </div>
+            </div>"""
+
+    typing_html = ""
+    if show_typing:
+        typing_html = """
+        <div class="msg-row">
+          <div class="av bot">N</div>
+          <div class="bwrap">
+            <div class="typing-bubble">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>"""
+
+    return f"""<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap');
+
+  * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  body {{
+    font-family: 'DM Sans', sans-serif;
+    background: #fafafa;
+    overflow: hidden;
+  }}
+
+  /* ── Wrapper relatif pour positionner le bouton ── */
+  .chat-wrapper {{
+    position: relative;
+    height: 500px;
+  }}
+
+  /* ── Zone messages ── */
+  .messages-zone {{
+    padding: 16px;
+    height: 500px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scroll-behavior: smooth;
+    border-left: 0.5px solid rgba(0,0,0,.1);
+    border-right: 0.5px solid rgba(0,0,0,.1);
+  }}
+  .messages-zone::-webkit-scrollbar {{ width: 4px; }}
+  .messages-zone::-webkit-scrollbar-thumb {{ background: rgba(0,0,0,0.15); border-radius: 2px; }}
+  .messages-zone::-webkit-scrollbar-track {{ background: transparent; }}
+
+  /* ── Bulles ── */
+  .msg-row      {{ display: flex; gap: 8px; align-items: flex-end; }}
+  .msg-row.user {{ flex-direction: row-reverse; }}
+  .av {{
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500; flex-shrink: 0;
+  }}
+  .av.bot  {{ background: #E1F5EE; color: #085041; }}
+  .av.user {{ background: #eeede9; color: #6b6b67; }}
+  .bwrap      {{ display: flex; flex-direction: column; max-width: 75%; }}
+  .bwrap.user {{ align-items: flex-end; }}
+  .bubble {{
+    padding: 10px 14px; border-radius: 14px;
+    font-size: 14px; line-height: 1.55; word-break: break-word;
+  }}
+  .bubble.bot {{
+    background: #fff; border: 0.5px solid rgba(0,0,0,.10);
+    color: #1a1a18; border-bottom-left-radius: 3px;
+  }}
+  .bubble.user {{
+    background: #1D9E75; color: white;
+    border-bottom-right-radius: 3px;
+  }}
+  .bubble.error {{ background: #FCEBEB; border-color: #F7C1C1; color: #A32D2D; }}
+  .msg-time {{ font-size: 10px; color: #a0a09c; margin-top: 3px; padding: 0 2px; }}
+
+  /* ── Typing ── */
+  .typing-bubble {{
+    background: #fff;
+    border: 0.5px solid rgba(0,0,0,.10);
+    border-radius: 14px;
+    border-bottom-left-radius: 3px;
+    padding: 12px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }}
+  .dot {{
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #1D9E75;
+    animation: bounce 1.2s infinite ease-in-out;
+  }}
+  .dot:nth-child(1) {{ animation-delay: 0s; }}
+  .dot:nth-child(2) {{ animation-delay: 0.2s; }}
+  .dot:nth-child(3) {{ animation-delay: 0.4s; }}
+  @keyframes bounce {{
+    0%, 60%, 100% {{ transform: translateY(0);   opacity: 0.4; }}
+    30%            {{ transform: translateY(-6px); opacity: 1;   }}
+  }}
+
+  /* ── Bouton scroll — centré en bas ── */
+  .scroll-btn {{
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #fff;
+    border: 0.5px solid rgba(0,0,0,.15);
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,.12);
+    transition: box-shadow 0.2s, transform 0.2s;
+    z-index: 100;
+  }}
+  .scroll-btn:hover {{
+    box-shadow: 0 4px 16px rgba(0,0,0,.18);
+    transform: translateX(-50%) translateY(-2px);
+  }}
+  .scroll-btn.visible {{
+    display: flex;
+    animation: fadeInUp 0.2s ease;
+  }}
+  @keyframes fadeInUp {{
+    from {{ opacity: 0; transform: translateX(-50%) translateY(8px); }}
+    to   {{ opacity: 1; transform: translateX(-50%) translateY(0);   }}
+  }}
+
+  /* Badge */
+  .badge {{
+    position: absolute;
+    top: -4px; right: -4px;
+    background: #e53e3e;
+    color: white;
+    font-size: 9px; font-weight: 700;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    display: none;
+    align-items: center; justify-content: center;
+    border: 1.5px solid white;
+  }}
+  .badge.show {{ display: flex; }}
+</style>
+</head>
+<body>
+
+<div class="chat-wrapper">
+  <div class="messages-zone" id="msgZone">
+    {bubbles}
+    {typing_html}
+  </div>
+
+  <!-- Bouton centré avec icône SVG (flèche + trait) -->
+  <button class="scroll-btn" id="scrollBtn" onclick="scrollToBottom()" title="Scroller">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Flèche vers le bas -->
+      <path d="M8 2 L8 11" stroke="#444" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M4.5 7.5 L8 11 L11.5 7.5" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Trait horizontal en bas -->
+      <line x1="3" y1="14" x2="13" y2="14" stroke="#444" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <span class="badge" id="badge"></span>
+  </button>
+</div>
+
+<script>
+  const zone  = document.getElementById('msgZone');
+  const btn   = document.getElementById('scrollBtn');
+  const badge = document.getElementById('badge');
+  const THRESHOLD = 60;
+
+  function isAtBottom() {{
+    return zone.scrollHeight - zone.scrollTop - zone.clientHeight < THRESHOLD;
+  }}
+
+  function updateBtn() {{
+    if (isAtBottom()) {{
+      btn.classList.remove('visible');
+      badge.classList.remove('show');
+    }} else {{
+      btn.classList.add('visible');
+    }}
+  }}
+
+  function scrollToBottom() {{
+    zone.scrollTo({{ top: zone.scrollHeight, behavior: 'smooth' }});
+    badge.classList.remove('show');
+    btn.classList.remove('visible');
+  }}
+
+  zone.scrollTop = zone.scrollHeight;
+  zone.addEventListener('scroll', updateBtn);
+
+  const observer = new MutationObserver(function() {{
+    if (!isAtBottom()) {{
+      btn.classList.add('visible');
+      badge.classList.add('show');
+    }} else {{
+      scrollToBottom();
+    }}
+  }});
+  observer.observe(zone, {{ childList: true, subtree: false }});
+
+  updateBtn();
+</script>
+</body>
+</html>"""
+
 
 # ── HEADER ────────────────────────────────────────────────────────────────────
 st.markdown("""
@@ -136,40 +340,15 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── MESSAGES ──────────────────────────────────────────────────────────────────
-html = '<div class="messages-zone">'
-for msg in st.session_state.messages:
-    text = msg["content"].replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>")
-    t    = msg.get("time", "")
-    err  = msg.get("error", False)
-    if msg["role"] == "bot":
-        html += f"""
-        <div class="msg-row">
-          <div class="av bot">N</div>
-          <div class="bwrap">
-            <div class="bubble bot{' error' if err else ''}">{text}</div>
-            <div class="msg-time">{t}</div>
-          </div>
-        </div>"""
-    else:
-        html += f"""
-        <div class="msg-row user">
-          <div class="av user">V</div>
-          <div class="bwrap user">
-            <div class="bubble user">{text}</div>
-            <div class="msg-time">{t}</div>
-          </div>
-        </div>"""
-html += "</div>"
-st.markdown(html, unsafe_allow_html=True)
+# ── ZONE MESSAGES ─────────────────────────────────────────────────────────────
+chat_placeholder = st.empty()
 
-# Auto-scroll vers le dernier message
-st.markdown("""
-<script>
-  const zone = document.querySelector('.messages-zone');
-  if (zone) zone.scrollTop = zone.scrollHeight;
-</script>
-""", unsafe_allow_html=True)
+with chat_placeholder:
+    components.html(
+        build_chat_html(st.session_state.messages, show_typing=False),
+        height=500,
+        scrolling=False
+    )
 
 # ── FOOTER ────────────────────────────────────────────────────────────────────
 st.markdown("""
@@ -196,6 +375,13 @@ if send and user_message.strip():
         "content": user_message.strip(),
         "time": now
     })
+
+    with chat_placeholder:
+        components.html(
+            build_chat_html(st.session_state.messages, show_typing=True),
+            height=500,
+            scrolling=False
+        )
 
     try:
         response = process_message(
