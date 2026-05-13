@@ -167,8 +167,8 @@ PROJECT_STRUCTURE = {
         "pages":{
             "__files__": [
                 "__init__.py",
-                "Chat.py",
-                "Dashboard.py",
+                "1_Chat.py",
+                "2_Dashboard.py",
             ]
         },
         "static": {

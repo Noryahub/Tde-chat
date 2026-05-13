@@ -1,5 +1,8 @@
 import os
+import re
 from transformers import AutoTokenizer, AutoModelForTokenClassification, pipeline
+import warnings
+warnings.filterwarnings("ignore")
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -43,12 +46,27 @@ VILLES_TOGO = [
 
 
 def _fallback_ville(text: str):
-    """Détecte une ville par correspondance directe si NER échoue."""
+    """
+    Détecte une ville par correspondance de mot entier.
+    Évite les faux positifs comme "be" dans "robinets".
+    """
     text_lower = text.lower()
+    # Extraire les mots entiers du texte
+    words = set(re.findall(r'\b\w+\b', text_lower))
+
     for ville in VILLES_TOGO:
-        if ville in text_lower:
-            idx = text_lower.find(ville)
-            return text[idx:idx + len(ville)]
+        ville_words = ville.split()
+        if len(ville_words) == 1:
+            # Ville en un mot — correspondance mot entier uniquement
+            if ville in words:
+                idx = text_lower.find(ville)
+                return text[idx:idx + len(ville)]
+        else:
+            # Ville en plusieurs mots — recherche dans le texte
+            if ville in text_lower:
+                idx = text_lower.find(ville)
+                return text[idx:idx + len(ville)]
+
     return None
 
 
@@ -56,13 +74,10 @@ def _is_incomplete(localisation: str) -> bool:
     """Vérifie si la localisation détectée est un fragment incomplet."""
     if not localisation:
         return True
-    # Fragment si 3 caractères ou moins
     if len(localisation) <= 3:
         return True
-    # Fragment si commence par minuscule (sous-token mal reconstruit)
     if localisation[0].islower():
         return True
-    # Fragment si c'est un préfixe d'une ville connue
     loc_lower = localisation.lower()
     for ville in VILLES_TOGO:
         if ville.startswith(loc_lower) and ville != loc_lower:
@@ -74,8 +89,7 @@ def extract_entities(text: str) -> dict:
     """
     Extrait les entités d'un texte.
     Utilise start/end pour reconstruire depuis le texte original.
-    Fallback sur liste de villes si NER ne détecte pas ou détecte
-    un fragment incomplet.
+    Fallback sur liste de villes (mot entier) si NER échoue.
     Retourne : { "localisation": str|None, "probleme": str|None }
     """
     raw_results = ner_pipeline(text)
@@ -109,7 +123,7 @@ def extract_entities(text: str) -> dict:
             print(f"NER FALLBACK VILLE : {fallback} (remplace '{entities['localisation']}')")
             entities["localisation"] = fallback
         else:
-            entities["localisation"] = None  # fragment inutile → None
+            entities["localisation"] = None
 
     print("NER ENTITES :", entities)
     return entities
@@ -133,6 +147,10 @@ if __name__ == "__main__":
         "suis-je éligible au branchement à Adidogomé ?",
         "bonjour je voudrais des informations",
         "quels sont vos horaires ?",
+        #Nouveaux tests anti-faux positifs
+        "depuis hier nuit l'eau ne sort plus de nos robinets",
+        "comment résoudre ce problème de pression ?",
+        "je voudrais savoir les tarifs",
     ]
 
     print("\n" + "=" * 50)
@@ -140,7 +158,7 @@ if __name__ == "__main__":
     print("=" * 50)
 
     for text in tests:
-        print(f"\n TEXT : {text}")
+        print(f"\TEXT : {text}")
         result = extract_entities(text)
         print(f"LOCALISATION : {result['localisation'] or '—'}")
         print(f"PROBLEME     : {result['probleme'] or '—'}")

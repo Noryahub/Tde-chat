@@ -88,14 +88,17 @@ def save_conversation(
     confidence,
     service,
     bot_response,
-    localisation=None,  # ← nouveau
-    probleme=None       # ← nouveau
+    localisation=None,
+    probleme=None
 ):
+    #Ne pas enregistrer les followups — pas de valeur analytique
+    if intent in ("followup", "fallback"):
+        return
+
     conn = get_db_connection()
     cursor = conn.cursor()
 
     try:
-        # 1. Sauvegarde conversation
         query = """
         INSERT INTO conversations (
             user_id,
@@ -124,7 +127,7 @@ def save_conversation(
         cursor.execute(query, values)
         conv_id = cursor.lastrowid
 
-        # 2. Créer un signalement si problème détecté
+        # Créer un signalement si problème détecté
         if intent == "signaler_probleme" and (localisation or probleme):
             cursor.execute("""
                 INSERT INTO signalements (
