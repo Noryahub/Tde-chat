@@ -1,83 +1,117 @@
 DROP DATABASE IF EXISTS chatbot_tde;
-CREATE DATABASE chatbot_tde CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS chatbot_tde
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
 USE chatbot_tde;
 
-
-CREATE TABLE services (
+CREATE TABLE IF NOT EXISTS services (
     id INT AUTO_INCREMENT PRIMARY KEY,
     service_name VARCHAR(100) NOT NULL,
     description TEXT,
     contact_info VARCHAR(150)
 );
 
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100),
+    email VARCHAR(191) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('user', 'admin')
+    DEFAULT 'user',
+    last_login TIMESTAMP NULL,
+    created_at TIMESTAMP
+    DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+    DEFAULT CURRENT_TIMESTAMP
+    ON UPDATE CURRENT_TIMESTAMP
+);
 
-CREATE TABLE intents (
+CREATE INDEX idx_users_email
+ON users(email);
+CREATE INDEX idx_users_role
+ON users(role);
+
+CREATE TABLE IF NOT EXISTS intents (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     action VARCHAR(50) NOT NULL,
     response TEXT NOT NULL,
     guide TEXT,
     service_id INT,
-    FOREIGN KEY (service_id) REFERENCES services(id)
+    FOREIGN KEY (service_id)
+    REFERENCES services(id)
 );
 
-
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS conversations (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    session_id VARCHAR(50) UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-
-CREATE TABLE conversations (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-
     user_id INT,
-    session_id VARCHAR(50),
-
+    session_id VARCHAR(100),
     user_message TEXT,
     bot_response TEXT,
-
     predicted_intent VARCHAR(100),
     confidence_score FLOAT,
-
     orientation_service VARCHAR(100),
-
     localisation VARCHAR(100),
     probleme VARCHAR(150),
 
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    created_at TIMESTAMP
+    DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
 );
 
+CREATE INDEX idx_conv_user_id
+ON conversations(user_id);
 
-CREATE TABLE signalements (
+CREATE INDEX idx_conv_session
+ON conversations(session_id);
+
+CREATE INDEX idx_conv_intent
+ON conversations(predicted_intent);
+
+
+CREATE TABLE IF NOT EXISTS signalements (
     id INT AUTO_INCREMENT PRIMARY KEY,
-
     conversation_id INT,
     user_id INT,
-    session_id VARCHAR(50),
-
+    session_id VARCHAR(100),
     localisation VARCHAR(100),
     probleme VARCHAR(150),
     intent VARCHAR(100),
+    statut ENUM(
+        'nouveau',
+        'en_cours',
+        'resolu'
+    ) DEFAULT 'nouveau',
 
-    statut ENUM('nouveau', 'en_cours', 'resolu') DEFAULT 'nouveau',
+    created_at TIMESTAMP
+    DEFAULT CURRENT_TIMESTAMP,
 
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (conversation_id)
+    REFERENCES conversations(id),
 
-    FOREIGN KEY (conversation_id) REFERENCES conversations(id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
 );
 
+CREATE INDEX idx_signalements_statut
+ON signalements(statut);
 
-CREATE TABLE analytics_daily (
+CREATE INDEX idx_signalements_localisation
+ON signalements(localisation);
+
+CREATE TABLE IF NOT EXISTS analytics_daily (
     id INT AUTO_INCREMENT PRIMARY KEY,
     date DATE NOT NULL,
     intent VARCHAR(50),
     localisation VARCHAR(50),
     probleme VARCHAR(50),
     count INT DEFAULT 1,
-    UNIQUE KEY unique_daily (date, intent, localisation, probleme)
+    UNIQUE KEY unique_daily (
+        date,
+        intent,
+        localisation,
+        probleme
+    )
 );
