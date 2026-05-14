@@ -1,22 +1,46 @@
 import re
 import time
 import logging
-from werkzeug.security import generate_password_hash, check_password_hash
+
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+)
+
 from backend.app.database.db import get_db_connection
-# Rate limiting (mémoire simple)
+
+
+# =========================================
+# RATE LIMITING
+# =========================================
+
 login_attempts = {}
 
+
 def is_rate_limited(email):
-    attempts, last_time = login_attempts.get(email, (0, 0))
+
+    attempts, last_time = login_attempts.get(
+        email,
+        (0, 0)
+    )
 
     # reset après 60 secondes
     if time.time() - last_time > 60:
-        login_attempts[email] = (0, time.time())
+
+        login_attempts[email] = (
+            0,
+            time.time()
+        )
+
         return False
 
     return attempts >= 5
 
-# Validation utilisateur
+
+# =========================================
+# VALIDATION
+# =========================================
+
 def validate_user(email, password):
 
     email_regex = r"^[\w\.-]+@[\w\.-]+\.\w+$"
@@ -29,100 +53,224 @@ def validate_user(email, password):
 
     return True, None
 
-# Récupérer utilisateur
+
+# =========================================
+# GET USER
+# =========================================
+
 def get_user_by_email(email):
+
     conn = get_db_connection()
+
     if not conn:
         return None
 
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
 
     try:
-        query = "SELECT id FROM users WHERE email = %s"
+
+        query = """
+        SELECT
+            id,
+            nom,
+            email,
+            role,
+            created_at
+        FROM users
+        WHERE email = %s
+        """
+
         cursor.execute(query, (email,))
-        result = cursor.fetchone()
-        return result[0] if result else None
+
+        return cursor.fetchone()
 
     except Exception as e:
-        logging.error(f"Erreur récupération utilisateur: {e}")
+
+        logging.error(
+            f"Erreur récupération utilisateur : {e}"
+        )
+
         return None
 
     finally:
+
         cursor.close()
         conn.close()
 
-# Création utilisateur
-def create_user(email, password):
+
+# =========================================
+# CREATE USER
+# =========================================
+
+def create_user(
+    email,
+    password,
+    nom=None,
+    role="user"
+):
 
     conn = get_db_connection()
+
     if not conn:
         return None, "Erreur connexion base de données"
 
     cursor = conn.cursor()
 
     try:
+
         # validation
-        valid, error = validate_user(email, password)
+        valid, error = validate_user(
+            email,
+            password
+        )
+
         if not valid:
             return None, error
 
-        # vérifier si existe déjà (optimisé, sans double connexion)
-        query = "SELECT id FROM users WHERE email = %s"
+        # vérifier si existe déjà
+        query = """
+        SELECT id
+        FROM users
+        WHERE email = %s
+        """
+
         cursor.execute(query, (email,))
+
         if cursor.fetchone():
             return None, "Utilisateur déjà existant"
 
-        # hash du mot de passe
-        hashed_password = generate_password_hash(password)
+        # hash mot de passe
+        hashed_password = generate_password_hash(
+            password
+        )
 
         # insertion
-        query = "INSERT INTO users (email, password) VALUES (%s, %s)"
-        cursor.execute(query, (email, hashed_password))
+        query = """
+        INSERT INTO users (
+            nom,
+            email,
+            password,
+            role
+        )
+        VALUES (%s, %s, %s, %s)
+        """
+
+        cursor.execute(
+            query,
+            (
+                nom,
+                email,
+                hashed_password,
+                role
+            )
+        )
+
         conn.commit()
 
         return cursor.lastrowid, None
 
     except Exception as e:
-        logging.error(f"Erreur création utilisateur: {e}")
+
+        logging.error(
+            f"Erreur création utilisateur : {e}"
+        )
+
         return None, "Erreur serveur"
 
     finally:
+
         cursor.close()
         conn.close()
 
-# Authentification
+
+# =========================================
+# AUTHENTIFICATION
+# =========================================
+
 def authenticate_user(email, password):
 
     if is_rate_limited(email):
+
+        logging.warning(
+            f"Trop de tentatives : {email}"
+        )
+
         return None
 
     conn = get_db_connection()
+
     if not conn:
         return None
 
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
 
     try:
-        query = "SELECT id, password FROM users WHERE email = %s"
+
+        query = """
+        SELECT
+            id,
+            password,
+            role
+        FROM users
+        WHERE email = %s
+        """
+
         cursor.execute(query, (email,))
-        result = cursor.fetchone()
 
-        if result and check_password_hash(result[1], password):
+        user = cursor.fetchone()
+
+        if user and check_password_hash(
+            user["password"],
+            password
+        ):
+
             # reset compteur
-            login_attempts[email] = (0, time.time())
-            return result[0]
+            login_attempts[email] = (
+                0,
+                time.time()
+            )
 
-        # échec
-        attempts, _ = login_attempts.get(email, (0, time.time()))
-        login_attempts[email] = (attempts + 1, time.time())
+            # mise à jour last_login
+            update_query = """
+            UPDATE users
+            SET last_login = CURRENT_TIMESTAMP
+            WHERE id = %s
+            """
+
+            cursor.execute(
+                update_query,
+                (user["id"],)
+            )
+
+            conn.commit()
+
+            return {
+                "id": user["id"],
+                "role": user["role"]
+            }
+
+        # échec connexion
+        attempts, _ = login_attempts.get(
+            email,
+            (0, time.time())
+        )
+
+        login_attempts[email] = (
+            attempts + 1,
+            time.time()
+        )
 
         return None
 
     except Exception as e:
-        logging.error(f"Erreur authentification: {e}")
+
+        logging.error(
+            f"Erreur authentification : {e}"
+        )
+
         return None
 
     finally:
+
         cursor.close()
         conn.close()
-

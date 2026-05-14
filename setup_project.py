@@ -151,40 +151,96 @@ PROJECT_STRUCTURE = {
             "__init__.py",
             "conversation_memory.py"
         ]},
+
+
     "frontend": {
+
         "__files__": [
-            "__init__.py"
+          "__init__.py",
+          "app.py"
         ],
 
-        "templates": {
+        "pages": {
+
+          "__files__": [
+            "__init__.py"
+          ],
+
+          "admin": {
+
             "__files__": [
-                "__init__.py",
-                "index.html",
-                "app_streamlit.py",
-                "dashboard.py"
+              "__init__.py",
+              "dashboard.py",
+              "chat.py",
+              "analytics.py",
+              "signalements.py",
+              "users.py",
+              "settings.py"
             ]
-        },
-        "pages":{
+          },
+
+          "user": {
+
             "__files__": [
-                "__init__.py",
-                "1_Chat.py",
-                "2_Dashboard.py",
+              "__init__.py",
+              "chat.py",
+              "profile.py"
             ]
+          }
         },
+
+        "components": {
+
+          "__files__": [
+            "__init__.py",
+            "admin_sidebar.py",
+            "user_sidebar.py",
+            "chat_history_sidebar.py",
+            "navbar.py",
+            "auth_guard.py",
+            "chat_ui.py"
+          ]
+        },
+
+        "services": {
+
+          "__files__": [
+            "__init__.py",
+            "api_client.py",
+            "auth_client.py",
+            "chat_client.py"
+          ]
+        },
+
         "static": {
-            "__files__": [
-                "__init__.py"
-            ],
 
-            "css": {
-                "__files__": []
-            },
+          "__files__": [
+            "__init__.py"
+          ],
 
-            "js": {
-                "__files__": []
-            },
+          "css": {},
+
+          "js": {}
         },
+
+        "assets": {
+
+          "__files__": [
+            "logo.png",
+            "chatbot.png",
+            "dashboard_banner.png"
+          ]
+        },
+
+        "templates": {
+
+          "__files__": [
+            "__init__.py",
+            "index.html"
+          ]
+        }
     },
+
 
     "tests": {
         "__files__": [
