@@ -9,7 +9,17 @@ from backend.app.services.conversation_service import (
     get_analytics,
     get_signalements
 )
+from frontend.components.hide_streamlit_sidebar import (
+    hide_streamlit_sidebar
+)
 
+from frontend.components.admin_sidebar import (
+    render_admin_sidebar
+)
+
+hide_streamlit_sidebar()
+
+selected_page = render_admin_sidebar()
 import plotly.express as px
 import pandas as pd
 
