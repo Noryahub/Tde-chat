@@ -154,92 +154,115 @@ PROJECT_STRUCTURE = {
 
 
     "frontend": {
-
-        "__files__": [
-          "__init__.py",
-          "app.py"
-        ],
-
-        "pages": {
-
-          "__files__": [
-            "__init__.py"
-          ],
-
-          "admin": {
-
+        "app": {
             "__files__": [
-              "__init__.py",
-              "dashboard.py",
-              "chat.py",
-              "analytics.py",
-              "signalements.py",
-              "users.py",
-              "settings.py"
-            ]
-          },
+                "layout.tsx",
+                "page.tsx",
+                "globals.css"
+            ],
 
-          "user": {
+            "login": {
+                "__files__": ["page.tsx"]
+            },
 
-            "__files__": [
-              "__init__.py",
-              "chat.py",
-              "profile.py"
-            ]
-          }
+            "register": {
+                "__files__": ["page.tsx"]
+            },
+
+            "chat": {
+                "__files__": ["page.tsx"]
+            },
+
+            "profile": {
+                "__files__": ["page.tsx"]
+            },
+
+            "dashboard": {
+                "__files__": ["page.tsx"]
+            },
+
+            "analytics": {
+                "__files__": ["page.tsx"]
+            },
+
+            "users": {
+                "__files__": ["page.tsx"]
+            },
+
+            "settings": {
+                "__files__": ["page.tsx"]
+            },
+
+            "signalements": {
+                "__files__": ["page.tsx"]
+            }
         },
 
         "components": {
 
-          "__files__": [
-            "__init__.py",
-            "admin_sidebar.py",
-            "user_sidebar.py",
-            "chat_history_sidebar.py",
-            "navbar.py",
-            "auth_guard.py",
-            "chat_ui.py"
-          ]
+            "layout": {
+                "__files__": [
+                    "admin-sidebar.tsx",
+                    "user-sidebar.tsx",
+                    "dashboard-layout.tsx",
+                    "user-layout.tsx",
+                    "top-navbar.tsx"
+                ]
+            },
+
+            "chat": {
+                "__files__": [
+                    "chat-header.tsx",
+                    "chat-messages.tsx",
+                    "chat-input.tsx",
+                    "message-bubble.tsx"
+                ]
+            },
+
+            "auth": {
+                "__files__": [
+                    "login-form.tsx",
+                    "register-form.tsx"
+                ]
+            },
+
+            "dashboard": {
+                "__files__": [
+                    "stats-card.tsx",
+                    "charts.tsx",
+                    "recent-activity.tsx"
+                ]
+            }
         },
 
-        "services": {
-
-          "__files__": [
-            "__init__.py",
-            "api_client.py",
-            "auth_client.py",
-            "chat_client.py"
-          ]
+        "providers": {
+            "__files__": [
+                "auth-provider.tsx"
+            ]
         },
 
-        "static": {
-
-          "__files__": [
-            "__init__.py"
-          ],
-
-          "css": {},
-
-          "js": {}
+        "hooks": {
+            "__files__": [
+                "use-auth.ts",
+                "use-role.ts"
+            ]
         },
 
-        "assets": {
-
-          "__files__": [
-            "logo.png",
-            "chatbot.png",
-            "dashboard_banner.png"
-          ]
+        "types": {
+            "__files__": [
+                "auth.ts"
+            ]
         },
 
-        "templates": {
-
-          "__files__": [
-            "__init__.py",
-            "index.html"
-          ]
+        "lib": {
+            "__files__": [
+                "api.ts",
+                "auth.ts",
+                "utils.ts"
+            ]
         }
     },
+
 
 
     "tests": {
