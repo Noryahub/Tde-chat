@@ -204,8 +204,18 @@ PROJECT_STRUCTURE = {
                 "__files__": [
                     "admin-sidebar.tsx",
                     "user-sidebar.tsx",
+
+                    "sidebar-desktop.tsx",
+                    "sidebar-mobile.tsx",
+
+                    "sidebar-button.tsx",
+                    "sidebar-button-sheet.tsx",
+
+                    "profile-drawer.tsx",
+
                     "dashboard-layout.tsx",
                     "user-layout.tsx",
+
                     "top-navbar.tsx"
                 ]
             },
