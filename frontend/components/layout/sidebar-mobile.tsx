@@ -1,93 +1,72 @@
-'use client';
+"use client";
 
-import { SidebarItems } from '@/types';
+import { GraduationCap, Menu } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetHeader,
+  SheetTitle,
   SheetTrigger,
-} from './ui/sheet';
-import { Button } from './ui/button';
-import { LogOut, Menu, MoreHorizontal, Settings, X } from 'lucide-react';
-import Link from 'next/link';
-import { SidebarButtonSheet as SidebarButton } from './sidebar-button';
-import { usePathname } from 'next/navigation';
-import { Separator } from './ui/separator';
-import { Drawer, DrawerContent, DrawerTrigger } from './ui/drawer';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+} from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
+import type { SidebarSection, UserRole } from "@/types";
 
-interface SidebarMobileProps {
-  sidebarItems: SidebarItems;
-}
+import { ProfileDrawer } from "./profile-drawer";
+import { SidebarButtonSheet } from "./sidebar-button-sheet";
 
-export function SidebarMobile(props: SidebarMobileProps) {
-  const pathname = usePathname();
+type SidebarMobileProps = {
+  role: UserRole;
+  sections: SidebarSection[];
+};
 
+export function SidebarMobile({ role, sections }: SidebarMobileProps) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button size='icon' variant='ghost' className='fixed top-3 left-3'>
-          <Menu size={20} />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="fixed left-4 top-4 z-50 sm:hidden"
+          aria-label="Ouvrir le menu"
+        >
+          <Menu className="size-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side='left' className='px-3 py-4' hideClose>
-        <SheetHeader className='flex flex-row justify-between items-center space-y-0'>
-          <span className='text-lg font-semibold text-foreground mx-3'>
-            Twitter
-          </span>
-          <SheetClose asChild>
-            <Button className='h-7 w-7 p-0' variant='ghost'>
-              <X size={15} />
-            </Button>
-          </SheetClose>
+      <SheetContent side="left" className="w-[300px] p-0" showCloseButton>
+        <SheetHeader className="border-b px-4 py-4 text-left">
+          <SheetTitle className="flex items-center gap-3">
+            <span className="grid size-9 place-items-center rounded-lg bg-foreground text-background">
+              <GraduationCap className="size-5" />
+            </span>
+            <span>
+              <span className="block text-sm font-semibold">Assistant TDE</span>
+              <span className="block text-xs capitalize text-muted-foreground">{role}</span>
+            </span>
+          </SheetTitle>
         </SheetHeader>
-        <div className='h-full'>
-          <div className='mt-5 flex flex-col w-full gap-1'>
-            {props.sidebarItems.links.map((link, idx) => (
-              <Link key={idx} href={link.href}>
-                <SidebarButton
-                  variant={pathname === link.href ? 'secondary' : 'ghost'}
-                  icon={link.icon}
-                  className='w-full'
-                >
-                  {link.label}
-                </SidebarButton>
-              </Link>
-            ))}
-            {props.sidebarItems.extras}
-          </div>
-          <div className='absolute w-full bottom-4 px-1 left-0'>
-            <Separator className='absolute -top-3 left-0 w-full' />
-            <Drawer>
-              <DrawerTrigger asChild>
-                <Button variant='ghost' className='w-full justify-start'>
-                  <div className='flex justify-between items-center w-full'>
-                    <div className='flex gap-2'>
-                      <Avatar className='h-5 w-5'>
-                        <AvatarImage src='https://github.com/max-programming.png' />
-                        <AvatarFallback>Max Programming</AvatarFallback>
-                      </Avatar>
-                      <span>Max Programming</span>
-                    </div>
-                    <MoreHorizontal size={20} />
-                  </div>
-                </Button>
-              </DrawerTrigger>
-              <DrawerContent className='mb-2 p-2'>
-                <div className='flex flex-col space-y-2 mt-2'>
-                  <Link href='/'>
-                    <SidebarButton size='sm' icon={Settings} className='w-full'>
-                      Account Settings
-                    </SidebarButton>
-                  </Link>
-                  <SidebarButton size='sm' icon={LogOut} className='w-full'>
-                    Log Out
-                  </SidebarButton>
-                </div>
-              </DrawerContent>
-            </Drawer>
-          </div>
+
+        <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
+          {sections.map((section, sectionIndex) => (
+            <div key={section.title ?? sectionIndex} className="space-y-2">
+              {section.title && (
+                <p className="px-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  {section.title}
+                </p>
+              )}
+              <div className="space-y-1">
+                {section.items.map((item) => (
+                  <SidebarButtonSheet key={item.href} item={item} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </nav>
+
+        <div className="mt-auto p-3">
+          <Separator className="mb-3" />
+          <ProfileDrawer />
         </div>
       </SheetContent>
     </Sheet>

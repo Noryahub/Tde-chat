@@ -1,34 +1,51 @@
-import { LucideIcon } from 'lucide-react';
-import { Button, ButtonProps } from './ui/button';
-import { cn } from '@/lib/utils';
-import { SheetClose } from './ui/sheet';
+"use client";
 
-interface SidebarButtonProps extends ButtonProps {
-  icon?: LucideIcon;
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import type { SidebarItem } from "@/types";
+
+type SidebarButtonProps = {
+  item: SidebarItem;
+  collapsed?: boolean;
+  onNavigate?: () => void;
+};
+
+function isActiveRoute(pathname: string, href: string) {
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function SidebarButton({
-  icon: Icon,
-  className,
-  children,
-  ...props
-}: SidebarButtonProps) {
+export function SidebarButton({ item, collapsed = false, onNavigate }: SidebarButtonProps) {
+  const pathname = usePathname();
+  const Icon = item.icon;
+  const active = isActiveRoute(pathname, item.href);
+
   return (
     <Button
-      variant='ghost'
-      className={cn('gap-2 justify-start', className)}
-      {...props}
+      asChild
+      variant={active ? "secondary" : "ghost"}
+      className={cn(
+        "h-10 w-full justify-start gap-3 rounded-lg px-3 text-muted-foreground transition-colors",
+        active && "bg-foreground text-background hover:bg-foreground/90 hover:text-background",
+        collapsed && "justify-center px-0"
+      )}
+      title={collapsed ? item.title : undefined}
     >
-      {Icon && <Icon size={20} />}
-      <span>{children}</span>
+      <Link href={item.href} onClick={onNavigate}>
+        <Icon className="size-4" />
+        {!collapsed && (
+          <>
+            <span className="min-w-0 flex-1 truncate text-left">{item.title}</span>
+            {item.badge && (
+              <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+                {item.badge}
+              </span>
+            )}
+          </>
+        )}
+      </Link>
     </Button>
-  );
-}
-
-export function SidebarButtonSheet(props: SidebarButtonProps) {
-  return (
-    <SheetClose asChild>
-      <SidebarButton {...props} />
-    </SheetClose>
   );
 }

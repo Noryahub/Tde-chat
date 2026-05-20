@@ -1,73 +1,77 @@
-'use client';
+"use client";
 
-import { SidebarButton } from './sidebar-button';
-import { SidebarItems } from '@/types';
-import Link from 'next/link';
-import { Separator } from './ui/separator';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { Button } from './ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { LogOut, MoreHorizontal, Settings } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { ChevronLeft, ChevronRight, GraduationCap } from "lucide-react";
 
-interface SidebarDesktopProps {
-  sidebarItems: SidebarItems;
-}
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import type { SidebarSection, UserRole } from "@/types";
 
-export function SidebarDesktop(props: SidebarDesktopProps) {
-  const pathname = usePathname();
+import { ProfileDrawer } from "./profile-drawer";
+import { SidebarButton } from "./sidebar-button";
 
+type SidebarDesktopProps = {
+  role: UserRole;
+  sections: SidebarSection[];
+  collapsed: boolean;
+  onCollapsedChange: (collapsed: boolean) => void;
+};
+
+export function SidebarDesktop({
+  role,
+  sections,
+  collapsed,
+  onCollapsedChange,
+}: SidebarDesktopProps) {
   return (
-    <aside className='w-[270px] max-w-xs h-screen fixed left-0 top-0 z-40 border-r'>
-      <div className='h-full px-3 py-4'>
-        <h3 className='mx-3 text-lg font-semibold text-foreground'>Twitter</h3>
-        <div className='mt-5'>
-          <div className='flex flex-col gap-1 w-full'>
-            {props.sidebarItems.links.map((link, index) => (
-              <Link key={index} href={link.href}>
-                <SidebarButton
-                  variant={pathname === link.href ? 'secondary' : 'ghost'}
-                  icon={link.icon}
-                  className='w-full'
-                >
-                  {link.label}
-                </SidebarButton>
-              </Link>
-            ))}
-            {props.sidebarItems.extras}
-          </div>
-          <div className='absolute left-0 bottom-3 w-full px-3'>
-            <Separator className='absolute -top-3 left-0 w-full' />
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant='ghost' className='w-full justify-start'>
-                  <div className='flex justify-between items-center w-full'>
-                    <div className='flex gap-2'>
-                      <Avatar className='h-5 w-5'>
-                        <AvatarImage src='https://github.com/max-programming.png' />
-                        <AvatarFallback>Max Programming</AvatarFallback>
-                      </Avatar>
-                      <span>Max Programming</span>
-                    </div>
-                    <MoreHorizontal size={20} />
-                  </div>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className='mb-2 w-56 p-3 rounded-[1rem]'>
-                <div className='space-y-1'>
-                  <Link href='/'>
-                    <SidebarButton size='sm' icon={Settings} className='w-full'>
-                      Account Settings
-                    </SidebarButton>
-                  </Link>
-                  <SidebarButton size='sm' icon={LogOut} className='w-full'>
-                    Log Out
-                  </SidebarButton>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </div>
+    <aside
+      className={cn(
+        "fixed inset-y-0 left-0 z-40 hidden border-r border-border/80 bg-sidebar/95 backdrop-blur supports-[backdrop-filter]:bg-sidebar/80 sm:flex sm:flex-col",
+        "transition-[width] duration-300 ease-in-out",
+        collapsed ? "w-[76px]" : "w-[280px]"
+      )}
+    >
+      <div className="flex h-16 items-center gap-3 px-4">
+        <div className="grid size-9 place-items-center rounded-lg bg-foreground text-background">
+          <GraduationCap className="size-5" />
         </div>
+        {!collapsed && (
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold">Assistant TDE</p>
+            <p className="truncate text-xs capitalize text-muted-foreground">{role}</p>
+          </div>
+        )}
+      </div>
+
+      <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
+        {sections.map((section, sectionIndex) => (
+          <div key={section.title ?? sectionIndex} className="space-y-2">
+            {section.title && !collapsed && (
+              <p className="px-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                {section.title}
+              </p>
+            )}
+            <div className="space-y-1">
+              {section.items.map((item) => (
+                <SidebarButton key={item.href} item={item} collapsed={collapsed} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </nav>
+
+      <div className="p-3">
+        <Separator className="mb-3" />
+        <ProfileDrawer collapsed={collapsed} />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute -right-4 top-20 size-8 rounded-full border bg-background shadow-sm"
+          onClick={() => onCollapsedChange(!collapsed)}
+          aria-label={collapsed ? "Etendre le menu" : "Reduire le menu"}
+        >
+          {collapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
+        </Button>
       </div>
     </aside>
   );
