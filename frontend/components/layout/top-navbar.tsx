@@ -1,45 +1,145 @@
 "use client";
 
-import { Bell, Search } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { Menu } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/use-auth";
+import { usePathname } from "next/navigation";
 
 const titles: Record<string, string> = {
   "/admin/dashboard": "Dashboard admin",
   "/admin/analytics": "Analytics",
   "/admin/users": "Utilisateurs",
   "/admin/signalements": "Signalements",
-  "/admin/settings": "Parametres",
+  "/admin/settings": "Paramètres",
+
   "/user/chat": "Chat TDE",
   "/user/history": "Historique",
   "/user/profile": "Profil",
+  "/user/settings": "Paramètres",
 };
 
-export function TopNavbar() {
+type TopNavbarProps = {
+  onMenuClick?: () => void;
+};
+
+export function TopNavbar({
+  onMenuClick,
+}: TopNavbarProps) {
+
   const pathname = usePathname();
-  const { user } = useAuth();
+
+  const user = {
+    nom: "Betsalel",
+  };
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border/80 bg-background/80 backdrop-blur">
-      <div className="flex h-16 items-center gap-3 px-4 sm:px-6">
-        <div className="ml-11 min-w-0 flex-1 sm:ml-0">
-          <p className="truncate text-sm font-semibold">
-            {titles[pathname] ?? "Assistant TDE"}
+
+    <header
+      className="
+        sticky
+        top-0
+        z-30
+        flex
+        h-[72px]
+        items-center
+        justify-between
+        border-b
+        border-[#ececec]
+        bg-white
+        px-5
+        lg:px-8
+      "
+    >
+
+      {/* ====================================== */}
+      {/* LEFT */}
+      {/* ====================================== */}
+
+      <div className="flex items-center gap-4">
+
+        {/* MOBILE BUTTON */}
+
+        <button
+          onClick={onMenuClick}
+          className="
+            flex
+            h-10
+            w-10
+            items-center
+            justify-center
+            rounded-xl
+            border
+            border-[#ececec]
+            bg-white
+            transition-colors
+            hover:bg-[#f5f5f5]
+            lg:hidden
+          "
+        >
+
+          <Menu className="h-5 w-5 text-[#374151]" />
+
+        </button>
+
+        {/* TITLE */}
+
+        <div>
+
+          <h1
+            className="
+              text-[18px]
+              font-semibold
+              text-[#111827]
+            "
+          >
+
+          </h1>
+
+          <p
+            className="
+              text-sm
+              text-[#6b7280]
+            "
+          >
+            Connecté en tant qu'utilisateur
           </p>
-          <p className="truncate text-xs text-muted-foreground">
-            Connecte en tant que {user?.role ?? "utilisateur"}
-          </p>
+
         </div>
-        <div className="hidden h-9 min-w-[240px] items-center gap-2 rounded-lg border bg-muted/40 px-3 text-sm text-muted-foreground md:flex">
-          <Search className="size-4" />
-          <span>Rechercher...</span>
-        </div>
-        <Button variant="outline" size="icon" aria-label="Notifications">
-          <Bell className="size-4" />
-        </Button>
+
       </div>
+
+      {/* ====================================== */}
+      {/* USER AVATAR */}
+      {/* ====================================== */}
+
+      <button
+        className="
+          flex
+          h-11
+          w-11
+          items-center
+          justify-center
+          overflow-hidden
+          rounded-full
+          border
+          border-[#e5e7eb]
+          bg-[#f9fafb]
+          transition-all
+          hover:scale-105
+        "
+      >
+
+        <img
+          src={`https://ui-avatars.com/api/?name=${user.nom}&background=1E8E6A&color=fff`}
+          alt="avatar"
+          className="
+            h-full
+            w-full
+            object-cover
+          "
+        />
+
+      </button>
+
     </header>
   );
 }
