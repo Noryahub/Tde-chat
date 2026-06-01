@@ -24,21 +24,21 @@ export default function ChatPanel() {
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
 
-  const [messages, setMessages] = useState<Message[]>([]);
-  useEffect(() => {
+const [messages, setMessages] =
+  useState<Message[]>(() => {
 
-  const savedMessages =
-    localStorage.getItem(STORAGE_KEY);
+    if (typeof window === "undefined") {
+      return [];
+    }
 
-  if (savedMessages) {
+    const savedMessages =
+      localStorage.getItem(STORAGE_KEY);
 
-    setMessages(
-      JSON.parse(savedMessages)
-    );
+    if (savedMessages) {
+      return JSON.parse(savedMessages);
+    }
 
-  } else {
-
-    setMessages([
+    return [
       {
         id: crypto.randomUUID(),
         role: "assistant",
@@ -46,23 +46,29 @@ export default function ChatPanel() {
           "Bonjour ! Je suis l'assistant TDE. Comment puis-je vous aider ?",
         time: "09:30",
       },
-    ]);
+    ];
 
-  }
-
-}, []);
+  });
 useEffect(() => {
 
-  if (messages.length > 0) {
+  let savedSession =
+    localStorage.getItem(SESSION_KEY);
+
+  if (!savedSession) {
+
+    savedSession =
+      `session_${crypto.randomUUID()}`;
 
     localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(messages)
+      SESSION_KEY,
+      savedSession
     );
 
   }
 
-}, [messages]);
+  setSessionId(savedSession);
+
+}, []);
   const messagesEndRef =
     useRef<HTMLDivElement | null>(null);
 
@@ -185,7 +191,8 @@ useEffect(() => {
 
     }
   }
-
+  console.log("messages", messages);
+  console.log("session", sessionId);
   return (
 
     <main
