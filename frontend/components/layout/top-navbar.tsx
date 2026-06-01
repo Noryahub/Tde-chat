@@ -1,21 +1,6 @@
 "use client";
 
-import { Menu } from "lucide-react";
-
-import { usePathname } from "next/navigation";
-
-const titles: Record<string, string> = {
-  "/admin/dashboard": "Dashboard admin",
-  "/admin/analytics": "Analytics",
-  "/admin/users": "Utilisateurs",
-  "/admin/signalements": "Signalements",
-  "/admin/settings": "Paramètres",
-
-  "/user/chat": "Chat TDE",
-  "/user/history": "Historique",
-  "/user/profile": "Profil",
-  "/user/settings": "Paramètres",
-};
+import { Menu, Bot } from "lucide-react";
 
 type TopNavbarProps = {
   onMenuClick?: () => void;
@@ -24,8 +9,6 @@ type TopNavbarProps = {
 export function TopNavbar({
   onMenuClick,
 }: TopNavbarProps) {
-
-  const pathname = usePathname();
 
   const user = {
     nom: "Betsalel",
@@ -39,14 +22,15 @@ export function TopNavbar({
         top-0
         z-30
         flex
-        h-[72px]
+        h-[78px]
         items-center
         justify-between
         border-b
-        border-[#ececec]
-        bg-white
-        px-5
-        lg:px-8
+        border-[#e8ecef]
+        bg-white/95
+        px-4
+        backdrop-blur
+        md:px-6
       "
     >
 
@@ -54,7 +38,7 @@ export function TopNavbar({
       {/* LEFT */}
       {/* ====================================== */}
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
 
         {/* MOBILE BUTTON */}
 
@@ -80,28 +64,69 @@ export function TopNavbar({
 
         </button>
 
-        {/* TITLE */}
+        {/* BOT ICON */}
 
-        <div>
+        <div
+          className="
+            flex
+            h-12
+            w-12
+            shrink-0
+            items-center
+            justify-center
+            rounded-full
+            bg-[#e8f7f1]
+            text-[#1D9E75]
+          "
+        >
+
+          <Bot className="h-5 w-5" />
+
+        </div>
+
+        {/* TEXT */}
+
+        <div className="leading-tight">
 
           <h1
             className="
-              text-[18px]
+              text-[14px]
               font-semibold
               text-[#111827]
             "
           >
-
+            votre assistant
           </h1>
 
-          <p
+          <div
             className="
-              text-sm
-              text-[#6b7280]
+              mt-1
+              flex
+              items-center
+              gap-1.5
             "
           >
-            Connecté en tant qu'utilisateur
-          </p>
+
+            <span
+              className="
+                h-2
+                w-2
+                rounded-full
+                bg-[#1D9E75]
+              "
+            />
+
+            <p
+              className="
+                text-[13px]
+                font-medium
+                text-[#1D9E75]
+              "
+            >
+              En ligne
+            </p>
+
+          </div>
 
         </div>
 
@@ -121,16 +146,18 @@ export function TopNavbar({
           overflow-hidden
           rounded-full
           border
-          border-[#e5e7eb]
-          bg-[#f9fafb]
+          border-[#dfe5ea]
+          bg-white
+          shadow-sm
           transition-all
+          duration-200
           hover:scale-105
         "
       >
 
         <img
-          src={`https://ui-avatars.com/api/?name=${user.nom}&background=1E8E6A&color=fff`}
-          alt="avatar"
+          src={`https://ui-avatars.com/api/?name=${user.nom}&background=1D9E75&color=ffffff`}
+          alt="avatar utilisateur"
           className="
             h-full
             w-full

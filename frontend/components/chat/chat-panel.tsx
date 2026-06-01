@@ -1,7 +1,12 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { SendHorizontal } from "lucide-react";
+
+import {
+  Bot,
+  SendHorizontal,
+  User,
+} from "lucide-react";
 
 import { sendMessage } from "@/services/chat-service";
 
@@ -11,25 +16,77 @@ type Message = {
   content: string;
   time: string;
 };
+const STORAGE_KEY = "tde_chat_messages";
+const SESSION_KEY = "tde_chat_session";
 
 export default function ChatPanel() {
 
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: crypto.randomUUID(),
-      role: "assistant",
-      content:
-        "Bonjour 👋 Je suis l'assistant TDE. Comment puis-je vous aider ?",
-      time: "",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  useEffect(() => {
 
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const savedMessages =
+    localStorage.getItem(STORAGE_KEY);
 
-  const sessionId = "session_1";
+  if (savedMessages) {
+
+    setMessages(
+      JSON.parse(savedMessages)
+    );
+
+  } else {
+
+    setMessages([
+      {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content:
+          "Bonjour ! Je suis l'assistant TDE. Comment puis-je vous aider ?",
+        time: "09:30",
+      },
+    ]);
+
+  }
+
+}, []);
+useEffect(() => {
+
+  if (messages.length > 0) {
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(messages)
+    );
+
+  }
+
+}, [messages]);
+  const messagesEndRef =
+    useRef<HTMLDivElement | null>(null);
+
+  const [sessionId, setSessionId] = useState("");
+  useEffect(() => {
+
+  let savedSession =
+    localStorage.getItem(SESSION_KEY);
+
+  if (!savedSession) {
+
+    savedSession =
+      `session_${crypto.randomUUID()}`;
+
+    localStorage.setItem(
+      SESSION_KEY,
+      savedSession
+    );
+
+  }
+
+  setSessionId(savedSession);
+
+}, []);
   const userId = "user_1";
 
   // =========================================
@@ -51,9 +108,10 @@ export default function ChatPanel() {
   async function handleSubmit(
     event: FormEvent<HTMLFormElement>
   ) {
-
     event.preventDefault();
-
+    if (!sessionId) {
+        return;
+    }
     const cleanedMessage = input.trim();
 
     if (!cleanedMessage || isSending) {
@@ -64,10 +122,6 @@ export default function ChatPanel() {
       hour: "2-digit",
       minute: "2-digit",
     });
-
-    // =========================================
-    // USER MESSAGE
-    // =========================================
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
@@ -137,323 +191,469 @@ export default function ChatPanel() {
     <main
       className="
         flex
-        h-screen
-        items-center
-        justify-center
-        bg-[#e5e5e5]
-        p-6
+        h-[calc(100vh-80px)]
+        flex-col
       "
     >
 
-      <section
+      {/* ========================================= */}
+      {/* CHAT AREA */}
+      {/* ========================================= */}
+
+      <div
         className="
-          flex
-          h-[92vh]
-          w-full
-          max-w-5xl
-          flex-col
-          overflow-hidden
-          rounded-[28px]
-          border
-          border-black/10
-          bg-[#f3f3f3]
-          shadow-2xl
+          flex-1
+          overflow-y-auto
+          px-3
+          py-8
+          sm:px-6
+          lg:px-10
+          [scrollbar-width:none]
+          [-ms-overflow-style:none]
+          [&::-webkit-scrollbar]:hidden
         "
       >
 
-        {/* ========================================= */}
-        {/* HEADER */}
-        {/* ========================================= */}
-
         <div
           className="
+            mx-auto
             flex
-            items-center
-            gap-4
-            bg-[#1D9E75]
-            px-6
-            py-5
+            w-full
+            max-w-4xl
+            flex-col
+            gap-8
           "
         >
 
-          <div
-            className="
-              flex
-              h-12
-              w-12
-              items-center
-              justify-center
-              rounded-full
-              bg-white/20
-              text-lg
-            "
-          >
-            😊
-          </div>
+          {messages.map((message) => {
 
-          <div>
+            const isUser =
+              message.role === "user";
 
-            <h1 className="text-lg font-semibold text-white">
-              Assistant
-            </h1>
+            return (
 
-            <div
-              className="
-                mt-1
-                flex
-                items-center
-                gap-2
-                text-sm
-                text-white/80
-              "
-            >
-
-              <span
-                className="
-                  h-2
-                  w-2
-                  rounded-full
-                  bg-[#b8f5d6]
-                "
-              />
-
-              En ligne
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* ========================================= */}
-        {/* CHAT AREA */}
-        {/* ========================================= */}
-
-        <div
-          className="
-            flex-1
-            overflow-y-auto
-            px-8
-            py-6
-          "
-        >
-
-          <div className="flex flex-col gap-6">
-
-            {messages.map((message) => {
-
-              const isUser =
-                message.role === "user";
-
-              return (
-
-                <div
-                  key={message.id}
-                  className={`flex ${
+              <div
+                key={message.id}
+                className={`
+                  flex
+                  w-full
+                  items-end
+                  gap-3
+                  ${
                     isUser
                       ? "justify-end"
                       : "justify-start"
-                  }`}
+                  }
+                `}
+              >
+
+                {/* ========================================= */}
+                {/* ASSISTANT AVATAR */}
+                {/* ========================================= */}
+
+                {!isUser && (
+
+                  <div
+                    className="
+                      hidden
+                      h-10
+                      w-10
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-[#e8f7f1]
+                      text-[#1FA97A]
+                      sm:flex
+                    "
+                  >
+
+                    <Bot className="h-5 w-5" />
+
+                  </div>
+                )}
+
+                {/* ========================================= */}
+                {/* MESSAGE */}
+                {/* ========================================= */}
+
+                <div
+                  className={`
+                    flex
+                    max-w-[78%]
+                    flex-col
+                    ${
+                      isUser
+                        ? "items-end"
+                        : "items-start"
+                    }
+                  `}
                 >
 
                   <div
                     className={`
-                      max-w-[70%]
-                      rounded-[20px]
+                      relative
+                      rounded-[22px]
                       px-5
-                      py-4
-                      text-sm
-                      shadow-sm
+                      py-3.5
+                      shadow-[0_2px_8px_rgba(0,0,0,0.04)]
+
                       ${
                         isUser
-                          ? "bg-[#1D9E75] text-white"
-                          : "border border-black/10 bg-white text-black"
+                          ? `
+                            bg-[#1FA97A]
+                            text-white
+
+                            after:absolute
+                            after:-right-1
+                            after:bottom-3
+                            after:h-4
+                            after:w-4
+                            after:rotate-45
+                            after:rounded-[3px]
+                            after:bg-[#1FA97A]
+                          `
+                          : `
+                            border
+                            border-[#eceff3]
+                            bg-white
+                            text-[#111827]
+
+                            after:absolute
+                            after:-left-1
+                            after:bottom-3
+                            after:h-4
+                            after:w-4
+                            after:rotate-45
+                            after:rounded-[3px]
+                            after:border-l
+                            after:border-b
+                            after:border-[#eceff3]
+                            after:bg-white
+                          `
                       }
                     `}
                   >
 
-                    <p className="leading-relaxed whitespace-pre-wrap break-words">
+                    <p
+                      className="
+                        whitespace-pre-wrap
+                        break-words
+                        text-[15px]
+                        leading-relaxed
+                      "
+                    >
                       {message.content}
                     </p>
 
-                    <div
-                      className={`
-                        mt-2
-                        text-right
-                        text-[11px]
-                        ${
-                          isUser
-                            ? "text-white/70"
-                            : "text-neutral-400"
-                        }
-                      `}
-                    >
-                      {message.time}
-                    </div>
-
                   </div>
+
+                  <span
+                    className="
+                      mt-1.5
+                      px-2
+                      text-[11px]
+                      text-[#9ca3af]
+                    "
+                  >
+                    {message.time}
+                  </span>
 
                 </div>
-              );
-            })}
 
-            {/* ========================================= */}
-            {/* TYPING */}
-            {/* ========================================= */}
+                {/* ========================================= */}
+                {/* USER AVATAR */}
+                {/* ========================================= */}
 
-            {isSending && (
+                {isUser && (
 
-              <div className="flex justify-start">
+                  <div
+                    className="
+                      hidden
+                      h-10
+                      w-10
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-[#e8f7f1]
+                      text-[#1FA97A]
+                      sm:flex
+                    "
+                  >
 
-                <div
-                  className="
-                    rounded-[20px]
-                    bg-white
-                    px-4
-                    py-3
-                    shadow-sm
-                  "
-                >
-
-                  <div className="flex gap-1">
-
-                    <span
-                      className="
-                        h-2
-                        w-2
-                        animate-bounce
-                        rounded-full
-                        bg-[#1D9E75]
-                      "
-                    />
-
-                    <span
-                      className="
-                        h-2
-                        w-2
-                        animate-bounce
-                        rounded-full
-                        bg-[#1D9E75]
-                        [animation-delay:0.2s]
-                      "
-                    />
-
-                    <span
-                      className="
-                        h-2
-                        w-2
-                        animate-bounce
-                        rounded-full
-                        bg-[#1D9E75]
-                        [animation-delay:0.4s]
-                      "
-                    />
+                    <User className="h-5 w-5" />
 
                   </div>
+                )}
+
+              </div>
+            );
+          })}
+
+          {/* ========================================= */}
+          {/* TYPING */}
+          {/* ========================================= */}
+
+          {isSending && (
+
+            <div
+              className="
+                flex
+                items-end
+                gap-3
+              "
+            >
+
+              <div
+                className="
+                  hidden
+                  h-10
+                  w-10
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-[#e8f7f1]
+                  text-[#1FA97A]
+                  sm:flex
+                "
+              >
+
+                <Bot className="h-5 w-5" />
+
+              </div>
+
+              <div
+                className="
+                  relative
+                  rounded-[22px]
+                  border
+                  border-[#eceff3]
+                  bg-white
+                  px-5
+                  py-3.5
+                  shadow-[0_2px_8px_rgba(0,0,0,0.04)]
+
+                  after:absolute
+                  after:-left-1
+                  after:bottom-3
+                  after:h-4
+                  after:w-4
+                  after:rotate-45
+                  after:rounded-[3px]
+                  after:border-l
+                  after:border-b
+                  after:border-[#eceff3]
+                  after:bg-white
+                "
+              >
+
+                <div className="flex gap-1">
+
+                  <span
+                    className="
+                      h-2
+                      w-2
+                      animate-bounce
+                      rounded-full
+                      bg-[#1FA97A]
+                    "
+                  />
+
+                  <span
+                    className="
+                      h-2
+                      w-2
+                      animate-bounce
+                      rounded-full
+                      bg-[#1FA97A]
+                      [animation-delay:0.2s]
+                    "
+                  />
+
+                  <span
+                    className="
+                      h-2
+                      w-2
+                      animate-bounce
+                      rounded-full
+                      bg-[#1FA97A]
+                      [animation-delay:0.4s]
+                    "
+                  />
 
                 </div>
 
               </div>
-            )}
 
-            <div ref={messagesEndRef} />
+            </div>
+          )}
 
-          </div>
-
-        </div>
-
-        {/* ========================================= */}
-        {/* FOOTER */}
-        {/* ========================================= */}
-
-        <div
-          className="
-            border-t
-            border-black/10
-            bg-[#f7f7f7]
-            px-6
-            py-5
-          "
-        >
-
-          <form
-            onSubmit={handleSubmit}
-            className="
-              flex
-              items-center
-              gap-4
-            "
-          >
-
-            <input
-              value={input}
-              onChange={(event) =>
-                setInput(event.target.value)
-              }
-              placeholder="Écrivez votre message..."
-              className="
-                h-14
-                flex-1
-                rounded-full
-                border
-                border-black/10
-                bg-white
-                px-6
-                text-sm
-                outline-none
-                transition-all
-                focus:border-[#1D9E75]
-                focus:ring-4
-                focus:ring-[#1D9E75]/10
-              "
-            />
-
-            <button
-              type="submit"
-              disabled={
-                !input.trim() || isSending
-              }
-              className="
-                flex
-                h-14
-                items-center
-                justify-center
-                gap-2
-                rounded-full
-                bg-[#1D9E75]
-                px-8
-                text-sm
-                font-medium
-                text-white
-                transition-all
-                hover:bg-[#157a5b]
-                disabled:cursor-not-allowed
-                disabled:opacity-50
-              "
-            >
-
-              <SendHorizontal className="h-4 w-4" />
-
-              Envoyer
-
-            </button>
-
-          </form>
-
-          <div
-            className="
-              mt-4
-              text-center
-              text-[11px]
-              text-neutral-400
-            "
-          >
-            🔒 Chiffré de bout en bout
-          </div>
+          <div ref={messagesEndRef} />
 
         </div>
 
-      </section>
+      </div>
+
+      {/* ========================================= */}
+      {/* INPUT AREA */}
+      {/* ========================================= */}
+
+      {/* ========================================= */}
+{/* INPUT AREA */}
+{/* ========================================= */}
+
+<div
+  className="
+    sticky
+    bottom-0
+    z-20
+    px-3
+    pb-5
+    pt-3
+    sm:px-6
+    lg:px-10
+  "
+>
+
+  <div
+    className="
+      mx-auto
+      w-full
+      max-w-4xl
+    "
+  >
+
+    <form
+      onSubmit={handleSubmit}
+      className="
+          flex
+          items-end
+          gap-3
+          rounded-[30px]
+          border
+          border-[#e5e7eb]
+          bg-white/90
+          p-3
+          shadow-[0_8px_30px_rgba(0,0,0,0.06)]
+          backdrop-blur-xl
+          transition-all
+          duration-200
+
+          focus-within:border-[#1FA97A]
+          focus-within:shadow-[0_0_0_4px_rgba(31,169,122,0.12)]
+        "
+    >
+
+      {/* INPUT */}
+
+      <div className="flex flex-1 items-center">
+
+        <textarea
+                  value={input}
+                  onChange={(event) =>
+                    setInput(event.target.value)
+                  }
+
+                  onKeyDown={(event) => {
+
+                    if (
+                      event.key === "Enter" &&
+                      !event.shiftKey
+                    ) {
+
+                      event.preventDefault();
+
+                      if (
+                        input.trim() &&
+                        !isSending
+                      ) {
+
+                        handleSubmit(
+                          event as unknown as FormEvent<HTMLFormElement>
+                        );
+
+                      }
+
+                    }
+
+                  }}
+
+                  rows={1}
+                  placeholder="Posez votre question..."
+                  className="
+                    max-h-40
+                    min-h-[24px]
+                    flex-1
+                    resize-none
+                    bg-transparent
+                    px-2
+                    py-2
+                    text-[15px]
+                    leading-relaxed
+                    text-[#111827]
+                    outline-none
+                    placeholder:text-[#9ca3af]
+                    [scrollbar-width:none]
+                    [-ms-overflow-style:none]
+                    [&::-webkit-scrollbar]:hidden
+                  "
+         />
+
+      </div>
+
+      {/* BUTTON */}
+
+      <button
+        type="submit"
+        disabled={
+          !input.trim() || isSending
+        }
+        className="
+          flex
+          h-12
+          w-12
+          shrink-0
+          items-center
+          justify-center
+          rounded-full
+          bg-[#1FA97A]
+          text-white
+          shadow-[0_4px_14px_rgba(31,169,122,0.35)]
+          transition-all
+          duration-200
+          hover:scale-105
+          hover:bg-[#16956b]
+          active:scale-95
+          disabled:cursor-not-allowed
+          disabled:opacity-50
+        "
+      >
+
+        <SendHorizontal className="h-5 w-5" />
+
+      </button>
+
+    </form>
+
+    {/* FOOTER */}
+
+    <div
+      className="
+        mt-3
+        text-center
+        text-[11px]
+        text-[#b0b7c3]
+      "
+    >
+      🔒 Conversations sécurisées
+    </div>
+
+  </div>
+
+</div>
+
+
 
     </main>
   );
