@@ -2,93 +2,147 @@ const API_URL = "http://127.0.0.1:5000";
 
 type RequestOptions = {
   method?: string;
-  body?: BodyInit | null;
+  body?: unknown;
   headers?: HeadersInit;
 };
+
+function getToken(): string | null {
+
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const session =
+    localStorage.getItem(
+      "assistant-tde-session"
+    );
+
+  if (!session) {
+    return null;
+  }
+
+  try {
+
+    const parsed =
+      JSON.parse(session);
+
+    return parsed.token || null;
+
+  } catch {
+
+    return null;
+
+  }
+}
 
 async function request<T>(
   endpoint: string,
   options: RequestOptions = {}
 ): Promise<T> {
 
-  try {
+  const token = getToken();
 
-    console.log(
-      "FETCH URL :",
-      `${API_URL}${endpoint}`
-    );
+  let body: string | undefined;
 
-    console.log(
-      "FETCH BODY :",
-      options.body
-    );
+  if (options.body !== undefined) {
 
-    const response = await fetch(
-      `${API_URL}${endpoint}`,
-      {
-        method: options.method || "GET",
-
-        mode: "cors",
-
-        headers: {
-          "Content-Type": "application/json",
-          ...(options.headers || {}),
-        },
-
-        body: options.body,
-      }
-    );
-
-    console.log(
-      "STATUS :",
-      response.status
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `HTTP error ${response.status}`
-      );
-    }
-
-    return response.json();
-
-  } catch (error) {
-
-    console.error(
-      "FETCH ERROR :",
-      error
-    );
-
-    throw error;
+    body =
+      typeof options.body === "string"
+        ? options.body
+        : JSON.stringify(
+            options.body
+          );
   }
+
+  const response = await fetch(
+    `${API_URL}${endpoint}`,
+    {
+      method:
+        options.method || "GET",
+
+      mode: "cors",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+
+        ...(token
+          ? {
+              Authorization:
+                `Bearer ${token}`,
+            }
+          : {}),
+
+        ...(options.headers || {}),
+      },
+
+      body,
+    }
+  );
+
+  if (!response.ok) {
+
+    let errorMessage =
+      `HTTP ${response.status}`;
+
+    try {
+
+      const error =
+        await response.json();
+
+      errorMessage =
+        error.message ||
+        errorMessage;
+
+    } catch {}
+
+    throw new Error(
+      errorMessage
+    );
+  }
+
+  return response.json();
 }
 
-export function get<T>(endpoint: string) {
+export function get<T>(
+  endpoint: string
+) {
   return request<T>(endpoint);
 }
 
 export function post<T>(
   endpoint: string,
-  body?: BodyInit
+  body?: unknown
 ) {
-  return request<T>(endpoint, {
-    method: "POST",
-    body,
-  });
+  return request<T>(
+    endpoint,
+    {
+      method: "POST",
+      body,
+    }
+  );
 }
 
 export function patch<T>(
   endpoint: string,
-  body?: BodyInit
+  body?: unknown
 ) {
-  return request<T>(endpoint, {
-    method: "PATCH",
-    body,
-  });
+  return request<T>(
+    endpoint,
+    {
+      method: "PATCH",
+      body,
+    }
+  );
 }
 
-export function del<T>(endpoint: string) {
-  return request<T>(endpoint, {
-    method: "DELETE",
-  });
+export function del<T>(
+  endpoint: string
+) {
+  return request<T>(
+    endpoint,
+    {
+      method: "DELETE",
+    }
+  );
 }

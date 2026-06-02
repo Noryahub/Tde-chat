@@ -2,84 +2,116 @@ from backend.app.database.db import get_db_connection
 
 
 def get_user_history(user_id):
+
     conn = get_db_connection()
-    cursor = conn.cursor()
+
+    cursor = conn.cursor(
+        dictionary=True
+    )
 
     try:
+
         query = """
         SELECT
-            user_message,
-            bot_response,
-            predicted_intent,
-            confidence_score,
-            orientation_service,
-            localisation,
-            probleme,
-            created_at
-        FROM conversations
-        WHERE user_id = %s
-        ORDER BY created_at DESC
+            c.id,
+            c.session_id,
+            c.predicted_intent,
+            c.confidence_score,
+            c.orientation_service,
+            c.localisation,
+            c.probleme,
+            c.created_at
+        FROM conversations c
+        WHERE c.user_id = %s
+        ORDER BY c.created_at DESC
         """
-        cursor.execute(query, (user_id,))
-        rows = cursor.fetchall()
 
-        history = []
-        for row in rows:
-            history.append({
-                "user_message": row[0],
-                "bot_response": row[1],
-                "predicted_intent": row[2],
-                "confidence_score": row[3],
-                "orientation_service": row[4],
-                "localisation": row[5],
-                "probleme": row[6],
-                "created_at": row[7],
-            })
-        return history
+        cursor.execute(
+            query,
+            (user_id,)
+        )
 
-    finally:
-        cursor.close()
-        conn.close()
+        conversations = cursor.fetchall()
 
+        for conversation in conversations:
 
-def get_session_history(session_id, limit=5):
-    conn = get_db_connection()
-    cursor = conn.cursor()
+            cursor.execute(
+                """
+                SELECT
+                    role,
+                    content,
+                    created_at
+                FROM messages
+                WHERE conversation_id = %s
+                ORDER BY created_at ASC
+                """,
+                (conversation["id"],)
+            )
 
-    try:
-        query = """
-        SELECT
-            user_message,
-            bot_response,
-            predicted_intent,
-            confidence_score
-        FROM conversations
-        WHERE session_id = %s
-        ORDER BY created_at DESC
-        LIMIT %s
-        """
-        cursor.execute(query, (session_id, limit))
-        rows = cursor.fetchall()
+            conversation["messages"] = (
+                cursor.fetchall()
+            )
 
-        history = []
-        for row in reversed(rows):
-            history.append({
-                "user_message": row[0],
-                "bot_response": row[1],
-                "intent": row[2],
-                "confidence": row[3],
-            })
-        return history
+        return conversations
 
     except Exception as e:
-        print("Erreur récupération historique session :", e)
+
+        print(
+            "Erreur récupération historique utilisateur :",
+            e
+        )
+
         return []
 
     finally:
+
         cursor.close()
         conn.close()
+def get_session_history(
+    session_id,
+    limit=10
+):
 
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
 
+    try:
+
+        query = """
+        SELECT
+            m.role,
+            m.content,
+            m.created_at
+        FROM messages m
+        JOIN conversations c
+            ON m.conversation_id = c.id
+        WHERE c.session_id = %s
+        ORDER BY m.created_at DESC
+        LIMIT %s
+        """
+
+        cursor.execute(
+            query,
+            (session_id, limit)
+        )
+
+        rows = cursor.fetchall()
+
+        return list(reversed(rows))
+
+    except Exception as e:
+
+        print(
+            "Erreur récupération historique session :",
+            e
+        )
+
+        return []
+
+    finally:
+
+        cursor.close()
+        conn.close()
 def save_conversation(
     user_id,
     session_id,
@@ -91,7 +123,7 @@ def save_conversation(
     localisation=None,
     probleme=None
 ):
-    #Ne pas enregistrer les followups — pas de valeur analytique
+
     if intent in ("followup", "fallback"):
         return
 
@@ -99,37 +131,114 @@ def save_conversation(
     cursor = conn.cursor()
 
     try:
-        query = """
-        INSERT INTO conversations (
-            user_id,
-            session_id,
-            user_message,
-            bot_response,
-            predicted_intent,
-            confidence_score,
-            orientation_service,
-            localisation,
-            probleme
-        )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        values = (
-            user_id,
-            session_id,
-            user_message,
-            bot_response,
-            intent,
-            confidence,
-            service,
-            localisation,
-            probleme
-        )
-        cursor.execute(query, values)
-        conv_id = cursor.lastrowid
 
-        # Créer un signalement si problème détecté
-        if intent == "signaler_probleme" and (localisation or probleme):
-            cursor.execute("""
+        # Recherche conversation existante
+        cursor.execute(
+            """
+            SELECT id
+            FROM conversations
+            WHERE session_id = %s
+            """,
+            (session_id,)
+        )
+
+        row = cursor.fetchone()
+
+        if row:
+
+            conversation_id = row[0]
+
+            cursor.execute(
+                """
+                UPDATE conversations
+                SET
+                    predicted_intent = %s,
+                    confidence_score = %s,
+                    orientation_service = %s,
+                    localisation = %s,
+                    probleme = %s
+                WHERE id = %s
+                """,
+                (
+                    intent,
+                    confidence,
+                    service,
+                    localisation,
+                    probleme,
+                    conversation_id
+                )
+            )
+
+        else:
+
+            cursor.execute(
+                """
+                INSERT INTO conversations (
+                    user_id,
+                    session_id,
+                    predicted_intent,
+                    confidence_score,
+                    orientation_service,
+                    localisation,
+                    probleme
+                )
+                VALUES (%s,%s,%s,%s,%s,%s,%s)
+                """,
+                (
+                    user_id,
+                    session_id,
+                    intent,
+                    confidence,
+                    service,
+                    localisation,
+                    probleme
+                )
+            )
+
+            conversation_id = cursor.lastrowid
+
+        # Message utilisateur
+        cursor.execute(
+            """
+            INSERT INTO messages (
+                conversation_id,
+                role,
+                content
+            )
+            VALUES (%s,%s,%s)
+            """,
+            (
+                conversation_id,
+                "user",
+                user_message
+            )
+        )
+
+        # Réponse assistant
+        cursor.execute(
+            """
+            INSERT INTO messages (
+                conversation_id,
+                role,
+                content
+            )
+            VALUES (%s,%s,%s)
+            """,
+            (
+                conversation_id,
+                "assistant",
+                bot_response
+            )
+        )
+
+        # Création d'un signalement
+        if (
+            intent == "signaler_probleme"
+            and (localisation or probleme)
+        ):
+
+            cursor.execute(
+                """
                 INSERT INTO signalements (
                     conversation_id,
                     user_id,
@@ -139,19 +248,33 @@ def save_conversation(
                     intent,
                     statut
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, 'nouveau')
-            """, (conv_id, user_id, session_id, localisation, probleme, intent))
+                VALUES (
+                    %s,%s,%s,%s,%s,%s,'nouveau'
+                )
+                """,
+                (
+                    conversation_id,
+                    user_id,
+                    session_id,
+                    localisation,
+                    probleme,
+                    intent
+                )
+            )
 
         conn.commit()
 
     except Exception as e:
-        print("Erreur lors de l'enregistrement :", e)
+
+        print(
+            "Erreur lors de l'enregistrement :",
+            e
+        )
 
     finally:
+
         cursor.close()
         conn.close()
-
-
 def get_signalements(statut=None, limit=50):
     """Récupère les signalements pour le dashboard."""
     conn = get_db_connection()

@@ -23,8 +23,7 @@ export default function ChatPanel() {
 
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
-
-const [messages, setMessages] =
+  const [messages, setMessages] =
   useState<Message[]>(() => {
 
     if (typeof window === "undefined") {
@@ -47,28 +46,17 @@ const [messages, setMessages] =
         time: "09:30",
       },
     ];
-
   });
+
 useEffect(() => {
 
-  let savedSession =
-    localStorage.getItem(SESSION_KEY);
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(messages)
+  );
 
-  if (!savedSession) {
+}, [messages]);
 
-    savedSession =
-      `session_${crypto.randomUUID()}`;
-
-    localStorage.setItem(
-      SESSION_KEY,
-      savedSession
-    );
-
-  }
-
-  setSessionId(savedSession);
-
-}, []);
   const messagesEndRef =
     useRef<HTMLDivElement | null>(null);
 
@@ -93,8 +81,37 @@ useEffect(() => {
   setSessionId(savedSession);
 
 }, []);
-  const userId = "user_1";
+  //const userId = localStorage.getItem("user_id");
+   const [userId, setUserId] =
+  useState<number | null>(null);
+  useEffect(() => {
 
+  async function loadUser() {
+
+    try {
+
+      const response =
+        await getCurrentUser();
+
+      setUserId(
+        Number(response.user.id)
+      );
+
+    } catch (error) {
+
+      console.log(
+        "Utilisateur anonyme"
+      );
+
+      setUserId(null);
+
+    }
+
+  }
+
+  loadUser();
+
+}, []);
   // =========================================
   // AUTO SCROLL
   // =========================================
@@ -149,7 +166,6 @@ useEffect(() => {
       const response = await sendMessage(
         cleanedMessage,
         sessionId,
-        userId
       );
 
       const botMessage: Message = {

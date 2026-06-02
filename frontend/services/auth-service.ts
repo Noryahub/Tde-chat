@@ -35,6 +35,22 @@ export async function register(
 }
 
 // =========================================
+// CURRENT USER
+// =========================================
+
+export async function getCurrentUser() {
+  return get("/auth/me");
+}
+
+// =========================================
+// LOGOUT
+// =========================================
+
+export function logout() {
+  localStorage.removeItem("token");
+}
+
+// =========================================
 // ADMIN — USERS
 // =========================================
 
@@ -48,9 +64,7 @@ export async function updateRole(
 ) {
   return patch(
     `/admin/users/${userId}/role`,
-    {
-      role,
-    }
+    { role }
   );
 }
 

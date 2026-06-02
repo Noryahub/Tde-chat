@@ -183,10 +183,58 @@ def create_user(
         conn.close()
 
 
+#
+def get_user_by_id(user_id):
+
+    conn = get_db_connection()
+
+    if not conn:
+        return None
+
+    cursor = conn.cursor(
+        dictionary=True
+    )
+
+    try:
+
+        query = """
+        SELECT
+            id,
+            nom,
+            email,
+            role,
+            is_active,
+            last_login,
+            created_at,
+            updated_at
+        FROM users
+        WHERE id = %s
+        """
+
+        cursor.execute(
+            query,
+            (user_id,)
+        )
+
+        return cursor.fetchone()
+
+    except Exception as e:
+
+        logging.error(
+            f"Erreur récupération utilisateur : {e}"
+        )
+
+        return None
+
+    finally:
+
+        cursor.close()
+        conn.close()
+
+
 # =========================================
 # AUTHENTIFICATION
 # =========================================
-
 def authenticate_user(email, password):
 
     if is_rate_limited(email):
@@ -202,24 +250,44 @@ def authenticate_user(email, password):
     if not conn:
         return None
 
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(
+        dictionary=True
+    )
 
     try:
 
         query = """
         SELECT
             id,
+            nom,
+            email,
             password,
-            role
+            role,
+            is_active
         FROM users
         WHERE email = %s
         """
 
-        cursor.execute(query, (email,))
+        cursor.execute(
+            query,
+            (email,)
+        )
 
         user = cursor.fetchone()
 
-        if user and check_password_hash(
+        if not user:
+            return None
+
+        # compte désactivé
+        if not user["is_active"]:
+
+            logging.warning(
+                f"Compte désactivé : {email}"
+            )
+
+            return None
+
+        if check_password_hash(
             user["password"],
             password
         ):
@@ -230,7 +298,6 @@ def authenticate_user(email, password):
                 time.time()
             )
 
-            # mise à jour last_login
             update_query = """
             UPDATE users
             SET last_login = CURRENT_TIMESTAMP
@@ -246,10 +313,12 @@ def authenticate_user(email, password):
 
             return {
                 "id": user["id"],
+                "nom": user["nom"],
+                "email": user["email"],
                 "role": user["role"]
             }
 
-        # échec connexion
+        # mot de passe incorrect
         attempts, _ = login_attempts.get(
             email,
             (0, time.time())

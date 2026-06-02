@@ -1,26 +1,50 @@
 from flask import Blueprint, request, jsonify
-from backend.app.services.chatbot_service import process_message
 
-chat_bp = Blueprint("chat", __name__)
+from flask_jwt_extended import (
+    jwt_required,
+    get_jwt_identity
+)
 
+from backend.app.services.chatbot_service import (
+    process_message
+)
+
+# Création du blueprint AVANT les routes
+chat_bp = Blueprint(
+    "chat",
+    __name__
+)
 @chat_bp.route("/", methods=["POST"])
+@jwt_required(optional=True)
 def handle_chat():
 
-    data = request.get_json()
+    data = request.get_json() or {}
 
     user_message = data.get("message")
-    user_id = data.get("user_id")
     session_id = data.get("session_id")
 
-    if not user_id:
+    identity = get_jwt_identity()
+
+    user_id = (
+        int(identity)
+        if identity is not None
+        else None
+    )
+
+    if not user_message:
+
         return jsonify({
             "status": "error",
-            "message": "Utilisateur non authentifié"
-        }), 401
+            "message": "Message manquant"
+        }), 400
 
-    response = process_message(user_message, session_id, user_id) #suvi du processus (nlp, ml, ...)
+    response = process_message(
+        user_message,
+        session_id,
+        user_id
+    )
 
     return jsonify({
         "status": "success",
         "response": response
-    })
+    }), 200

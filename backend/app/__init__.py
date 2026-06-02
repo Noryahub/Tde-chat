@@ -1,11 +1,22 @@
+from datetime import timedelta
 from flask import Flask
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 
 def create_app():
 
     app = Flask(__name__)
 
-    # Active CORS pour le frontend Next.js
+    app.config["JWT_SECRET_KEY"] = (
+        "change-this-secret-key"
+    )
+
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = (
+        timedelta(days=7)
+    )
+
+    jwt = JWTManager(app)
+
     CORS(
         app,
         resources={
@@ -15,14 +26,13 @@ def create_app():
                     "http://127.0.0.1:3000"
                 ]
             }
-        }
+        },
+        supports_credentials=True
     )
 
-    # Imports des routes
     from backend.app.routes.chat_routes import chat_bp
     from backend.app.routes.auth_routes import auth_bp
 
-    # Blueprints
     app.register_blueprint(
         chat_bp,
         url_prefix="/chat"
