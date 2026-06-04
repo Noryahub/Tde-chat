@@ -1,7 +1,7 @@
 "use client";
 
 import { Menu, Bot } from "lucide-react";
-
+import { useAuth } from "@/hooks/use-auth";
 type TopNavbarProps = {
   onMenuClick?: () => void;
 };
@@ -10,9 +10,10 @@ export function TopNavbar({
   onMenuClick,
 }: TopNavbarProps) {
 
-  const user = {
-    nom: "Betsalel",
-  };
+ const {
+  user,
+  isAuthenticated,
+} = useAuth();
 
   return (
 
@@ -136,36 +137,53 @@ export function TopNavbar({
       {/* USER AVATAR */}
       {/* ====================================== */}
 
-      <button
-        className="
-          flex
-          h-11
-          w-11
-          items-center
-          justify-center
-          overflow-hidden
-          rounded-full
-          border
-          border-[#dfe5ea]
-          bg-white
-          shadow-sm
-          transition-all
-          duration-200
-          hover:scale-105
-        "
-      >
-
-        <img
-          src={`https://ui-avatars.com/api/?name=${user.nom}&background=1D9E75&color=ffffff`}
-          alt="avatar utilisateur"
-          className="
-            h-full
-            w-full
-            object-cover
-          "
-        />
-
-      </button>
+             {isAuthenticated ? (
+          <button
+            className="
+              flex
+              h-11
+              w-11
+              items-center
+              justify-center
+              overflow-hidden
+              rounded-full
+              border
+              border-[#dfe5ea]
+              bg-white
+              shadow-sm
+              transition-all
+              duration-200
+              hover:scale-105
+            "
+          >
+            <img
+              src={`https://ui-avatars.com/api/?name=${user?.nom || "User"}&background=1D9E75&color=ffffff`}
+              alt="avatar utilisateur"
+              className="
+                h-full
+                w-full
+                object-cover
+              "
+            />
+          </button>
+        ) : (
+          <button
+            onClick={() => window.location.href = "/login"}
+            className="
+              rounded-xl
+              border
+              border-[#dfe5ea]
+              px-4
+              py-2
+              text-sm
+              font-medium
+              transition-colors
+              hover:bg-[#f5f5f5]
+            "
+          >
+            Connexion
+          </button>
+        )}
 
     </header>
   );

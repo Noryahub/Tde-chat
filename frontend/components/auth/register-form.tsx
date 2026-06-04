@@ -88,6 +88,19 @@ export function RegisterForm() {
           Se connecter
         </Link>
       </p>
+      <label htmlFor="email" className="text-sm font-medium">
+          Mode invité
+        </label>
+        <Button
+          type="button"
+          variant="outline"
+          className="h-10 w-full"
+          onClick={() => {
+            window.location.href = "/user/chat";
+          }}
+        >
+          Continuer en tant qu'invité
+        </Button>
     </form>
   );
 }

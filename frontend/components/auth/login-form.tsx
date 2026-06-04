@@ -31,6 +31,7 @@ export function LoginForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-5">
       <div className="space-y-2">
+
         <label htmlFor="email" className="text-sm font-medium">
           Email
         </label>
@@ -63,10 +64,24 @@ export function LoginForm() {
           {error}
         </p>
       )}
+        <label htmlFor="email" className="text-sm font-medium">
+          Mode invité
+        </label>
+        <Button
+          type="button"
+          variant="outline"
+          className="h-10 w-full"
+          onClick={() => {
+            window.location.href = "/user/chat";
+          }}
+        >
+          Continuer en tant qu'invité
+        </Button>
       <Button type="submit" className="h-10 w-full" disabled={isSubmitting}>
         {isSubmitting && <Loader2 className="size-4 animate-spin" />}
         Se connecter
       </Button>
+
       <p className="text-center text-sm text-muted-foreground">
         Pas encore de compte ?{" "}
         <Link href="/register" className="font-medium text-foreground underline-offset-4 hover:underline">
