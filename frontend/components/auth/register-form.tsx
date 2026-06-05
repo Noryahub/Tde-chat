@@ -78,17 +78,7 @@ export function RegisterForm() {
           {error}
         </p>
       )}
-      <Button type="submit" className="h-10 w-full" disabled={isSubmitting}>
-        {isSubmitting && <Loader2 className="size-4 animate-spin" />}
-        Creer le compte
-      </Button>
-      <p className="text-center text-sm text-muted-foreground">
-        Deja inscrit ?{" "}
-        <Link href="/login" className="font-medium text-foreground underline-offset-4 hover:underline">
-          Se connecter
-        </Link>
-      </p>
-      <label htmlFor="email" className="text-sm font-medium">
+        <label htmlFor="email" className="text-sm font-medium">
           Mode invité
         </label>
         <Button
@@ -101,6 +91,17 @@ export function RegisterForm() {
         >
           Continuer en tant qu'invité
         </Button>
+      <Button type="submit" className="h-10 w-full" disabled={isSubmitting}>
+        {isSubmitting && <Loader2 className="size-4 animate-spin" />}
+        Creer le compte
+      </Button>
+      <p className="text-center text-sm text-muted-foreground">
+        Deja inscrit ?{" "}
+        <Link href="/login" className="font-medium text-foreground underline-offset-4 hover:underline">
+          Se connecter
+        </Link>
+      </p>
+
     </form>
   );
 }

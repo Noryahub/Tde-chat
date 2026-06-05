@@ -1,43 +1,103 @@
-import { Activity, MessageSquareText, ShieldAlert, UsersRound } from "lucide-react";
+"use client";
 
-const stats = [
-  { label: "Utilisateurs", value: "1 248", icon: UsersRound },
-  { label: "Conversations", value: "8 392", icon: MessageSquareText },
-  { label: "Signalements", value: "12", icon: ShieldAlert },
-  { label: "Disponibilite", value: "99.8%", icon: Activity },
-];
-
+import {
+  MessageSquare,
+  MapPin,
+  AlertTriangle,
+  Brain,
+} from "lucide-react";
+import { RefreshCw } from "lucide-react";
+import { StatsCard } from "@/components/dashboard/stats-card";
+import { IntentChart } from "@/components/dashboard/intent-chart";
+import { LocalisationChart } from "@/components/dashboard/localisation-chart";
+import { TopProblems } from "@/components/dashboard/top-problems";
+import { LatestReports } from "@/components/dashboard/latest-reports";
+import { RecentActivity } from "@/components/dashboard/recent-activity";
 export default function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Vue d'ensemble</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Supervision des usages, utilisateurs et signalements.
+        <p className="text-sm text-[#6b7280]">
+          Suivi des performances de l'assitant conversationnelle
         </p>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {stats.map((stat) => (
-          <article key={stat.label} className="rounded-lg border bg-card p-4">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-              <stat.icon className="size-4 text-muted-foreground" />
-            </div>
-            <p className="mt-4 text-2xl font-semibold">{stat.value}</p>
-          </article>
-        ))}
+                 <button
+            onClick={() => window.location.reload()}
+            className="
+              flex
+              items-center
+              gap-2
+              rounded-xl
+              bg-[#1D9E75]
+              px-4
+              py-2
+              text-sm
+              font-medium
+              text-white
+              transition
+              hover:opacity-90
+            "
+          >
+            <RefreshCw size={16} />
+            Actualiser
+          </button>
+      <div
+        className="
+          grid
+          gap-4
+          md:grid-cols-2
+          xl:grid-cols-4
+        "
+      >
+        <StatsCard
+          title="Conversations totales"
+          value="1254"
+          icon={<MessageSquare size={22} />}
+        />
+
+        <StatsCard
+          title="Intent principal"
+          value="Facturation"
+          icon={<Brain size={22} />}
+        />
+
+        <StatsCard
+          title="Zone la plus active"
+          value="Lomé"
+          icon={<MapPin size={22} />}
+        />
+
+        <StatsCard
+          title="Signalements en attente"
+          value="12"
+          icon={<AlertTriangle size={22} />}
+        />
       </div>
-      <section className="rounded-lg border bg-card p-5">
-        <h2 className="text-base font-semibold">Activite recente</h2>
-        <div className="mt-4 space-y-3">
-          {["Nouvel utilisateur inscrit", "Conversation resolue", "Signalement en attente"].map((item) => (
-            <div key={item} className="flex items-center justify-between rounded-lg border bg-background px-3 py-2 text-sm">
-              <span>{item}</span>
-              <span className="text-muted-foreground">Aujourd'hui</span>
-            </div>
-          ))}
-        </div>
-      </section>
+
+      <div
+        className="
+          grid
+          gap-6
+          lg:grid-cols-2
+        "
+      >
+        <IntentChart />
+
+        <LocalisationChart />
+
+      </div>
+      <div
+  className="
+    grid
+    gap-6
+    lg:grid-cols-2
+  "
+>
+  <TopProblems />
+
+  <LatestReports />
+  <RecentActivity/>
+</div>
     </div>
   );
 }
