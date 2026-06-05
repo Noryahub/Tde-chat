@@ -1,23 +1,34 @@
 "use client";
 
-const data = [
-  { probleme: "Coupure d'eau prolongée", count: 148 },
-  { probleme: "Fuite sur réseau public", count: 112 },
-  { probleme: "Facture incorrecte", count: 97 },
-  { probleme: "Pression insuffisante", count: 73 },
-  { probleme: "Branchement non effectué", count: 54 },
-  { probleme: "Compteur défectueux", count: 38 },
-];
+interface ProblemData {
+  probleme: string;
+  count: number;
+}
 
-const total = data.reduce((sum, d) => sum + d.count, 0);
+interface TopProblemsProps {
+  data: ProblemData[];
+}
 
 const BAR_COLOR = "#1D9E75";
 
-export function TopProblems() {
-  const max = Math.max(...data.map((d) => d.count));
+export function TopProblems({
+  data,
+}: TopProblemsProps) {
+
+  const total = data.reduce(
+    (sum, d) => sum + d.count,
+    0
+  );
+
+  const max =
+    data.length > 0
+      ? Math.max(
+          ...data.map((d) => d.count)
+        )
+      : 0;
 
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+    <div className="rounded-2xl bg-white p-6 shadow-sm">
 
       {/* Header */}
       <div className="mb-5">
@@ -26,41 +37,66 @@ export function TopProblems() {
         </p>
       </div>
 
-      {/* List */}
-      <div className="space-y-4">
-        {data.map((row, i) => {
-          const pct = Math.round((row.count / total) * 100);
-          const barWidth = Math.round((row.count / max) * 100);
+      {data.length === 0 ? (
+        <div className="py-6 text-center text-sm text-gray-400">
+          Aucun problème détecté
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {data.map((row) => {
 
-          return (
-            <div key={row.probleme}>
-              {/* Label row */}
-              <div className="mb-1.5 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+            const pct =
+              total > 0
+                ? Math.round(
+                    (row.count / total) * 100
+                  )
+                : 0;
 
-                  <span className="text-[13px] text-gray-500">{row.probleme}</span>
+            const barWidth =
+              max > 0
+                ? Math.round(
+                    (row.count / max) * 100
+                  )
+                : 0;
+
+            return (
+              <div key={row.probleme}>
+
+                <div className="mb-1.5 flex items-center justify-between">
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-[13px] text-gray-500">
+                      {row.probleme}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-[13px] font-medium text-gray-800">
+                      {row.count}
+                    </span>
+
+                    <span className="w-8 text-right text-[11px] text-gray-400">
+                      {pct}%
+                    </span>
+                  </div>
+
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[13px] font-medium text-gray-800">
-                    {row.count}
-                  </span>
-                  <span className="w-8 text-right text-[11px] text-gray-400">
-                    {pct}%
-                  </span>
-                </div>
-              </div>
 
-              {/* Progress bar */}
-              <div className="h-4 w-full overflow-hidden rounded-full bg-gray-100">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{ width: `${barWidth}%`, background: BAR_COLOR }}
-                />
+                <div className="h-4 w-full overflow-hidden rounded-full bg-gray-100">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${barWidth}%`,
+                      background: BAR_COLOR,
+                    }}
+                  />
+                </div>
+
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

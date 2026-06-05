@@ -2,6 +2,7 @@ from datetime import timedelta
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from backend.app.routes.admin_routes import admin_bp
 
 def create_app():
 
@@ -42,5 +43,5 @@ def create_app():
         auth_bp,
         url_prefix="/auth"
     )
-
+    app.register_blueprint(admin_bp)
     return app
