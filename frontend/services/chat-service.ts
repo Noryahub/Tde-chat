@@ -1,9 +1,13 @@
 import { post } from "@/services/api";
 import type { ApiResponse } from "@/types";
 
-type ChatResponse = ApiResponse<{
+export type ChatData = {
   response: string;
-}>;
+  intent: string;
+  ticket_proposal: boolean;
+};
+
+type ChatResponse = ApiResponse<ChatData>;
 
 export async function sendMessage(
   message: string,
@@ -16,6 +20,6 @@ export async function sendMessage(
       session_id,
     }
   );
-
-  return response.response;
+  console.log("API RESPONSE", response);
+  return response;
 }

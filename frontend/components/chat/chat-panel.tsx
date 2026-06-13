@@ -161,17 +161,19 @@ useEffect(() => {
     setInput("");
     setIsSending(true);
 
-    try {
+     try {
 
-      const response = await sendMessage(
+      const result = await sendMessage(
         cleanedMessage,
         sessionId,
       );
 
+      const botData = result.data;
+
       const botMessage: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: response,
+        content: botData.response,
         time: new Date().toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
@@ -182,6 +184,25 @@ useEffect(() => {
         ...prev,
         botMessage,
       ]);
+      console.log("BOT DATA :", botData);
+      if (botData.ticket_proposal) {
+
+        const ticketMessage: Message = {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content:
+            "Souhaitez-vous un suivi auprès de la TDE ? Répondez Oui ou Non.",
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        };
+
+        setMessages((prev) => [
+          ...prev,
+          ticketMessage,
+        ]);
+      }
 
     } catch (error) {
 

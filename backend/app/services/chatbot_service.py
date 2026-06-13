@@ -9,7 +9,9 @@ from backend.app.llm.prompt_builder import build_prompt
 from backend.app.llm.groq_client import generate_response
 from backend.app.validation.response_validator import validate_response
 from backend.app.services.orientation_service import get_service, get_service_info, normalize_probleme
-
+from backend.app.constants.ticket_intents import (
+    TICKET_INTENTS
+)
 
 def process_message(user_message, session_id, user_id):
 
@@ -93,5 +95,12 @@ def process_message(user_message, session_id, user_id):
         localisation=localisation_detected,
         probleme=probleme_detected
     )
-
-    return bot_response
+    # gestion des tickets
+    ticket_proposal = (
+            intent == "signaler_probleme"
+    )
+    return {
+        "response": bot_response,
+        "intent": intent,
+        "ticket_proposal": ticket_proposal,
+    }

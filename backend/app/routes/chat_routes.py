@@ -38,7 +38,7 @@ def handle_chat():
             "message": "Message manquant"
         }), 400
 
-    response = process_message(
+    result = process_message(
         user_message,
         session_id,
         user_id
@@ -46,5 +46,5 @@ def handle_chat():
 
     return jsonify({
         "status": "success",
-        "response": response
+        "data": result
     }), 200

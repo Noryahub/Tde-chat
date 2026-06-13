@@ -51,22 +51,36 @@ ON users(role);
 
 CREATE TABLE IF NOT EXISTS intents (
     id INT AUTO_INCREMENT PRIMARY KEY,
-
     name VARCHAR(100) NOT NULL,
-
     action VARCHAR(50) NOT NULL,
-
     response TEXT NOT NULL,
-
     guide TEXT,
-
     service_id INT,
-
     FOREIGN KEY (service_id)
     REFERENCES services(id)
     ON DELETE SET NULL
 );
+CREATE TABLE IF NOT EXISTS tickets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ticket_number VARCHAR(50) UNIQUE,
+    nom VARCHAR(100),
+    email VARCHAR(100),
+    telephone VARCHAR(50),
+    localisation VARCHAR(100),
+    description TEXT,
+    intent VARCHAR(100),
 
+    statut ENUM(
+        'ouvert',
+        'en_cours',
+        'resolu',
+        'cloture'
+    ) DEFAULT 'ouvert',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ON UPDATE CURRENT_TIMESTAMP
+);
 CREATE TABLE IF NOT EXISTS conversations (
 
     id INT AUTO_INCREMENT PRIMARY KEY,

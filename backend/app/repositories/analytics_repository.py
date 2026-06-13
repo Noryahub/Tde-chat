@@ -117,7 +117,7 @@ class AnalyticsRepository:
                 DATE(created_at) AS jour,
                 COUNT(*) AS count
             FROM conversations
-            WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+            WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
             GROUP BY DATE(created_at)
             ORDER BY jour
         """)
