@@ -17,6 +17,89 @@ def process_message(user_message, session_id, user_id):
 
     # 1. Mémoire — init ou reconstruction depuis DB
     memory = get_memory(session_id)
+    print("CTX =", memory.get_context())
+    #context
+    ctx = memory.get_context()
+    ticket_step = ctx.get("ticket_step")
+    if ticket_step == "telephone":
+        memory.update_context({
+            "telephone": user_message,
+            "ticket_step": "localisation"
+        })
+
+        return {
+            "response":
+                "Merci. Quelle est votre localisation ?",
+            "intent": "ticket_creation",
+            "ticket_proposal": False
+        }
+    if ticket_step == "localisation":
+        memory.update_context({
+            "ticket_localisation": user_message,
+            "ticket_step": "description"
+        })
+
+        return {
+            "response":
+                "Merci. Décrivez brièvement votre problème.",
+            "intent": "ticket_creation",
+            "ticket_proposal": False
+        }
+    if ticket_step == "description":
+        telephone = ctx.get("telephone")
+        localisation = ctx.get("ticket_localisation")
+        description = user_message
+
+        print("Ticket à créer")
+        print(telephone)
+        print(localisation)
+        print(description)
+
+        memory.clear_ticket_context()
+        return {
+            "response":
+                "Votre demande a bien été enregistrée. Un ticket sera créé prochainement.",
+            "intent": "ticket_created",
+            "ticket_proposal": False
+        }
+    user_lower = user_message.lower().strip()
+    if (
+            ctx.get("ticket_proposal")
+            and user_lower in [
+        "oui",
+        "ok",
+        "yes",
+        "d'accord"
+    ]
+    ):
+        memory.update_context({
+            "ticket_proposal": False,
+            "ticket_step": "telephone"
+        })
+
+        return {
+            "response":
+                "Très bien. Veuillez renseigner votre numéro de téléphone.",
+            "intent": "ticket_creation",
+            "ticket_proposal": False
+        }
+    if (
+            ctx.get("ticket_proposal")
+            and user_lower in [
+        "non",
+        "no"
+    ]
+    ):
+        memory.update_context({
+            "ticket_proposal": False
+        })
+
+        return {
+            "response":
+                "Très bien. N'hésitez pas à revenir vers moi si vous avez besoin d'assistance.",
+            "intent": "ticket_refused",
+            "ticket_proposal": False
+        }
     if len(memory.history) == 0:
         db_history = get_session_history(session_id)
         if db_history:
@@ -97,8 +180,12 @@ def process_message(user_message, session_id, user_id):
     )
     # gestion des tickets
     ticket_proposal = (
-            intent == "signaler_probleme"
+            intent in TICKET_INTENTS
     )
+    if ticket_proposal:
+        memory.update_context({
+            "ticket_proposal": True
+        })
     return {
         "response": bot_response,
         "intent": intent,

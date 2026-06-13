@@ -76,3 +76,9 @@ class ConversationMemory:
                 confidence=row.get("confidence")
             )
             self.add_bot_turn(content=row["bot_response"])
+
+    def clear_ticket_context(self):
+        self.session_context.pop("ticket_proposal", None)
+        self.session_context.pop("ticket_step", None)
+        self.session_context.pop("telephone", None)
+        self.session_context.pop("ticket_localisation", None)
