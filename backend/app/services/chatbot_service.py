@@ -12,6 +12,11 @@ from backend.app.services.orientation_service import get_service, get_service_in
 from backend.app.constants.ticket_intents import (
     TICKET_INTENTS
 )
+from backend.app.repositories.ticket_repository import create_ticket
+from backend.app.utils.ticket_generator import (
+    generate_ticket_number
+)
+
 
 def process_message(user_message, session_id, user_id):
 
@@ -50,15 +55,23 @@ def process_message(user_message, session_id, user_id):
         localisation = ctx.get("ticket_localisation")
         description = user_message
 
-        print("Ticket à créer")
-        print(telephone)
-        print(localisation)
-        print(description)
+        ticket_number = generate_ticket_number()
+
+        create_ticket(
+            ticket_number=ticket_number,
+            nom=None,
+            email=None,
+            telephone=telephone,
+            localisation=localisation,
+            description=description,
+            intent=ctx.get("probleme")
+        )
 
         memory.clear_ticket_context()
+
         return {
             "response":
-                "Votre demande a bien été enregistrée. Un ticket sera créé prochainement.",
+                f"Votre ticket {ticket_number} a bien été créé. Nos équipes reviendront vers vous dans les meilleurs délais.",
             "intent": "ticket_created",
             "ticket_proposal": False
         }

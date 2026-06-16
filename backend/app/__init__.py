@@ -3,6 +3,9 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from backend.app.routes.admin_routes import admin_bp
+from backend.app.routes.ticket_routes import (
+    ticket_bp
+)
 
 def create_app():
 
@@ -43,5 +46,11 @@ def create_app():
         auth_bp,
         url_prefix="/auth"
     )
+
+    app.register_blueprint(
+        ticket_bp,
+        url_prefix="/api/admin"
+    )
+
     app.register_blueprint(admin_bp)
     return app
