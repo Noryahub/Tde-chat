@@ -33,7 +33,7 @@ export const adminSidebarItems: SidebarSection[] = [
         icon: UsersRound,
       },
       {
-        title: "Signalements",
+        title: "signalements",
         href: "/admin/signalements",
         icon: ShieldAlert,
         badge: "12",

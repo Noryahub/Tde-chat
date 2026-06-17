@@ -55,3 +55,17 @@ export type ChatMessage = {
   content: string;
   createdAt: string;
 };
+
+export type Ticket = {
+  id: number;
+  ticket_number: string;
+  nom: string | null;
+  email: string | null;
+  telephone: string;
+  localisation: string;
+  description: string;
+  intent: string | null;
+  statut: "ouvert" | "en_cours" | "resolu" | "cloture";
+  created_at: string;
+  updated_at: string;
+};
