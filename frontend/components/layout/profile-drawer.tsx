@@ -23,7 +23,7 @@ type ProfileDrawerProps = {
 export function ProfileDrawer({ collapsed = false }: ProfileDrawerProps) {
   const { user, logout } = useAuth();
   const initials =
-    user?.name
+    user?.nom
       .split(" ")
       .map((part) => part[0])
       .join("")

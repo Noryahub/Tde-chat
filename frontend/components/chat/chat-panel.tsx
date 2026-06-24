@@ -696,9 +696,6 @@ useEffect(() => {
   </div>
 
 </div>
-
-
-
-    </main>
+</main>
   );
 }

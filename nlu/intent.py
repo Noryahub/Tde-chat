@@ -63,7 +63,7 @@ def process_predict(text):
         "confidence": round(confidence, 3)
     }
 # Après le chargement du modèle
-# Remplace le bloc MAPPING_PATH par ceci
+
 model.config.id2label = {
     0:  "conseil_consommation",
     1:  "contact_service_client",

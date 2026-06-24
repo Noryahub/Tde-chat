@@ -313,7 +313,6 @@ export function SidebarDesktop({
       )}
 
     </button>
-
   </div>
 )}
 </aside>
