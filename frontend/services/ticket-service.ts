@@ -24,3 +24,35 @@ export async function updateTicketStatus(
     }
   );
 }
+
+
+// Tous les signalements de l'utilisateur
+
+export async function getUserSignalements(
+  userId: number
+): Promise<{
+  status: string;
+  data: Ticket[];
+}> {
+
+  return get(
+    `/api/tickets/user/${userId}`
+  );
+
+}
+
+// Signalements résolus
+
+
+export async function getResolvedSignalements(
+  userId: number
+): Promise<{
+  status: string;
+  data: Ticket[];
+}> {
+
+  return get(
+    `/api/tickets/user/${userId}/resolved`
+  );
+
+}

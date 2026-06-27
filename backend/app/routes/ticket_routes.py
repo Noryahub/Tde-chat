@@ -9,7 +9,9 @@ from backend.app.services.ticket_service import (
     get_ticket,
     change_ticket_status,
     remove_ticket,
-    get_ticket_stats
+    get_ticket_stats,
+    get_user_signalements,
+    get_resolved_ticket
 )
 
 ticket_bp = Blueprint(
@@ -49,7 +51,45 @@ def get_ticket_route(ticket_id):
         "status": "success",
         "data": ticket
     }), 200
+#new get signalements
+@ticket_bp.route(
+    "tickets/user/<int:user_id>",
+    methods=["GET"]
+)
+def get_user_tickets_route(user_id):
 
+    tickets = get_user_signalements(user_id)
+
+    if not tickets:
+        return jsonify({
+            "status": "error",
+            "message": "Aucun ticket trouvé"
+        }), 404
+
+    return jsonify({
+        "status": "success",
+        "data": tickets
+    }), 200
+
+# get resolve tickets
+@ticket_bp.route(
+    "tickets/user/<int:user_id>/resolved",
+    methods=["GET"]
+)
+def get_resolved_ticket_route(user_id):
+
+    tickets = get_resolved_ticket(user_id)
+
+    if not tickets:
+        return jsonify({
+            "status": "error",
+            "message": "Aucun ticket résolu trouvé"
+        }), 404
+
+    return jsonify({
+        "status": "success",
+        "data": tickets
+    }), 200
 @ticket_bp.route(
     "/tickets/<int:ticket_id>/status",
     methods=["PATCH"]

@@ -78,7 +78,27 @@ def get_ticket_by_id(ticket_id):
 
     cursor.close()
     conn.close()
+    return result
 
+#RECUPERER LES TICKETS PAR UTILISATEURS
+def get_ticket_by_user(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(""" SELECT * FROM tickets WHERE user_id = %s """, (user_id,))
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
+
+#recuperer les tickets utilisateur resolus
+
+def get_resolved_ticket_by_user(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(""" SELECT * FROM tickets WHERE user_id = %s AND statut = 'resolu' """, (user_id,))
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return result
 
 def update_ticket_status(ticket_id, statut):

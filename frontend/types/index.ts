@@ -58,6 +58,7 @@ export type ChatMessage = {
 
 export type Ticket = {
   id: number;
+  user_id: number;
   ticket_number: string;
   nom: string | null;
   email: string | null;

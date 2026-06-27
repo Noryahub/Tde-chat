@@ -1,6 +1,8 @@
 from backend.app.repositories.ticket_repository import (
     get_all_tickets,
     get_ticket_by_id,
+    get_resolved_ticket_by_user,
+    get_ticket_by_user,
     update_ticket_status,
     delete_ticket,
     count_tickets,
@@ -10,7 +12,7 @@ from backend.app.repositories.ticket_repository import (
 )
 def list_tickets():
     return get_all_tickets()
-
+#get ticket by id
 def get_ticket(ticket_id):
 
     ticket = get_ticket_by_id(ticket_id)
@@ -26,6 +28,19 @@ ALLOWED_STATUS = [
     "cloture"
 ]
 
+#get ticket(SIGNALEMENT) by user
+def get_user_signalements(user_id):
+    ticket = get_ticket_by_user(user_id)
+    if not ticket:
+        return None
+    return ticket
+
+#GET TICKETS RESOLUT BY USER
+def get_resolved_ticket(user_id):
+    ticket = get_resolved_ticket_by_user(user_id)
+    if not ticket:
+        return None
+    return ticket
 
 def change_ticket_status(
     ticket_id,
