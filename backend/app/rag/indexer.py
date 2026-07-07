@@ -4,12 +4,20 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-EMBED_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
+#EMBED_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
+
+BASE_DIR = os.path.dirname(__file__)
+
+MODEL_PATH = os.path.join(
+    BASE_DIR,
+    "sentence_model"
+)
 
 INDEX_PATH = os.path.join(os.path.dirname(__file__), "faiss_index.bin")
 CHUNKS_PATH = os.path.join(os.path.dirname(__file__), "chunks.pkl")
 
-embedder = SentenceTransformer(EMBED_MODEL)
+#embedder = SentenceTransformer(EMBED_MODEL)
+embedder = SentenceTransformer(MODEL_PATH)
 
 
 def chunk_text(text: str, chunk_size: int = 300, overlap: int = 50) -> list[str]:
