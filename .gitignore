@@ -29,7 +29,7 @@ wandb/
 # Environnement virtuel
 
 #model sentence_transformer
-python backend/app/rag/sentence_model/download_model.py
+python backend/app/rag/sentence_model
 
 # Modèles ML — trop lourds pour Git (442MB + 440MB)
 backend/app/models/intent_model/model.safetensors

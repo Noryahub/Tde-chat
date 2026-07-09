@@ -93,7 +93,7 @@ export function RecentActivity({
       <div className="mb-5 flex items-start justify-between">
         <div>
           <p className="mb-1 text-[11px] font-medium uppercase tracking-widest text-gray-400">
-            Activité des 7 derniers jours
+             derniers activités
           </p>
         </div>
 
