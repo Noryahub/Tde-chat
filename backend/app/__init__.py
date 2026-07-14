@@ -6,7 +6,7 @@ from backend.app.routes.admin_routes import admin_bp
 from backend.app.routes.ticket_routes import (
     ticket_bp
 )
-
+from backend.app.routes.history_routes import history_bp
 def create_app():
 
     app = Flask(__name__)
@@ -51,6 +51,9 @@ def create_app():
         ticket_bp,
         url_prefix="/api/admin"
     )
-
+    app.register_blueprint(
+        history_bp,
+        url_prefix="/history"
+    )
     app.register_blueprint(admin_bp)
     return app

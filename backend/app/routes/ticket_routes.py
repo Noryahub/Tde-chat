@@ -44,7 +44,7 @@ def get_ticket_route(ticket_id):
 
         return jsonify({
             "status": "error",
-            "message": "Ticket introuvable"
+            "message": "aucun signalement"
         }), 404
 
     return jsonify({

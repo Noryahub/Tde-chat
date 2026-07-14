@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
-
+import { getCurrentUser } from "@/services/auth-service";
 import {
   Bot,
   SendHorizontal,
@@ -9,6 +9,16 @@ import {
 } from "lucide-react";
 
 import { sendMessage } from "@/services/chat-service";
+import type {Conversation} from "@/types"
+
+import {
+  loadMessages,
+  saveMessages,
+  loadSessionId,
+  saveSessionId,
+  clearChatStorage,
+  loadConversations
+} from "@/storage/chat-storage";
 
 type Message = {
   id: string;
@@ -16,74 +26,176 @@ type Message = {
   content: string;
   time: string;
 };
-const STORAGE_KEY = "tde_chat_messages";
-const SESSION_KEY = "tde_chat_session";
+import ChatHistory
+from "./chat-history";
 
 export default function ChatPanel() {
 
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
-  const [messages, setMessages] =
-  useState<Message[]>(() => {
 
-    if (typeof window === "undefined") {
-      return [];
+   const messagesEndRef =
+      useRef<HTMLDivElement>(null);
+
+    const [sessionId, setSessionId] =
+      useState<string | null>(null);
+
+    const [userId, setUserId] =
+      useState<number | null>(null);
+
+    const isAuthenticated =
+      userId !== null;
+    function handleConversationSelect(
+    conversationId: number
+) {
+
+    setSelectedConversationId(
+        conversationId
+    );
+
+    const conversation =
+        conversations.find(
+            c =>
+                c.conversationId ===
+                conversationId
+        );
+
+    if (!conversation)
+        return;
+
+    setMessages(
+        conversation.messages
+    );
+
+}
+    useEffect(() => {
+
+    async function test() {
+
+        if (!isAuthenticated || !userId)
+            return;
+
+        const conversations =
+            await loadConversations(
+                userId
+            );
+
+        console.log(conversations);
+
     }
 
-    const savedMessages =
-      localStorage.getItem(STORAGE_KEY);
+    test();
 
-    if (savedMessages) {
-      return JSON.parse(savedMessages);
+}, [
+    isAuthenticated,
+    userId
+]);
+
+const [messages, setMessages] =
+  useState<Message[]>([]);
+
+const [conversations, setConversations] =
+  useState<Conversation[]>([]);
+
+const [
+  selectedConversationId,
+  setSelectedConversationId,
+] = useState<number | null>(null);
+  useEffect(() => {
+
+    async function initializeConversation() {
+        if (
+            isAuthenticated &&
+            userId
+        ) {
+
+    const conversations =
+        await loadConversations(
+            userId
+        );
+        setConversations(
+            conversations
+        );
+    }
+        const loadedMessages =
+            await loadMessages(
+                isAuthenticated,
+                userId ?? undefined
+            );
+
+        if (loadedMessages.length > 0) {
+
+            setMessages(
+                loadedMessages
+            );
+
+            return;
+
+        }
+
+        setMessages([
+            {
+                id: crypto.randomUUID(),
+                role: "assistant",
+                content:
+                    "Bonjour ! Je suis l'assistant TDE. Comment puis-je vous aider ?",
+                time: new Date().toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                }),
+            },
+        ]);
+
     }
 
-    return [
-      {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content:
-          "Bonjour ! Je suis l'assistant TDE. Comment puis-je vous aider ?",
-        time: "09:30",
-      },
-    ];
-  });
+    initializeConversation();
+
+}, [isAuthenticated, userId]);
 
 useEffect(() => {
 
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(messages)
-  );
-
-}, [messages]);
-
-  const messagesEndRef =
-    useRef<HTMLDivElement | null>(null);
-
-  const [sessionId, setSessionId] = useState("");
-  useEffect(() => {
-
-  let savedSession =
-    localStorage.getItem(SESSION_KEY);
-
-  if (!savedSession) {
-
-    savedSession =
-      `session_${crypto.randomUUID()}`;
-
-    localStorage.setItem(
-      SESSION_KEY,
-      savedSession
+    console.log(
+        "CONVERSATIONS",
+        conversations
     );
 
-  }
+}, [conversations]);
+useEffect(() => {
 
-  setSessionId(savedSession);
+    if (messages.length === 0) {
+
+        return;
+
+    }
+
+    saveMessages(
+        messages,
+        isAuthenticated
+    );
+
+}, [
+    messages,
+    isAuthenticated,
+]);
+useEffect(() => {
+
+    let savedSession =
+        loadSessionId();
+
+    if (!savedSession) {
+
+        savedSession =
+            `session_${crypto.randomUUID()}`;
+
+        saveSessionId(savedSession);
+
+    }
+
+    setSessionId(savedSession);
 
 }, []);
   //const userId = localStorage.getItem("user_id");
-   const [userId, setUserId] =
-  useState<number | null>(null);
+
   useEffect(() => {
 
   async function loadUser() {
@@ -229,7 +341,7 @@ useEffect(() => {
     }
   }
   console.log("messages", messages);
-  console.log("session", sessionId);
+
   return (
 
     <main

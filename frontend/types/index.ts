@@ -52,6 +52,7 @@ export type RegisterPayload = {
 export type ChatMessage = {
   id: string;
   role: "user" | "assistant";
+  conversationId?: number;
   content: string;
   createdAt: string;
 };
@@ -69,4 +70,20 @@ export type Ticket = {
   statut: "ouvert" | "en_cours" | "resolu" | "cloture";
   created_at: string;
   updated_at: string;
+};
+
+export type History = {
+  message_id: number;
+  conversation_id: number;
+  user_id: number;
+  role: "user" | "assistant";
+  content: string;
+  created_at: string;
+};
+
+export type Conversation = {
+  conversationId: number;
+  title: string;
+  createdAt: string;
+  messages: ChatMessage[];
 };

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { login as loginRequest, register as registerRequest } from "@/services/auth-service";
 import type { AuthSession, AuthUser, LoginPayload, RegisterPayload, UserRole } from "@/types";
+import { clearChatStorage } from "@/storage/chat-storage";
 
 type AuthContextValue = {
   user: AuthUser | null;
@@ -85,11 +86,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [router]
   );
 
-  const logout = useCallback(() => {
-    clearSession();
-    setSession(null);
-    window.location.href = "/user/chat";
-  }, [router]);
+  const logout = useCallback(async () => {
+
+  // Suppression de la session utilisateur
+  clearSession();
+
+  // Suppression des données du chatbot
+  await clearChatStorage(false);
+
+  // Réinitialisation du contexte
+  setSession(null);
+
+  // Retour vers le chatbot en mode anonyme
+  window.location.href = "/user/chat";
+
+}, []);
 
   const value = useMemo<AuthContextValue>(
     () => ({
