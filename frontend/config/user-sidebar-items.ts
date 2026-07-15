@@ -1,4 +1,4 @@
-import { History, MessageSquareText, UserRound } from "lucide-react";
+import { History, MessageSquareText, UserRound, Plus } from "lucide-react";
 
 import type { SidebarSection } from "@/types";
 
@@ -6,16 +6,17 @@ export const userSidebarItems: SidebarSection[] = [
   {
     title: "Assistant",
     items: [
+        {
+            title: "Nouvel conversation",
+            href:"#",
+            icon: Plus,
+        },
       {
         title: "Chat TDE",
         href: "/user/chat",
         icon: MessageSquareText,
       },
-      {
-        title: "Historique",
-        href: "/user/history",
-        icon: History,
-      },
+
       {
         title: "Profil",
         href: "/user/profile",

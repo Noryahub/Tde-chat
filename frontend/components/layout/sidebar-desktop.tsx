@@ -3,6 +3,11 @@
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
+import { useEffect } from "react";
+import { loadConversations } from "@/storage/chat-storage";
+import type { Conversation } from "@/types";
+
+
 import {
   ChevronLeft,
   ChevronRight,
@@ -15,7 +20,9 @@ import {
 
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
+
 import type {
+    Conversation,
   SidebarSection,
   UserRole,
 } from "@/types";
@@ -26,7 +33,14 @@ type SidebarDesktopProps = {
     collapsed: boolean
   ) => void;
   role: UserRole;
+
   sections: SidebarSection[];
+   conversations?: Conversation[];
+  selectedConversationId?: number | null;
+  onConversationSelect?: (
+      id: number
+  ) => void;
+  onNewConversation?: () => void;
 };
 
 
@@ -49,6 +63,17 @@ export function SidebarDesktop({
   logout,
 } = useAuth();
 
+//initialisation de l etat des conversations
+const [
+  conversations,
+  setConversations,
+] = useState<Conversation[]>([]);
+
+const [
+  loadingHistory,
+  setLoadingHistory,
+] = useState(true);
+
   // ======================================
   // LOGOUT
   // ======================================
@@ -56,6 +81,39 @@ export function SidebarDesktop({
   function handleLogout() {
     logout();
     }
+
+//chargement de l'historique
+        useEffect(() => {
+          async function fetchHistory() {
+            if (
+              !isAuthenticated ||
+              !user
+            ) {
+              setConversations([]);
+              setLoadingHistory(false);
+              return;
+            }
+            try {
+              const history =
+                await loadConversations(
+                  Number(user.id)
+                );
+              setConversations(history);
+            } catch (error) {
+              console.error(
+                "Erreur chargement historique",
+                error
+              );
+            } finally {
+              setLoadingHistory(false);
+            }
+          }
+          fetchHistory();
+        }, [
+          isAuthenticated,
+          user,
+        ]);
+
   return (
 
     <aside
@@ -167,78 +225,147 @@ export function SidebarDesktop({
       {/* NAVIGATION */}
       {/* ====================================== */}
 
-      <div className="flex-1 px-4 py-6">
+      <div className="flex flex-1 flex-col overflow-hidden px-4 py-6">
 
-        <div className="space-y-2">
+    {/* ================= Navigation ================= */}
 
-          {sections.map((section, index) => (
-  <div
-    key={index}
-    className="space-y-2"
-  >
+    <div className="space-y-2 shrink-0">
+
+        {sections.map((section, index) => (
+            <div
+                key={index}
+                className="space-y-2"
+            >
                 {section.items.map((item) => {
 
-                  const Icon = item.icon;
+                    const Icon = item.icon;
 
-                  const active =
-                    pathname === item.href;
+                    const active =
+                        pathname === item.href;
 
-                  return (
+                    return (
 
-                    <button
-                      key={item.href}
-                      onClick={() =>
-                        router.push(item.href)
-                      }
-                      className={cn(
-                        `
-                        flex
-                        w-full
-                        items-center
-                        gap-3
-                        rounded-2xl
-                        px-4
-                        py-3
-                        text-sm
-                        font-medium
-                        transition-all
-                        duration-200
-                        `,
-                        active
-                          ? "bg-[#1E8E6A] text-white shadow-sm"
-                          : "text-[#374151] hover:bg-[#f3f4f6]"
-                      )}
-                    >
+                        <button
+                            key={item.href}
+                            onClick={() => router.push(item.href)}
+                            className={cn(
+                                `
+                                flex
+                                w-full
+                                items-center
+                                gap-3
+                                rounded-2xl
+                                px-4
+                                py-3
+                                text-sm
+                                font-medium
+                                transition-all
+                                duration-200
+                                `,
+                                active
+                                    ? "bg-[#1E8E6A] text-white shadow-sm"
+                                    : "text-[#374151] hover:bg-[#f3f4f6]"
+                            )}
+                        >
 
-                      <Icon
-                        className={cn(
-                          "h-5 w-5 shrink-0",
-                          active
-                            ? "text-white"
-                            : "text-[#6b7280]"
-                        )}
-                      />
+                            <Icon
+                                className={cn(
+                                    "h-5 w-5 shrink-0",
+                                    active
+                                        ? "text-white"
+                                        : "text-[#6b7280]"
+                                )}
+                            />
 
-                      {!collapsed && (
-                        <span className="truncate">
-                          {item.title}
-                        </span>
-                      )}
+                            {!collapsed && (
+                                <span>{item.title}</span>
+                            )}
 
-                    </button>
-                  );
+                        </button>
+
+                    );
+
                 })}
-              </div>
-            ))}
+            </div>
+        ))}
+
+
+
+    </div>
+
+    {/* ================= Historique ================= */}
+
+    {isAuthenticated && !collapsed && (
+
+        <div className="mt-8 flex min-h-0 flex-1 flex-col">
+            <div
+                className="
+                    min-h-0
+                    flex-1
+                    overflow-y-auto
+                    pr-1
+                    space-y-2
+
+                    [scrollbar-width:thin]
+                    [&::-webkit-scrollbar]:w-1.5
+                    [&::-webkit-scrollbar-thumb]:rounded-full
+                    [&::-webkit-scrollbar-thumb]:bg-gray-300
+                "
+            >
+
+                {loadingHistory ? (
+
+                    <p className="px-2 text-xs text-gray-400">
+                        Chargement...
+                    </p>
+
+                ) : conversations.length === 0 ? (
+
+                    <p className="px-2 text-xs text-gray-400">
+                        Aucun historique
+                    </p>
+
+                ) : (
+
+                    conversations.map((conversation) => (
+
+                        <button
+                            key={conversation.conversationId}
+                            className="
+                                w-full
+                                rounded-xl
+                                px-3
+                                py-2
+                                text-left
+                                hover:bg-gray-100
+                            "
+                        >
+
+                            <div className="truncate font-medium">
+                                {conversation.title}
+                            </div>
+
+                            <div className="text-xs text-gray-400">
+                                {new Date(
+                                    conversation.createdAt
+                                ).toLocaleDateString("fr-FR")}
+                            </div>
+
+                        </button>
+
+                    ))
+
+                )}
+
+            </div>
 
         </div>
 
-      </div>
+    )}
 
-     {/* ====================================== */}
+</div>
+
 {/* FOOTER */}
-{/* ====================================== */}
-
 {isAuthenticated && (
   <div className="border-t border-[#f1f1f1] p-4">
 
@@ -264,9 +391,9 @@ export function SidebarDesktop({
         src={`https://ui-avatars.com/api/?name=${user?.nom || "User"}&background=1E8E6A&color=fff`}
         alt="avatar"
         className="
-          h-10
-          w-10
-          rounded-xl
+          h-4
+          w-4
+          rounded-full
           object-cover
           shadow-sm
         "
@@ -279,7 +406,7 @@ export function SidebarDesktop({
             {user?.name}
           </p>
 
-          <p className="truncate text-xs text-[#6b7280]">
+          <p className="truncate text-sm text-[#6b7280]">
             {user?.email}
           </p>
 
@@ -306,7 +433,7 @@ export function SidebarDesktop({
       "
     >
 
-      <LogOut className="h-5 w-5 shrink-0" />
+      <LogOut className="h-3 w-3 shrink-0" />
 
       {!collapsed && (
         <span>Déconnexion</span>
