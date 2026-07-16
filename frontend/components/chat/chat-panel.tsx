@@ -10,7 +10,7 @@ import {
 
 import { sendMessage } from "@/services/chat-service";
 import type {Conversation} from "@/types"
-
+import { useChat } from "@/context/ChatContext";
 import {
   loadMessages,
   saveMessages,
@@ -37,59 +37,46 @@ export default function ChatPanel() {
    const messagesEndRef =
       useRef<HTMLDivElement>(null);
 
-    const [sessionId, setSessionId] =
-      useState<string | null>(null);
+
 
     const [userId, setUserId] =
       useState<number | null>(null);
 
+    const {
+        conversationId,
+        setConversationId,
+        selectedConversationId,
+        setSelectedConversationId,
+        newConversation,
+        sessionId,
+        setSessionId,
+    } = useChat();
+
     const isAuthenticated =
       userId !== null;
-    function handleConversationSelect(
-    conversationId: number
-) {
 
-    setSelectedConversationId(
-        conversationId
-    );
-
-    const conversation =
-        conversations.find(
-            c =>
-                c.conversationId ===
+        function handleConversationSelect(
+            conversationId: number
+        ) {
+            setSelectedConversationId(
                 conversationId
-        );
-
-    if (!conversation)
-        return;
-
-    setMessages(
-        conversation.messages
-    );
-
-}
-    useEffect(() => {
-
-    async function test() {
-
-        if (!isAuthenticated || !userId)
-            return;
-
-        const conversations =
-            await loadConversations(
-                userId
             );
+            setConversationId(
+                conversationId
+            );
+            const conversation =
+                conversations.find(
+                    c =>
+                        c.conversationId ===
+                        conversationId
+                );
+            if (!conversation)
+                return;
+            setMessages(
+                conversation.messages
+            );
+        }
 
-        console.log(conversations);
-
-    }
-
-    test();
-
-}, [
-    isAuthenticated,
-    userId
-]);
 
 const [messages, setMessages] =
   useState<Message[]>([]);
@@ -97,136 +84,129 @@ const [messages, setMessages] =
 const [conversations, setConversations] =
   useState<Conversation[]>([]);
 
-const [
-  selectedConversationId,
-  setSelectedConversationId,
-] = useState<number | null>(null);
-//new
-const [conversationId, setConversationId] =
-    useState<number | null>(null);
-
   useEffect(() => {
-
     async function initializeConversation() {
-        if (
-            isAuthenticated &&
-            userId
-        ) {
 
-    const conversations =
-        await loadConversations(
-            userId
-        );
-        setConversations(
-            conversations
-        );
-    }
-        const loadedMessages =
-            await loadMessages(
-                isAuthenticated,
-                userId ?? undefined
+    // ---------- Utilisateur connecté ----------
+    if (isAuthenticated && userId) {
+
+        const conversations =
+            await loadConversations(userId);
+
+        setConversations(conversations);
+
+        if (conversations.length > 0) {
+
+            // on sélectionne automatiquement la dernière conversation
+
+            const lastConversation =
+                conversations[conversations.length - 1];
+
+            setConversationId(
+                lastConversation.conversationId
             );
 
-        if (loadedMessages.length > 0) {
-
-            setMessages(
-                loadedMessages
+            setSelectedConversationId(
+                lastConversation.conversationId
             );
-
-            return;
 
         }
 
-        setMessages([
-            {
-                id: crypto.randomUUID(),
-                role: "assistant",
-                content:
-                    "Bonjour ! Je suis l'assistant TDE. Comment puis-je vous aider ?",
-                time: new Date().toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                }),
-            },
-        ]);
-
+        return;
     }
 
-    initializeConversation();
+    // ---------- Utilisateur anonyme ----------
 
+    const loadedMessages =
+        await loadMessages(false);
+
+    if (loadedMessages.length > 0) {
+
+        setMessages(loadedMessages);
+
+        return;
+    }
+
+    setMessages([
+        {
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content:
+                "Bonjour ! Je suis l'assistant TDE. Comment puis-je vous aider ?",
+            time: new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+            }),
+        },
+    ]);
+}
+    initializeConversation();
 }, [isAuthenticated, userId]);
 
 useEffect(() => {
+    if (!selectedConversationId) {
+        return;
+    }
+    const conversation = conversations.find(
+        (c) =>
+            c.conversationId ===
+            selectedConversationId
+    );
+    if (!conversation) {
+        return;
+    }
+    setMessages(conversation.messages);
+}, [
+    selectedConversationId,
+    conversations,
+]);
 
+useEffect(() => {
     console.log(
         "CONVERSATIONS",
         conversations
     );
-
 }, [conversations]);
 useEffect(() => {
-
     if (messages.length === 0) {
-
         return;
-
     }
-
     saveMessages(
         messages,
         isAuthenticated
     );
-
 }, [
     messages,
     isAuthenticated,
 ]);
+
 useEffect(() => {
-
-    let savedSession =
-        loadSessionId();
-
+    let savedSession = loadSessionId();
     if (!savedSession) {
-
         savedSession =
             `session_${crypto.randomUUID()}`;
-
         saveSessionId(savedSession);
-
     }
-
     setSessionId(savedSession);
-
 }, []);
   //const userId = localStorage.getItem("user_id");
 
   useEffect(() => {
-
   async function loadUser() {
-
     try {
-
       const response =
         await getCurrentUser();
-
       setUserId(
         Number(response.user.id)
       );
-
     } catch (error) {
-
       console.log(
         "Utilisateur anonyme"
       );
-
       setUserId(null);
-
     }
-
   }
-
   loadUser();
-
 }, []);
   // =========================================
   // AUTO SCROLL
@@ -242,31 +222,7 @@ useEffect(() => {
 
   // =========================================
 
-  function newConversation() {
 
-    const newSession =
-        `session_${crypto.randomUUID()}`;
-
-    saveSessionId(newSession);
-
-    setSessionId(newSession);
-
-    setConversationId(null);
-
-    setMessages([
-        {
-            id: crypto.randomUUID(),
-            role: "assistant",
-            content:
-                "Bonjour ! Je suis l'assistant TDE. Comment puis-je vous aider ?",
-            time: new Date().toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-            }),
-        },
-    ]);
-
-}
   // SEND MESSAGE
   // =========================================
 
@@ -307,7 +263,7 @@ useEffect(() => {
 
       const result = await sendMessage(
         cleanedMessage,
-        sessionId,
+        sessionId!,
         conversationId
       );
 
