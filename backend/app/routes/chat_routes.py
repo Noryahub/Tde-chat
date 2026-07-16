@@ -22,6 +22,8 @@ def handle_chat():
 
     user_message = data.get("message")
     session_id = data.get("session_id")
+    #recuperation de l'id de conversation depuis le frontend
+    conversation_id = data.get("conversation_id")
 
     identity = get_jwt_identity()
 
@@ -39,10 +41,11 @@ def handle_chat():
         }), 400
 
     result = process_message(
-        user_message,
-        session_id,
-        user_id
-    )
+        user_message=user_message,
+        session_id=session_id,
+        user_id=user_id,
+        conversation_id=conversation_id
+)
 
     return jsonify({
         "status": "success",

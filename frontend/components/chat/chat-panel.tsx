@@ -101,6 +101,10 @@ const [
   selectedConversationId,
   setSelectedConversationId,
 ] = useState<number | null>(null);
+//new
+const [conversationId, setConversationId] =
+    useState<number | null>(null);
+
   useEffect(() => {
 
     async function initializeConversation() {
@@ -237,6 +241,32 @@ useEffect(() => {
   }, [messages, isSending]);
 
   // =========================================
+
+  function newConversation() {
+
+    const newSession =
+        `session_${crypto.randomUUID()}`;
+
+    saveSessionId(newSession);
+
+    setSessionId(newSession);
+
+    setConversationId(null);
+
+    setMessages([
+        {
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content:
+                "Bonjour ! Je suis l'assistant TDE. Comment puis-je vous aider ?",
+            time: new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+            }),
+        },
+    ]);
+
+}
   // SEND MESSAGE
   // =========================================
 
@@ -278,10 +308,18 @@ useEffect(() => {
       const result = await sendMessage(
         cleanedMessage,
         sessionId,
+        conversationId
       );
 
       const botData = result.data;
-
+      if (
+        botData.conversation_id &&
+        conversationId === null
+    ) {
+        setConversationId(
+            botData.conversation_id
+        );
+    }
       const botMessage: Message = {
         id: crypto.randomUUID(),
         role: "assistant",

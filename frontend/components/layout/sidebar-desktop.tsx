@@ -45,10 +45,13 @@ type SidebarDesktopProps = {
 
 
 export function SidebarDesktop({
-  collapsed,
-  onCollapsedChange,
-  role,
-  sections,
+    collapsed,
+    onCollapsedChange,
+    role,
+    sections,
+    onConversationSelect,
+    onNewConversation,
+    selectedConversationId,
 }: SidebarDesktopProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -237,17 +240,19 @@ const [
                 className="space-y-2"
             >
                 {section.items.map((item) => {
-
                     const Icon = item.icon;
-
                     const active =
                         pathname === item.href;
-
                     return (
-
                         <button
                             key={item.href}
-                            onClick={() => router.push(item.href)}
+                            onClick={() => {
+                                 if (item.title === "Nouvelle conversation") {
+                                        onNewConversation?.();
+                                        return;
+                                    }
+                                router.push(item.href)
+                                }}
                             className={cn(
                                 `
                                 flex
@@ -267,7 +272,6 @@ const [
                                     : "text-[#374151] hover:bg-[#f3f4f6]"
                             )}
                         >
-
                             <Icon
                                 className={cn(
                                     "h-5 w-5 shrink-0",
@@ -276,21 +280,14 @@ const [
                                         : "text-[#6b7280]"
                                 )}
                             />
-
                             {!collapsed && (
                                 <span>{item.title}</span>
                             )}
-
                         </button>
-
                     );
-
                 })}
             </div>
         ))}
-
-
-
     </div>
 
     {/* ================= Historique ================= */}
@@ -331,6 +328,9 @@ const [
 
                         <button
                             key={conversation.conversationId}
+                            onClick = {() =>{
+                                onConversationSelect?.(conversation.conversationId)
+                                }}
                             className="
                                 w-full
                                 rounded-xl

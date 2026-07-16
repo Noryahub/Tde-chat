@@ -18,7 +18,7 @@ from backend.app.utils.ticket_generator import (
 )
 
 
-def process_message(user_message, session_id, user_id):
+def process_message(user_message, session_id, user_id,  conversation_id=None):
 
     # 1. Mémoire — init ou reconstruction depuis DB
     memory = get_memory(session_id)
@@ -185,9 +185,15 @@ def process_message(user_message, session_id, user_id):
 
     # 6. Sauvegarde — uniquement les entités du message courant
     memory.add_bot_turn(content=bot_response)
-    save_conversation(
-        user_id, session_id, user_message,
-        intent, confidence, service, bot_response,
+    conversation_id = save_conversation(
+        user_id=user_id,
+        conversation_id=conversation_id,
+        session_id=session_id,
+        user_message=user_message,
+        intent=intent,
+        confidence=confidence,
+        service=service,
+        bot_response=bot_response,
         localisation=localisation_detected,
         probleme=probleme_detected
     )
@@ -202,5 +208,6 @@ def process_message(user_message, session_id, user_id):
     return {
         "response": bot_response,
         "intent": intent,
+        "conversation_id": conversation_id,
         "ticket_proposal": ticket_proposal,
     }

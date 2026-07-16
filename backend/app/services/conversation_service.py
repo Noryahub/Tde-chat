@@ -1,5 +1,9 @@
 from backend.app.database.db import get_db_connection
 
+#initialisation de la conversation_id a null
+
+#continute de la d'une mm conversation dont l'id est initialise
+
 
 def get_user_history(user_id):
 
@@ -112,8 +116,11 @@ def get_session_history(
 
         cursor.close()
         conn.close()
+
+#modification de l'enregistrement des conversations
 def save_conversation(
     user_id,
+    conversation_id,
     session_id,
     user_message,
     intent,
@@ -124,8 +131,8 @@ def save_conversation(
     probleme=None
 ):
 
-    if intent in ("followup", "fallback"):
-        return
+    #if intent in ("followup", "fallback"):
+       # return
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -133,31 +140,45 @@ def save_conversation(
     try:
 
         # Recherche conversation existante
-        cursor.execute(
-            """
-            SELECT id
-            FROM conversations
-            WHERE session_id = %s
-            """,
-            (session_id,)
-        )
+        if conversation_id is None:
 
-        row = cursor.fetchone()
-
-        if row:
-
-            conversation_id = row[0]
-
+            cursor.execute(
+                """
+                INSERT INTO conversations(
+                    user_id,
+                    session_id,
+                    title,
+                    predicted_intent,
+                    confidence_score,
+                    orientation_service,
+                    localisation,
+                    probleme
+                )
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                """,
+                (
+                    user_id,
+                    session_id,
+                    user_message[:60].strip(),  # premier message = titre
+                    intent,
+                    confidence,
+                    service,
+                    localisation,
+                    probleme
+                )
+            )
+            conversation_id = cursor.lastrowid
+        else:
             cursor.execute(
                 """
                 UPDATE conversations
                 SET
-                    predicted_intent = %s,
-                    confidence_score = %s,
-                    orientation_service = %s,
-                    localisation = %s,
-                    probleme = %s
-                WHERE id = %s
+                    predicted_intent=%s,
+                    confidence_score=%s,
+                    orientation_service=%s,
+                    localisation=%s,
+                    probleme=%s
+                WHERE id=%s
                 """,
                 (
                     intent,
@@ -168,34 +189,6 @@ def save_conversation(
                     conversation_id
                 )
             )
-
-        else:
-
-            cursor.execute(
-                """
-                INSERT INTO conversations (
-                    user_id,
-                    session_id,
-                    predicted_intent,
-                    confidence_score,
-                    orientation_service,
-                    localisation,
-                    probleme
-                )
-                VALUES (%s,%s,%s,%s,%s,%s,%s)
-                """,
-                (
-                    user_id,
-                    session_id,
-                    intent,
-                    confidence,
-                    service,
-                    localisation,
-                    probleme
-                )
-            )
-
-            conversation_id = cursor.lastrowid
 
         # Message utilisateur
         cursor.execute(
@@ -263,7 +256,7 @@ def save_conversation(
             )
 
         conn.commit()
-
+        return conversation_id
     except Exception as e:
 
         print(
