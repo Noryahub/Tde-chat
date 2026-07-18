@@ -79,6 +79,7 @@ export function ChatProvider({
     function createConversation(
         conversation: Conversation
     ) {
+        console.log("CREATE", conversation.conversationId);
         setConversations(prev => [
             ...prev,
             conversation,

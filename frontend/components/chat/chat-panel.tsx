@@ -27,6 +27,14 @@ type Message = {
   content: string;
   time: string;
 };
+const WELCOME_MESSAGE: Message = {
+    id: "welcome",
+    role: "assistant",
+    content:
+        "Bonjour ! Je suis l'assistant TDE. Comment puis-je vous aider ?",
+    time: "",
+};
+
 import ChatHistory
 from "./chat-history";
 
@@ -72,10 +80,10 @@ export default function ChatPanel() {
 
     const messages =
         currentConversation?.messages ??
-        [welcomeMessage];
-console.log("selectedConversationId =", selectedConversationId);
-console.log("currentConversation =", currentConversation);
-console.log("messages =", messages);
+        [WELCOME_MESSAGE];
+        console.log("selectedConversationId =", selectedConversationId);
+        console.log("currentConversation =", currentConversation);
+        console.log("messages =", messages);
     const isAuthenticated =
       userId !== null;
 
@@ -293,25 +301,45 @@ useEffect(() => {
       hour: "2-digit",
       minute: "2-digit",
     });
-
     const userMessage: Message = {
       id: crypto.randomUUID(),
       role: "user",
       content: cleanedMessage,
       time: now,
     };
-
-
     setInput("");
     setIsSending(true);
+    let currentConversationId = conversationId;
+        // Affichage immédiat du message utilisateur
+           if (currentConversationId !== null) {
+                appendMessagesToConversation(
+                    currentConversationId,
+                    [userMessage]
+                );
+            } else {
+                createConversation({
+                    conversationId: -1,
+                    title: cleanedMessage,
+                    createdAt: new Date().toISOString(),
+                    messages: [
+                        welcomeMessage,
+                        userMessage,
+                    ],
+                });
 
+                currentConversationId = -1;
+
+            }
+        const isNewConversation = conversationId === null;
      try {
 
       const result = await sendMessage(
-        cleanedMessage,
-        sessionId!,
-        conversationId
-      );
+            cleanedMessage,
+            sessionId!,
+            currentConversationId === -1
+                ? null
+                : currentConversationId
+        );
 
       const botData = result.data;
       if (
@@ -321,6 +349,8 @@ useEffect(() => {
         setConversationId(
             botData.conversation_id
         );
+        currentConversationId =
+             botData.conversation_id;
     }
       const botMessage: Message = {
         id: crypto.randomUUID(),
@@ -331,37 +361,28 @@ useEffect(() => {
           minute: "2-digit",
         }),
       };
-
-
-
-            if (conversationId === null) {
-
-            createConversation({
-                conversationId: botData.conversation_id,
-                title: cleanedMessage,
-                createdAt: new Date().toISOString(),
-                messages: [
-                    userMessage,
-                    botMessage,
-                ],
-            });
-            console.log("Conversations après création :", conversations);
-            setConversationId(
-                botData.conversation_id
-            );
-
-            setSelectedConversationId(
-                botData.conversation_id
-            );
+        if (isNewConversation) {
+                    setConversations(prev =>
+                    prev.map(c =>
+                        c.conversationId === -1
+                            ? {
+                                  ...c,
+                                  conversationId: botData.conversation_id,
+                                  title: cleanedMessage,
+                                  messages: [...c.messages, botMessage],
+                              }
+                            : c
+                    )
+        );
+            currentConversationId = botData.conversation_id;
+            setConversationId(botData.conversation_id);
+            setSelectedConversationId(botData.conversation_id);
 
         } else {
 
             appendMessagesToConversation(
-                conversationId,
-                [
-                    userMessage,
-                    botMessage,
-                ]
+                currentConversationId!,
+                [botMessage]
             );
 
         }
@@ -380,7 +401,7 @@ useEffect(() => {
           }),
         };
     appendMessagesToConversation(
-            conversationId ?? botData.conversation_id,
+            currentConversationId!,
             [ticketMessage]
         );
       }
@@ -407,9 +428,7 @@ useEffect(() => {
         }
 
     } finally {
-
       setIsSending(false);
-
     }
   }
   console.log("messages", messages);
