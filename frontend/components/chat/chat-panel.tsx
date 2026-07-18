@@ -11,6 +11,7 @@ import {
 import { sendMessage } from "@/services/chat-service";
 import type {Conversation} from "@/types"
 import { useChat } from "@/context/ChatContext";
+
 import {
   loadMessages,
   saveMessages,
@@ -51,8 +52,30 @@ export default function ChatPanel() {
         setConversations,
         sessionId,
         setSessionId,
+        createConversation,
 } = useChat();
 
+    const currentConversation =
+        conversations.find(
+        (   conversation) =>
+                conversation.conversationId ===
+                selectedConversationId
+    );
+
+    const welcomeMessage: Message = {
+        id: "welcome",
+        role: "assistant",
+        content:
+            "Bonjour ! Je suis l'assistant TDE. Comment puis-je vous aider ?",
+        time: "",
+    };
+
+    const messages =
+        currentConversation?.messages ??
+        [welcomeMessage];
+console.log("selectedConversationId =", selectedConversationId);
+console.log("currentConversation =", currentConversation);
+console.log("messages =", messages);
     const isAuthenticated =
       userId !== null;
 
@@ -78,9 +101,7 @@ export default function ChatPanel() {
             );
         }
 
-const [messages, setMessages] =
-  useState<Message[]>([]);
-
+ {/*
     useEffect(() => {
         if (
             selectedConversationId !== null ||
@@ -100,8 +121,25 @@ const [messages, setMessages] =
         conversations,
         selectedConversationId,
     ]);
-
- {/*
+    useEffect(() => {
+        if (
+            selectedConversationId !== null ||
+            conversations.length === 0
+        ) {
+            return;
+        }
+        const lastConversation =
+            conversations[conversations.length - 1];
+        setConversationId(
+            lastConversation.conversationId
+        );
+        setSelectedConversationId(
+            lastConversation.conversationId
+        );
+    }, [
+        conversations,
+        selectedConversationId,
+    ]);
       useEffect(() => {
     async function initializeConversation() {
     // ---------- Utilisateur connecté ----------
@@ -127,7 +165,7 @@ const [messages, setMessages] =
 }
     initializeConversation();
 }, [isAuthenticated, userId]);
-     */}
+
 
 useEffect(() => {
     if (!selectedConversationId) {
@@ -146,6 +184,8 @@ useEffect(() => {
     selectedConversationId,
     conversations,
 ]);
+     */}
+
 
 useEffect(() => {
     console.log(
@@ -211,40 +251,29 @@ useEffect(() => {
 
   // SEND MESSAGE
   // =========================================
-        function updateConversationAfterMessage(
-            userMessage: Message,
-            botMessage: Message,
-            backendConversationId: number
-        ) {
-            const conversation = conversations.find(
-                c => c.conversationId === backendConversationId
-            );
-            if (!conversation) {
-                return;
-            }
-            console.log("Conversation trouvée :", conversation);
-            const updatedConversation = {
-                ...conversation,
-                messages: [
-                    ...conversation.messages,
-                    userMessage,
-                    botMessage,
-                ],
-            };
-            setConversations(prev => {
-                const updated = prev.map(c =>
-                    c.conversationId === backendConversationId
-                        ? updatedConversation
-                        : c
+        function appendMessagesToConversation(
+                conversationId: number,
+                newMessages: Message[]
+            ) {
+                setConversations(prev =>
+                    prev.map(conversation => {
+
+                        if (
+                            conversation.conversationId !== conversationId
+                        ) {
+                            return conversation;
+                        }
+
+                        return {
+                            ...conversation,
+                            messages: [
+                                ...conversation.messages,
+                                ...newMessages,
+                            ],
+                        };
+
+                    })
                 );
-                console.log(
-                    "Conversation mise à jour",
-                    updated.find(
-                        c => c.conversationId === backendConversationId
-                    )
-                );
-                return updated;
-            });
             }
 
   async function handleSubmit(
@@ -272,10 +301,6 @@ useEffect(() => {
       time: now,
     };
 
-    setMessages((prev) => [
-      ...prev,
-      userMessage,
-    ]);
 
     setInput("");
     setIsSending(true);
@@ -307,16 +332,40 @@ useEffect(() => {
         }),
       };
 
-      setMessages((prev) => [
-        ...prev,
-        botMessage,
-      ]);
 
-    updateConversationAfterMessage(
-        userMessage,
-        botMessage,
-        botData.conversation_id
-    );
+
+            if (conversationId === null) {
+
+            createConversation({
+                conversationId: botData.conversation_id,
+                title: cleanedMessage,
+                createdAt: new Date().toISOString(),
+                messages: [
+                    userMessage,
+                    botMessage,
+                ],
+            });
+            console.log("Conversations après création :", conversations);
+            setConversationId(
+                botData.conversation_id
+            );
+
+            setSelectedConversationId(
+                botData.conversation_id
+            );
+
+        } else {
+
+            appendMessagesToConversation(
+                conversationId,
+                [
+                    userMessage,
+                    botMessage,
+                ]
+            );
+
+        }
+
       console.log("BOT DATA :", botData);
       if (botData.ticket_proposal) {
 
@@ -330,30 +379,32 @@ useEffect(() => {
             minute: "2-digit",
           }),
         };
-
-        setMessages((prev) => [
-          ...prev,
-          ticketMessage,
-        ]);
+    appendMessagesToConversation(
+            conversationId ?? botData.conversation_id,
+            [ticketMessage]
+        );
       }
 
     } catch (error) {
 
       console.error(error);
+        const errorMessage: Message = {
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content:
+                "Une erreur est survenue. Veuillez réessayer.",
+            time: new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+            }),
+        };
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          content:
-            "Une erreur est survenue. Veuillez réessayer.",
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        },
-      ]);
+        if (conversationId) {
+            appendMessagesToConversation(
+                conversationId,
+                [errorMessage]
+            );
+        }
 
     } finally {
 

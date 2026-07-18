@@ -33,7 +33,9 @@ type ChatContextType = {
     ) => void;
 
     newConversation: () => void;
-
+    createConversation: (
+        conversation: Conversation
+    ) => void;
 };
 
 const ChatContext =
@@ -66,6 +68,7 @@ export function ChatProvider({
     useState<number | null>(null);
 
     function newConversation() {
+        console.log("NEW CONVERSATION");
         const newSession =
             `session_${crypto.randomUUID()}`;
         saveSessionId(newSession);
@@ -73,6 +76,15 @@ export function ChatProvider({
         setConversationId(null);
         setSelectedConversationId(null);
     }
+    function createConversation(
+        conversation: Conversation
+    ) {
+        setConversations(prev => [
+            ...prev,
+            conversation,
+        ]);
+    }
+
         useEffect(() => {
             async function loadUser() {
                 try {
@@ -125,6 +137,7 @@ export function ChatProvider({
             setConversations,
             sessionId,
             setSessionId,
+            createConversation,
         }}
         >
             {children}

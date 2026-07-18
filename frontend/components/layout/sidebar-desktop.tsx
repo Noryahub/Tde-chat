@@ -48,6 +48,8 @@ const {
     setConversationId,
     selectedConversationId,
     setSelectedConversationId,
+    conversations,
+    setConversations,
     newConversation,
 } = useChat();
   // ======================================
@@ -61,24 +63,10 @@ const {
 } = useAuth();
 
 //initialisation de l etat des conversations
-const [
+{/*const [
   conversations,
   setConversations,
 ] = useState<Conversation[]>([]);
-
-const [
-  loadingHistory,
-  setLoadingHistory,
-] = useState(true);
-
-  // ======================================
-  // LOGOUT
-  // ======================================
-
-  function handleLogout() {
-    logout();
-    }
-
 //chargement de l'historique
         useEffect(() => {
           async function fetchHistory() {
@@ -110,6 +98,23 @@ const [
           isAuthenticated,
           user,
         ]);
+    const [
+  loadingHistory,
+  setLoadingHistory,
+] = useState(true);
+*/}
+
+
+
+  // ======================================
+  // LOGOUT
+  // ======================================
+
+  function handleLogout() {
+    logout();
+    }
+
+
 
   return (
 
@@ -281,15 +286,11 @@ const [
                     [&::-webkit-scrollbar-thumb]:bg-gray-300
                 "
             >
-                {loadingHistory ? (
-                    <p className="px-2 text-xs text-gray-400">
-                        Chargement...
-                    </p>
-                ) : conversations.length === 0 ? (
-                    <p className="px-2 text-xs text-gray-400">
-                        Aucun historique
-                    </p>
-                ) : (
+                   {conversations.length === 0 ? (
+                            <p className="px-2 text-xs text-gray-400">
+                                Aucun historique
+                            </p>
+                        )  : (
                     conversations.map((conversation) => (
                         <button
                             key={conversation.conversationId}

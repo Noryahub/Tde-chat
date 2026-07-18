@@ -7,7 +7,7 @@ export const userSidebarItems: SidebarSection[] = [
     title: "Assistant",
     items: [
         {
-            title: "Nouvel conversation",
+            title: "Nouvelle conversation",
             href:"#",
             icon: Plus,
         },
