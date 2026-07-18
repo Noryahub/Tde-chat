@@ -47,10 +47,11 @@ export default function ChatPanel() {
         setConversationId,
         selectedConversationId,
         setSelectedConversationId,
-        newConversation,
+        conversations,
+        setConversations,
         sessionId,
         setSessionId,
-    } = useChat();
+} = useChat();
 
     const isAuthenticated =
       userId !== null;
@@ -77,56 +78,40 @@ export default function ChatPanel() {
             );
         }
 
-
 const [messages, setMessages] =
   useState<Message[]>([]);
 
-const [conversations, setConversations] =
-  useState<Conversation[]>([]);
-
-  useEffect(() => {
-    async function initializeConversation() {
-
-    // ---------- Utilisateur connecté ----------
-    if (isAuthenticated && userId) {
-
-        const conversations =
-            await loadConversations(userId);
-
-        setConversations(conversations);
-
-        if (conversations.length > 0) {
-
-            // on sélectionne automatiquement la dernière conversation
-
-            const lastConversation =
-                conversations[conversations.length - 1];
-
-            setConversationId(
-                lastConversation.conversationId
-            );
-
-            setSelectedConversationId(
-                lastConversation.conversationId
-            );
-
+    useEffect(() => {
+        if (
+            selectedConversationId !== null ||
+            conversations.length === 0
+        ) {
+            return;
         }
+        const lastConversation =
+            conversations[conversations.length - 1];
+        setConversationId(
+            lastConversation.conversationId
+        );
+        setSelectedConversationId(
+            lastConversation.conversationId
+        );
+    }, [
+        conversations,
+        selectedConversationId,
+    ]);
 
-        return;
-    }
-
+ {/*
+      useEffect(() => {
+    async function initializeConversation() {
+    // ---------- Utilisateur connecté ----------
     // ---------- Utilisateur anonyme ----------
-
     const loadedMessages =
         await loadMessages(false);
-
     if (loadedMessages.length > 0) {
-
         setMessages(loadedMessages);
-
         return;
     }
-
     setMessages([
         {
             id: crypto.randomUUID(),
@@ -142,6 +127,7 @@ const [conversations, setConversations] =
 }
     initializeConversation();
 }, [isAuthenticated, userId]);
+     */}
 
 useEffect(() => {
     if (!selectedConversationId) {
@@ -225,6 +211,41 @@ useEffect(() => {
 
   // SEND MESSAGE
   // =========================================
+        function updateConversationAfterMessage(
+            userMessage: Message,
+            botMessage: Message,
+            backendConversationId: number
+        ) {
+            const conversation = conversations.find(
+                c => c.conversationId === backendConversationId
+            );
+            if (!conversation) {
+                return;
+            }
+            console.log("Conversation trouvée :", conversation);
+            const updatedConversation = {
+                ...conversation,
+                messages: [
+                    ...conversation.messages,
+                    userMessage,
+                    botMessage,
+                ],
+            };
+            setConversations(prev => {
+                const updated = prev.map(c =>
+                    c.conversationId === backendConversationId
+                        ? updatedConversation
+                        : c
+                );
+                console.log(
+                    "Conversation mise à jour",
+                    updated.find(
+                        c => c.conversationId === backendConversationId
+                    )
+                );
+                return updated;
+            });
+            }
 
   async function handleSubmit(
     event: FormEvent<HTMLFormElement>
@@ -290,6 +311,12 @@ useEffect(() => {
         ...prev,
         botMessage,
       ]);
+
+    updateConversationAfterMessage(
+        userMessage,
+        botMessage,
+        botData.conversation_id
+    );
       console.log("BOT DATA :", botData);
       if (botData.ticket_proposal) {
 
