@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { getCurrentUser } from "@/services/auth-service";
+import { useAuth } from "@/hooks/use-auth";
 import {
   Bot,
   SendHorizontal,
@@ -51,8 +51,7 @@ export default function ChatPanel() {
 
 
 
-    const [userId, setUserId] =
-      useState<number | null>(null);
+    const { isAuthenticated } = useAuth();
 
     const {
         conversationId,
@@ -87,8 +86,6 @@ export default function ChatPanel() {
         console.log("selectedConversationId =", selectedConversationId);
         console.log("currentConversation =", currentConversation);
         console.log("messages =", messages);
-    const isAuthenticated =
-      userId !== null;
 
         function handleConversationSelect(
             conversationId: number
@@ -98,17 +95,6 @@ export default function ChatPanel() {
             );
             setConversationId(
                 conversationId
-            );
-            const conversation =
-                conversations.find(
-                    c =>
-                        c.conversationId ===
-                        conversationId
-                );
-            if (!conversation)
-                return;
-            setMessages(
-                conversation.messages
             );
         }
 
@@ -141,25 +127,6 @@ useEffect(() => {
         saveSessionId(savedSession);
     }
     setSessionId(savedSession);
-}, []);
-  //const userId = localStorage.getItem("user_id");
-
-  useEffect(() => {
-  async function loadUser() {
-    try {
-      const response =
-        await getCurrentUser();
-      setUserId(
-        Number(response.user.id)
-      );
-    } catch (error) {
-      console.log(
-        "Utilisateur anonyme"
-      );
-      setUserId(null);
-    }
-  }
-  loadUser();
 }, []);
   // =========================================
   // AUTO SCROLL

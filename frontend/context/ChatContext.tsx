@@ -3,14 +3,13 @@ import {
     createContext,
     useContext,
     useState,
+    useEffect,
     ReactNode,
 } from "react";
 
-import { useEffect } from "react";
 import { loadConversations } from "@/storage/chat-storage";
-import { getCurrentUser } from "@/services/auth-service";
-
 import { saveSessionId } from "@/storage/chat-storage";
+import { useAuth } from "@/hooks/use-auth";
 import type { Conversation } from "@/types";
 
 type ChatContextType = {
@@ -42,6 +41,7 @@ const ChatContext =
     createContext<
         ChatContextType | undefined
     >(undefined);
+
 export function ChatProvider({
     children,
 }:{
@@ -62,10 +62,22 @@ export function ChatProvider({
     ] = useState<Conversation[]>([]);
 
     const [sessionId, setSessionId] =
-
     useState<string | null>(null);
-    const [userId, setUserId] =
-    useState<number | null>(null);
+
+    // ======================================
+    // AUTHENTIFICATION — source unique : AuthProvider
+    // ======================================
+    const {
+        user,
+        isAuthenticated,
+        isLoading: isAuthLoading,
+    } = useAuth();
+
+    const userId = user?.id ? Number(user.id) : null;
+
+    // ======================================
+    // FONCTIONS DE CONVERSATION
+    // ======================================
 
     function newConversation() {
         console.log("NEW CONVERSATION");
@@ -76,6 +88,7 @@ export function ChatProvider({
         setConversationId(null);
         setSelectedConversationId(null);
     }
+
     function createConversation(
         conversation: Conversation
     ) {
@@ -86,36 +99,33 @@ export function ChatProvider({
         ]);
     }
 
-        useEffect(() => {
-            async function loadUser() {
-                try {
-                    const response =
-                        await getCurrentUser();
-                        console.log("CURRENT USER =", response);
-                    setUserId(
-                        Number(response.user.id)
-                    );
-                    console.log("USER ID =", Number(response.user.id));
-                } catch {
-                    setUserId(null);
-                }
-            }
-            loadUser();
-        }, []);
+    // ======================================
+    // CHARGEMENT DE L'HISTORIQUE
+    // Attend que AuthProvider ait restauré la session
+    // avant de charger les conversations.
+    // ======================================
+    useEffect(() => {
+        // Attendre la fin de la restauration de la session
+        if (isAuthLoading) {
+            return;
+        }
 
-        useEffect(() => {
-            async function initializeConversations() {
-                    console.log("userId =", userId);
-                    if (!userId) {
-                        setConversations([]);
-                        return;
-                    }
-                    const history =
-                        await loadConversations(userId);
-                    setConversations(history);
-                }
-                initializeConversations();
-    }, [userId]);
+        // Utilisateur non connecté : vider l'historique
+        if (!isAuthenticated || !userId) {
+            setConversations([]);
+            return;
+        }
+
+        // Utilisateur connecté : charger les conversations
+        console.log("ChatProvider → loadConversations pour userId =", userId);
+        async function loadHistory() {
+            const history = await loadConversations(userId!);
+            console.log("ChatProvider → setConversations", history.length, "conversations");
+            setConversations(history);
+        }
+
+        loadHistory();
+    }, [isAuthLoading, isAuthenticated, userId]);
 
     useEffect(() => {
         console.log(
@@ -145,6 +155,7 @@ export function ChatProvider({
         </ChatContext.Provider>
     );
 }
+
 export function useChat(){
     const context =
         useContext(ChatContext);
