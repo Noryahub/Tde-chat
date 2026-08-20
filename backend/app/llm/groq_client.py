@@ -4,6 +4,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+GROQ_MODEL = os.getenv(
+    "GROQ_MODEL",
+    "openai/gpt-oss-20b" # "llama-3.1-8b-instant"
+)
+
 _client = None
 
 def _get_client():
@@ -19,7 +24,7 @@ def generate_response(prompt: str) -> str:
     try:
         client = _get_client()
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model=GROQ_MODEL,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.3,
             max_tokens=512

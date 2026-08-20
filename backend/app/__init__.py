@@ -7,6 +7,15 @@ from backend.app.routes.ticket_routes import (
     ticket_bp
 )
 from backend.app.routes.history_routes import history_bp
+from groq import Groq
+import os
+
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+models = client.models.list()
+
+for model in models.data:
+    print(model.id)
 def create_app():
 
     app = Flask(__name__)
