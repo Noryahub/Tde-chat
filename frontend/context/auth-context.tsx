@@ -3,7 +3,12 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { login as loginRequest, register as registerRequest } from "@/services/auth-service";
+import {
+  exchangeGoogleLogin,
+  login as loginRequest,
+  register as registerRequest,
+  startGoogleLogin,
+} from "@/services/auth-service";
 import type { AuthSession, AuthUser, LoginPayload, RegisterPayload, UserRole } from "@/types";
 import { clearChatStorage } from "@/storage/chat-storage";
 
@@ -14,6 +19,8 @@ type AuthContextValue = {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (payload: LoginPayload) => Promise<void>;
+  loginWithGoogle: (sessionId: string, redirectPath?: string) => Promise<void>;
+  completeGoogleLogin: (code: string) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<void>;
   logout: () => void;
 };
@@ -86,6 +93,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [router]
   );
 
+  const loginWithGoogle = useCallback(
+    async (
+      sessionId: string,
+      redirectPath = "/user/chat"
+    ) => {
+      const response = await startGoogleLogin(
+        sessionId,
+        redirectPath
+      );
+
+      window.location.href = response.auth_url;
+    },
+    []
+  );
+
+  const completeGoogleLogin = useCallback(
+    async (code: string) => {
+      const nextSession = await exchangeGoogleLogin(code);
+      persistSession(nextSession);
+      setSession(nextSession);
+      router.replace("/user/chat");
+    },
+    [router]
+  );
+
   const logout = useCallback(async () => {
 
   // Suppression de la session utilisateur
@@ -110,10 +142,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isAuthenticated: Boolean(session?.token),
       isLoading,
       login,
+      loginWithGoogle,
+      completeGoogleLogin,
       register,
       logout,
     }),
-    [isLoading, login, logout, register, session]
+    [
+      completeGoogleLogin,
+      isLoading,
+      login,
+      loginWithGoogle,
+      logout,
+      register,
+      session,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

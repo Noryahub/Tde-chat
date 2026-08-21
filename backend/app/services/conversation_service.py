@@ -224,37 +224,6 @@ def save_conversation(
             )
         )
 
-        # Création d'un signalement
-        if (
-            intent == "signaler_probleme"
-            and (localisation or probleme)
-        ):
-
-            cursor.execute(
-                """
-                INSERT INTO signalements (
-                    conversation_id,
-                    user_id,
-                    session_id,
-                    localisation,
-                    probleme,
-                    intent,
-                    statut
-                )
-                VALUES (
-                    %s,%s,%s,%s,%s,%s,'nouveau'
-                )
-                """,
-                (
-                    conversation_id,
-                    user_id,
-                    session_id,
-                    localisation,
-                    probleme,
-                    intent
-                )
-            )
-
         conn.commit()
         return conversation_id
     except Exception as e:

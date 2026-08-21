@@ -8,7 +8,6 @@ import {
 } from "react";
 
 import { loadConversations } from "@/storage/chat-storage";
-import { saveSessionId } from "@/storage/chat-storage";
 import { useAuth } from "@/hooks/use-auth";
 import type { Conversation } from "@/types";
 
@@ -81,10 +80,6 @@ export function ChatProvider({
 
     function newConversation() {
         console.log("NEW CONVERSATION");
-        const newSession =
-            `session_${crypto.randomUUID()}`;
-        saveSessionId(newSession);
-        setSessionId(newSession);
         setConversationId(null);
         setSelectedConversationId(null);
     }

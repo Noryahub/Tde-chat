@@ -1,11 +1,15 @@
 import { post } from "@/services/api";
-import type { ApiResponse } from "@/types";
+import type {
+  AnonymousQuota,
+  ApiResponse,
+} from "@/types";
 
 export type ChatData = {
   response: string;
   intent: string;
   ticket_proposal: boolean;
   conversation_id: number;
+  quota?: AnonymousQuota;
 };
 type ChatResponse = ApiResponse<ChatData>;
 

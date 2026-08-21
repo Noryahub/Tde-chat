@@ -6,6 +6,25 @@ type RequestOptions = {
   headers?: HeadersInit;
 };
 
+export class ApiError extends Error {
+  status: number;
+  payload: unknown;
+  code?: string;
+
+  constructor(
+    message: string,
+    status: number,
+    payload: unknown,
+    code?: string
+  ) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.payload = payload;
+    this.code = code;
+  }
+}
+
 function getToken(): string | null {
 
   if (typeof window === "undefined") {
@@ -62,6 +81,8 @@ async function request<T>(
 
       mode: "cors",
 
+      credentials: "include",
+
       headers: {
         "Content-Type":
           "application/json",
@@ -84,20 +105,27 @@ async function request<T>(
 
     let errorMessage =
       `HTTP ${response.status}`;
+    let errorPayload: unknown = null;
+    let errorCode: string | undefined;
 
     try {
 
       const error =
         await response.json();
+      errorPayload = error;
 
       errorMessage =
         error.message ||
         errorMessage;
+      errorCode = error.error;
 
     } catch {}
 
-    throw new Error(
-      errorMessage
+    throw new ApiError(
+      errorMessage,
+      response.status,
+      errorPayload,
+      errorCode
     );
   }
 

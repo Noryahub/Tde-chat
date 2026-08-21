@@ -1,6 +1,7 @@
 import { del, get, patch, post } from "@/services/api";
 
 import type {
+  AuthSession,
   LoginPayload,
   RegisterPayload,
   User,
@@ -14,7 +15,7 @@ import type {
 export async function login(
   payload: LoginPayload
 ) {
-  return post("/auth/login", {
+  return post<AuthSession>("/auth/login", {
     email: payload.email,
     password: payload.password,
   });
@@ -27,11 +28,14 @@ export async function login(
 export async function register(
   payload: RegisterPayload
 ) {
-  return post("/auth/register", {
+  return post<{ status: string; message: string; user_id: number }>(
+    "/auth/register",
+    {
     nom: payload.nom,
     email: payload.email,
     password: payload.password,
-  });
+    }
+  );
 }
 
 // =========================================
@@ -39,7 +43,10 @@ export async function register(
 // =========================================
 
 export async function getCurrentUser() {
-  return get("/auth/me");
+  return get<{
+    status: string;
+    user: User;
+  }>("/auth/me");
 }
 
 // =========================================
@@ -48,6 +55,41 @@ export async function getCurrentUser() {
 
 export function logout() {
   localStorage.removeItem("token");
+}
+
+// =========================================
+// GOOGLE OAUTH
+// =========================================
+
+export type GoogleStartResponse = {
+  status: "success";
+  auth_url: string;
+};
+
+export async function startGoogleLogin(
+  sessionId: string,
+  redirectPath = "/user/chat"
+) {
+  return post<GoogleStartResponse>(
+    "/auth/google/start",
+    {
+      session_id: sessionId,
+      redirect_path: redirectPath,
+    }
+  );
+}
+
+export async function exchangeGoogleLogin(
+  code: string
+) {
+  return post<
+    AuthSession & {
+      attached_conversations?: number;
+    }
+  >(
+    "/auth/google/exchange",
+    { code }
+  );
 }
 
 // =========================================

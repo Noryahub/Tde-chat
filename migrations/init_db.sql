@@ -22,7 +22,14 @@ CREATE TABLE IF NOT EXISTS users (
 
     email VARCHAR(191) NOT NULL UNIQUE,
 
-    password VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NULL,
+
+    auth_provider VARCHAR(30)
+    NOT NULL DEFAULT 'password',
+
+    provider_subject VARCHAR(191) NULL,
+
+    email_verified BOOLEAN DEFAULT FALSE,
 
     role ENUM(
         'user',
@@ -47,6 +54,9 @@ ON users(email);
 
 CREATE INDEX idx_users_role
 ON users(role);
+
+CREATE UNIQUE INDEX idx_users_provider_subject
+ON users(auth_provider, provider_subject);
 
 
 CREATE TABLE IF NOT EXISTS intents (
@@ -87,7 +97,7 @@ CREATE TABLE IF NOT EXISTS conversations (
 
     user_id INT NULL,
 
-    session_id CHAR(36) NOT NULL,
+    session_id VARCHAR(100) NOT NULL,
 
     title VARCHAR(255),
 
@@ -121,6 +131,79 @@ ON conversations(session_id);
 
 CREATE INDEX idx_conv_intent
 ON conversations(predicted_intent);
+
+CREATE TABLE IF NOT EXISTS anonymous_sessions (
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    session_id VARCHAR(100) NOT NULL UNIQUE,
+
+    messages_used INT NOT NULL DEFAULT 0,
+
+    messages_limit INT NOT NULL DEFAULT 5,
+
+    created_at TIMESTAMP
+    DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at TIMESTAMP
+    DEFAULT CURRENT_TIMESTAMP
+    ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_anonymous_sessions_session
+ON anonymous_sessions(session_id);
+
+CREATE TABLE IF NOT EXISTS oauth_login_states (
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    state_hash CHAR(64) NOT NULL UNIQUE,
+
+    session_id VARCHAR(100) NOT NULL,
+
+    redirect_path VARCHAR(255) NOT NULL,
+
+    created_at TIMESTAMP
+    DEFAULT CURRENT_TIMESTAMP,
+
+    expires_at TIMESTAMP NOT NULL,
+
+    used_at TIMESTAMP NULL
+);
+
+CREATE INDEX idx_oauth_login_states_state
+ON oauth_login_states(state_hash);
+
+CREATE INDEX idx_oauth_login_states_expires
+ON oauth_login_states(expires_at);
+
+CREATE TABLE IF NOT EXISTS oauth_exchange_codes (
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    code_hash CHAR(64) NOT NULL UNIQUE,
+
+    user_id INT NOT NULL,
+
+    attached_conversations INT NOT NULL DEFAULT 0,
+
+    created_at TIMESTAMP
+    DEFAULT CURRENT_TIMESTAMP,
+
+    expires_at TIMESTAMP NOT NULL,
+
+    used_at TIMESTAMP NULL,
+
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE
+);
+
+CREATE INDEX idx_oauth_exchange_codes_code
+ON oauth_exchange_codes(code_hash);
+
+CREATE INDEX idx_oauth_exchange_codes_expires
+ON oauth_exchange_codes(expires_at);
 
 CREATE TABLE IF NOT EXISTS messages (
 
@@ -156,7 +239,7 @@ CREATE TABLE IF NOT EXISTS signalements (
 
     conversation_id INT,
     user_id INT NULL,
-    session_id CHAR(36),
+    session_id VARCHAR(100),
     localisation VARCHAR(100),
     probleme VARCHAR(150),
     intent VARCHAR(100),

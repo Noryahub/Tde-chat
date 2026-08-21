@@ -1,6 +1,5 @@
 from backend.app.services.conversation_service import save_conversation, get_session_history
 from backend.app.dialogue.dialogue_manager import decision_process
-from backend.app.responses.response_generator import get_response_from_db
 from nlu.intent import process_predict
 from nlu.ner import extract_entities
 from backend.app.memory.memory_store import get_memory
@@ -9,110 +8,12 @@ from backend.app.llm.prompt_builder import build_prompt
 from backend.app.llm.groq_client import generate_response
 from backend.app.validation.response_validator import validate_response
 from backend.app.services.orientation_service import get_service, get_service_info, normalize_probleme
-from backend.app.constants.ticket_intents import (
-    TICKET_INTENTS
-)
-from backend.app.repositories.ticket_repository import create_ticket
-from backend.app.utils.ticket_generator import (
-    generate_ticket_number
-)
-
-
 def process_message(user_message, session_id, user_id,  conversation_id=None):
 
     # 1. Mémoire — init ou reconstruction depuis DB
     memory = get_memory(session_id)
     print("CTX =", memory.get_context())
     #context
-    ctx = memory.get_context()
-    ticket_step = ctx.get("ticket_step")
-    if ticket_step == "telephone":
-        memory.update_context({
-            "telephone": user_message,
-            "ticket_step": "localisation"
-        })
-
-        return {
-            "response":
-                "Merci. Quelle est votre localisation ?",
-            "intent": "ticket_creation",
-            "ticket_proposal": False
-        }
-    if ticket_step == "localisation":
-        memory.update_context({
-            "ticket_localisation": user_message,
-            "ticket_step": "description"
-        })
-
-        return {
-            "response":
-                "Merci. Décrivez brièvement votre problème.",
-            "intent": "ticket_creation",
-            "ticket_proposal": False
-        }
-    if ticket_step == "description":
-        telephone = ctx.get("telephone")
-        localisation = ctx.get("ticket_localisation")
-        description = user_message
-
-        ticket_number = generate_ticket_number()
-
-        create_ticket(
-            ticket_number=ticket_number,
-            nom=None,
-            email=None,
-            telephone=telephone,
-            localisation=localisation,
-            description=description,
-            intent=ctx.get("probleme")
-        )
-
-        memory.clear_ticket_context()
-
-        return {
-            "response":
-                f"Votre ticket {ticket_number} a bien été créé. Nos équipes reviendront vers vous dans les meilleurs délais.",
-            "intent": "ticket_created",
-            "ticket_proposal": False
-        }
-    user_lower = user_message.lower().strip()
-    if (
-            ctx.get("ticket_proposal")
-            and user_lower in [
-        "oui",
-        "ok",
-        "yes",
-        "d'accord"
-    ]
-    ):
-        memory.update_context({
-            "ticket_proposal": False,
-            "ticket_step": "telephone"
-        })
-
-        return {
-            "response":
-                "Très bien. Veuillez renseigner votre numéro de téléphone.",
-            "intent": "ticket_creation",
-            "ticket_proposal": False
-        }
-    if (
-            ctx.get("ticket_proposal")
-            and user_lower in [
-        "non",
-        "no"
-    ]
-    ):
-        memory.update_context({
-            "ticket_proposal": False
-        })
-
-        return {
-            "response":
-                "Très bien. N'hésitez pas à revenir vers moi si vous avez besoin d'assistance.",
-            "intent": "ticket_refused",
-            "ticket_proposal": False
-        }
     if len(memory.history) == 0:
         db_history = get_session_history(session_id)
         if db_history:
@@ -164,23 +65,17 @@ def process_message(user_message, session_id, user_id,  conversation_id=None):
     except Exception as e:
         print(f"Erreur RAG/LLM : {e}")
 
-    # 5. Fallback — si RAG/LLM échoue
+    # 5. Fallback — uniquement si RAG/LLM échoue (DM neutre en dernier recours)
     if not bot_response:
-        print("→ Fallback Dialogue Manager")
-        try:
-            decision = get_response_from_db(intent, confidence)
-        except Exception:
-            decision = None
-
-        if not decision:
-            decision = decision_process(
-                intent,
-                session_id=session_id,
-                confidence=confidence,
-                user_message=user_message
-            )
-
-        bot_response = decision.get("response", "Je n'ai pas compris votre demande.")
+        decision = decision_process(
+            intent,
+            session_id=session_id,
+            confidence=confidence,
+            user_message=user_message
+        )
+        bot_response = decision.get("response", "")
+        if not bot_response:
+            bot_response = "Les informations disponibles ne permettent pas de répondre précisément à cette question."
         service = get_service(intent)
 
     # 6. Sauvegarde — uniquement les entités du message courant
@@ -197,14 +92,9 @@ def process_message(user_message, session_id, user_id,  conversation_id=None):
         localisation=localisation_detected,
         probleme=probleme_detected
     )
-    # gestion des tickets
-    ticket_proposal = (
-            intent in TICKET_INTENTS
-    )
-    if ticket_proposal:
-        memory.update_context({
-            "ticket_proposal": True
-        })
+    # Le chatbot est strictement informationnel : aucune proposition
+    # d'action, de ticket ou de suivi n'est déclenchée automatiquement.
+    ticket_proposal = False
     return {
         "response": bot_response,
         "intent": intent,

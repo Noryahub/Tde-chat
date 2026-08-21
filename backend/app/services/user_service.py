@@ -75,6 +75,9 @@ def get_user_by_email(email):
             nom,
             email,
             role,
+            auth_provider,
+            provider_subject,
+            email_verified,
             created_at
         FROM users
         WHERE email = %s
@@ -94,6 +97,217 @@ def get_user_by_email(email):
 
     finally:
 
+        cursor.close()
+        conn.close()
+
+
+def get_user_by_provider_subject(auth_provider, provider_subject):
+
+    conn = get_db_connection()
+
+    if not conn:
+        return None
+
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute(
+            """
+            SELECT
+                id,
+                nom,
+                email,
+                role,
+                auth_provider,
+                provider_subject,
+                email_verified,
+                is_active
+            FROM users
+            WHERE auth_provider = %s
+              AND provider_subject = %s
+            """,
+            (
+                auth_provider,
+                provider_subject
+            )
+        )
+
+        return cursor.fetchone()
+
+    except Exception as e:
+        logging.error(f"Erreur récupération utilisateur OAuth : {e}")
+        return None
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def get_or_create_google_user(
+    email,
+    nom,
+    provider_subject,
+    email_verified
+):
+
+    existing = get_user_by_provider_subject(
+        "google",
+        provider_subject
+    )
+
+    if existing:
+        update_last_login(existing["id"])
+        return existing, None
+
+    existing_by_email = get_user_by_email(email)
+
+    if existing_by_email:
+        linked_user, error = link_google_to_existing_user(
+            user_id=existing_by_email["id"],
+            provider_subject=provider_subject,
+            email_verified=email_verified
+        )
+
+        if error:
+            return None, error
+
+        return linked_user, None
+
+    return create_google_user(
+        email=email,
+        nom=nom,
+        provider_subject=provider_subject,
+        email_verified=email_verified
+    )
+
+
+def create_google_user(
+    email,
+    nom,
+    provider_subject,
+    email_verified
+):
+
+    conn = get_db_connection()
+
+    if not conn:
+        return None, "Erreur connexion base de données"
+
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            """
+            INSERT INTO users (
+                nom,
+                email,
+                password,
+                role,
+                auth_provider,
+                provider_subject,
+                email_verified,
+                last_login
+            )
+            VALUES (%s, %s, NULL, 'user', 'google', %s, %s, CURRENT_TIMESTAMP)
+            """,
+            (
+                nom,
+                email,
+                provider_subject,
+                email_verified
+            )
+        )
+
+        user_id = cursor.lastrowid
+        conn.commit()
+
+        return get_user_by_id(user_id), None
+
+    except Exception as e:
+        conn.rollback()
+        logging.error(f"Erreur création utilisateur Google : {e}")
+        return None, "Erreur serveur"
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def link_google_to_existing_user(
+    user_id,
+    provider_subject,
+    email_verified
+):
+
+    conn = get_db_connection()
+
+    if not conn:
+        return None, "Erreur connexion base de données"
+
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            """
+            UPDATE users
+            SET auth_provider = 'google',
+                provider_subject = %s,
+                email_verified = %s,
+                last_login = CURRENT_TIMESTAMP
+            WHERE id = %s
+              AND (
+                    provider_subject IS NULL
+                    OR provider_subject = %s
+                  )
+            """,
+            (
+                provider_subject,
+                email_verified,
+                user_id,
+                provider_subject
+            )
+        )
+
+        if cursor.rowcount != 1:
+            conn.rollback()
+            return None, "Compte déjà associé à un autre fournisseur"
+
+        conn.commit()
+        return get_user_by_id(user_id), None
+
+    except Exception as e:
+        conn.rollback()
+        logging.error(f"Erreur liaison utilisateur Google : {e}")
+        return None, "Erreur serveur"
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def update_last_login(user_id):
+
+    conn = get_db_connection()
+
+    if not conn:
+        return
+
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            """
+            UPDATE users
+            SET last_login = CURRENT_TIMESTAMP
+            WHERE id = %s
+            """,
+            (user_id,)
+        )
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        logging.error(f"Erreur mise à jour last_login : {e}")
+    finally:
         cursor.close()
         conn.close()
 
@@ -203,6 +417,9 @@ def get_user_by_id(user_id):
             nom,
             email,
             role,
+            auth_provider,
+            provider_subject,
+            email_verified,
             is_active,
             last_login,
             created_at,
@@ -287,7 +504,7 @@ def authenticate_user(email, password):
 
             return None
 
-        if check_password_hash(
+        if user["password"] and check_password_hash(
             user["password"],
             password
         ):

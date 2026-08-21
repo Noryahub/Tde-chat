@@ -4,8 +4,9 @@ import type { ReactNode } from "react";
 export type UserRole = "admin" | "user";
 
 export type AuthUser = {
-  id: string;
-  name: string;
+  id: string | number;
+  name?: string;
+  nom?: string;
   email: string;
   role: UserRole;
 };
@@ -35,6 +36,7 @@ export type SidebarConfig = {
 
 export type ApiResponse<T> = {
   status: "success" | "error";
+  error?: string;
   message?: string;
 } & T;
 
@@ -86,4 +88,10 @@ export type Conversation = {
   title: string;
   createdAt: string;
   messages: ChatMessage[];
+};
+
+export type AnonymousQuota = {
+  messages_used: number;
+  messages_limit: number;
+  messages_remaining: number;
 };

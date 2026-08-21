@@ -65,17 +65,26 @@ class ConversationMemory:
     def load_from_db(self, db_history: list):
         """
         Reconstruit la mémoire depuis l'historique DB.
-        db_history : liste de dicts avec clés 'user_message', 'bot_response',
+        db_history : liste de dicts (un par message) avec les clés
+                     'role' ('user'|'bot'), 'content', et optionnellement
                      'intent', 'confidence'
         Appelé au démarrage d'une session existante.
         """
         for row in db_history[-self.window_size:]:  # on garde les N derniers
-            self.add_user_turn(
-                content=row["user_message"],
-                intent=row.get("intent"),
-                confidence=row.get("confidence")
-            )
-            self.add_bot_turn(content=row["bot_response"])
+            role = row.get("role")
+            content = row.get("content")
+
+            if not content:
+                continue
+
+            if role == "bot":
+                self.add_bot_turn(content=content)
+            else:
+                self.add_user_turn(
+                    content=content,
+                    intent=row.get("intent"),
+                    confidence=row.get("confidence")
+                )
 
     def clear_ticket_context(self):
         self.session_context.pop("ticket_proposal", None)
