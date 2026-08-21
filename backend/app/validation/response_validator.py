@@ -1,4 +1,5 @@
 import re
+import unicodedata
 
 # Uniquement les URLs non-TDE — le reste est géré par le prompt
 PATTERNS_HALLUCINATION = [
@@ -8,7 +9,26 @@ PATTERNS_HALLUCINATION = [
 MAX_RESPONSE_LENGTH = 1200
 MIN_RESPONSE_LENGTH = 10
 
-MOTS_FRANCAIS = ["vous", "votre", "nous", "pour", "est", "les", "des", "une", "que"]
+# Mots-outils / fonctions français très fréquents et distincts de l'anglais.
+# Utilisés comme signal positif (présence d'au moins un mot-outil français).
+MOTS_OUTILS_FRANCAIS = {
+    "le", "la", "les", "un", "une", "des", "du", "de", "et", "ou", "que", "qui",
+    "ce", "cette", "je", "tu", "il", "elle", "nous", "vous", "ils", "elles",
+    "est", "sont", "a", "ont", "pour", "par", "sur", "avec", "dans", "en", "au",
+    "aux", "pas", "plus", "ne", "se", "sa", "son", "ses", "leur", "leurs", "mon",
+    "ton", "ma", "ce", "cet", "chez", "vers", "sans", "sous", "entre", "apres",
+    "avant", "pendant", "comme", "mais", "donc", "car", "si", "quand", "comment",
+    "ou", "pourquoi", "quel", "quelle", "notre", "votre", "leur", "meme", "tout",
+    "tous", "toute", "chaque", "ici", "la", "y", "d", "l", "j", "n", "s", "c",
+    "son", "une", "des", "aux", "du", "bonjour", "bonsoir", "merci", "oui",
+    "non", "salut", "information",
+}
+
+# Suffixes morphologiques typiquement français (complémentaire, pas une règle stricte).
+SUFFIXES_FRANCAIS = (
+    "tion", "ment", "eur", "euse", "ique", "able", "ible", "aux", "ence",
+    "ance", "ite", "eaux", "age", "iste", "esse",
+)
 
 # Remplacements pour formulations non conformes
 REPLACEMENTS = {
@@ -54,9 +74,42 @@ def _clean_formulations(response: str) -> str:
 
 
 def _check_langue(response: str) -> bool:
-    response_lower = response.lower()
-    score = sum(1 for mot in MOTS_FRANCAIS if mot in response_lower)
-    return score >= 2
+    """Vérifie raisonnablement qu'une réponse est compatible avec le français.
+
+    Approche positive (présence de signaux français : mots-outils, diacritiques,
+    morphologie) couplée à un garde-fou (ratio) pour éviter qu'une phrase non
+    française ne passe à cause de quelques mots isolés.
+    Ne rejette PAS une phrase française courte ou nominale.
+    """
+    raw_tokens = re.findall(r"[a-zàâäéèêëîïôöùûüç0-9']+", response.lower())
+    if not raw_tokens:
+        return False
+
+    french_like = 0
+    has_function_word = False
+    has_diacritic = False
+
+    for tok in raw_tokens:
+        nfd = unicodedata.normalize("NFD", tok)
+        if any(unicodedata.category(c) == "Mn" for c in nfd):
+            has_diacritic = True
+        stripped = "".join(c for c in nfd if unicodedata.category(c) != "Mn")
+        if stripped in MOTS_OUTILS_FRANCAIS:
+            has_function_word = True
+            french_like += 1
+        elif stripped.endswith(SUFFIXES_FRANCAIS):
+            french_like += 1
+        elif has_diacritic and len(stripped) >= 4:
+            # mot portant un diacritique et suffisamment long → probablement français
+            french_like += 1
+
+    ratio = french_like / len(raw_tokens)
+
+    # Acceptation : assez d'indices français ET
+    # (mot-outil français OU diacritique OU ratio élevé)
+    if french_like >= 2 and (has_function_word or has_diacritic or ratio >= 0.5):
+        return True
+    return False
 
 
 def validate_response(response: str, intent: str = None) -> dict:

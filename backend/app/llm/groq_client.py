@@ -6,7 +6,7 @@ load_dotenv()
 
 GROQ_MODEL = os.getenv(
     "GROQ_MODEL",
-    "openai/gpt-oss-20b" # "llama-3.1-8b-instant"
+    "openai/gpt-oss-120b" # "llama-3.1-8b-instant"
 )
 
 _client = None
