@@ -201,7 +201,7 @@ async function handleGoogleLogin() {
     }
     const cleanedMessage = input.trim();
 
-    if (!cleanedMessage || isSending) {
+    if (!cleanedMessage || isSending || quotaExceeded) {
       return;
     }
 
@@ -249,6 +249,40 @@ async function handleGoogleLogin() {
                 ? null
                 : currentConversationId
         );
+
+      if (result.status === "quota_exceeded") {
+        setQuotaExceeded(true);
+
+        if (isNewConversation) {
+            setConversations(prev =>
+                prev.filter(c => c.conversationId !== -1)
+            );
+            setConversationId(null);
+            setSelectedConversationId(null);
+        } else if (currentConversationId !== null) {
+            setConversations(prev =>
+                prev.map(conversation => {
+                    if (
+                        conversation.conversationId !==
+                        currentConversationId
+                    ) {
+                        return conversation;
+                    }
+
+                    return {
+                        ...conversation,
+                        messages:
+                            conversation.messages.filter(
+                                message =>
+                                    message.id !== userMessage.id
+                            ),
+                    };
+                })
+            );
+        }
+
+        return;
+      }
 
       const botData = result.data;
       if (
@@ -300,7 +334,6 @@ async function handleGoogleLogin() {
 
     } catch (error) {
 
-      console.error(error);
         const quotaExceeded =
             error instanceof ApiError &&
             error.status === 429 &&
@@ -309,6 +342,8 @@ async function handleGoogleLogin() {
         setQuotaExceeded(quotaExceeded);
 
         if (!quotaExceeded) {
+            console.error(error);
+
             const errorMessage: Message = {
                 id: crypto.randomUUID(),
                 role: "assistant",
@@ -767,6 +802,7 @@ async function handleGoogleLogin() {
                   onChange={(event) =>
                     setInput(event.target.value)
                   }
+                  disabled={quotaExceeded}
 
                   onKeyDown={(event) => {
 
@@ -779,7 +815,8 @@ async function handleGoogleLogin() {
 
                       if (
                         input.trim() &&
-                        !isSending
+                        !isSending &&
+                        !quotaExceeded
                       ) {
 
                         handleSubmit(
@@ -820,7 +857,7 @@ async function handleGoogleLogin() {
       <button
         type="submit"
         disabled={
-          !input.trim() || isSending
+          !input.trim() || isSending || quotaExceeded
         }
         className="
           flex
@@ -869,7 +906,7 @@ async function handleGoogleLogin() {
         <p className="mt-1 leading-relaxed">
           Vous avez utilisé vos{" "}
           <strong className="font-semibold">5 messages gratuits</strong>.
-          Connectez-vous pour continuer à utiliser l'assistant TDE.
+          Connectez-vous pour continuer à utiliser l&apos;assistant TDE.
         </p>
 
         <div className="mt-3 flex flex-wrap items-center gap-3">

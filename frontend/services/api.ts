@@ -25,6 +25,33 @@ export class ApiError extends Error {
   }
 }
 
+export class AnonymousQuotaExceededError extends ApiError {
+  constructor(
+    payload: unknown
+  ) {
+    super(
+      "Anonymous quota exceeded",
+      429,
+      payload,
+      "anonymous_quota_exceeded"
+    );
+    this.name = "AnonymousQuotaExceededError";
+  }
+}
+
+export function isAnonymousQuotaExceededError(
+  error: unknown
+): error is ApiError {
+  return (
+    error instanceof AnonymousQuotaExceededError ||
+    (
+      error instanceof ApiError &&
+      error.status === 429 &&
+      error.code === "anonymous_quota_exceeded"
+    )
+  );
+}
+
 function getToken(): string | null {
 
   if (typeof window === "undefined") {
@@ -120,6 +147,15 @@ async function request<T>(
       errorCode = error.error;
 
     } catch {}
+
+    if (
+      response.status === 429 &&
+      errorCode === "anonymous_quota_exceeded"
+    ) {
+      throw new AnonymousQuotaExceededError(
+        errorPayload
+      );
+    }
 
     throw new ApiError(
       errorMessage,
