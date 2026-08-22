@@ -99,22 +99,22 @@ export async function clearMessages(
    Session
 ======================================================= */
 export function loadSessionId():
-string | null {
-  return sessionStorage.getItem(
+  string | null {
+  return localStorage.getItem(
     SESSION_KEY
   );
 }
 export function saveSessionId(
   sessionId: string
 ): void {
-  sessionStorage.setItem(
+  localStorage.setItem(
     SESSION_KEY,
     sessionId
   );
 }
 export function clearSessionId():
-void {
-  sessionStorage.removeItem(
+  void {
+  localStorage.removeItem(
     SESSION_KEY
   );
 }
