@@ -69,6 +69,15 @@ TOPIC_EXPANSION = {
     "reclamation": ["reclamation", "incident", "signalement", "contact", "client"],
     "devis": ["branchement", "cout", "tarif", "montant", "etude"],
     "compteur": ["compteur", "vol", "deplacement", "change", "panne"],
+    # Concepts de contact / coordonnées (génériques, sans aucun numéro codé en dur)
+    "whatsapp": ["whatsapp", "contact", "telephone", "numero"],
+    "telephone": ["telephone", "contact", "numero", "whatsapp", "adresse"],
+    "numero": ["numero", "contact", "telephone", "whatsapp", "adresse", "email", "horaires"],
+    "vert": ["numero", "contact", "telephone"],
+    "contact": ["contact", "telephone", "whatsapp", "adresse", "email", "horaires", "numero"],
+    "adresse": ["adresse", "contact", "telephone", "email"],
+    "email": ["email", "contact", "adresse"],
+    "horaires": ["horaires", "contact", "telephone", "adresse"],
 }
 
 
@@ -136,6 +145,68 @@ def _boilerplate_penalty(text_lower: str) -> float:
     return min(0.6, penalty)
 
 
+# ---------------------------------------------------------------------------
+# Signal FACTUEL : détection de coordonnées / informations de contact dans un
+# chunk. Ce signal ne favorise un chunk factuel QUE lorsque la requête demande
+# ce type d'information (gated par les drapeaux de requête ci-dessous), afin de
+# ne pas attirer un footer de contact vers une requête de branchement.
+# ---------------------------------------------------------------------------
+_PHONE_RE = re.compile(r"\d{2}[\s]?\d{2}[\s]?\d{2}[\s]?\d{2}")
+_EMAIL_RE = re.compile(r"[\w.\-]+@[\w.\-]+")
+
+
+def _chunk_factual_flags(text_lower: str) -> dict:
+    # Normalisation des accents pour les comparaisons de sous-chaînes
+    # (ex. "Numéro Vert" -> "numero vert").
+    tl = _strip_accents(text_lower)
+    return {
+        "whatsapp": "whatsapp" in text_lower,
+        "phone": bool(_PHONE_RE.search(text_lower))
+                 or "telephone" in text_lower
+                 or "numero" in text_lower,
+        "numero_vert": "numero vert" in tl,
+        "email": bool(_EMAIL_RE.search(text_lower)),
+        "url": "http" in text_lower,
+        "tde_url": "tde.tg" in text_lower,
+        "adresse": "adresse" in text_lower,
+        "horaires": "horaires" in text_lower or "heures d" in text_lower,
+    }
+
+
+def _query_contact_flags(q_tokens: list) -> dict:
+    return {
+        "whatsapp": "whatsapp" in q_tokens,
+        "phone": "telephone" in q_tokens or "numero" in q_tokens,
+        "numero_vert": "vert" in q_tokens,
+        "contact": "contact" in q_tokens,
+        "adresse": "adresse" in q_tokens,
+        "email": "email" in q_tokens,
+        "horaires": "horaires" in q_tokens,
+    }
+
+
+def _factual_score(qf: dict, ff: dict) -> float:
+    # Spécificité maximale atteinte (pas une somme) : un chunk factuel précis
+    # (ex. WhatsApp) doit pouvoir battre un chunk procédural long.
+    s = 0.0
+    if qf["whatsapp"] and ff["whatsapp"]:
+        s = max(s, 1.0)
+    if qf["numero_vert"] and ff["numero_vert"]:
+        s = max(s, 1.0)
+    if qf["phone"] and ff["phone"]:
+        s = max(s, 0.6)
+    if qf["email"] and ff["email"]:
+        s = max(s, 0.8)
+    if qf["adresse"] and ff["adresse"]:
+        s = max(s, 0.6)
+    if qf["horaires"] and ff["horaires"]:
+        s = max(s, 0.6)
+    if qf["contact"] and (ff["whatsapp"] or ff["phone"] or ff["email"]
+                          or ff["tde_url"] or ff["adresse"]):
+        s = max(s, 0.5)
+    return s
+
+
 def retrieve(query: str, top_k: int = 3) -> list[dict]:
     _ensure_loaded()
 
@@ -184,6 +255,9 @@ def retrieve(query: str, top_k: int = 3) -> list[dict]:
     # Termes thématiques détectés dans la requête (ceux ayant déclenché
     # l'expansion). Sert de signal générique « la page traite bien du sujet ».
     q_topics = set(t for t in query_tokens if t in TOPIC_EXPANSION)
+    # Drapeaux de contact : activent le signal factuel uniquement si la
+    # requête porte sur des coordonnées (WhatsApp, téléphone, etc.).
+    query_flags = _query_contact_flags(query_tokens)
 
     for i, c in enumerate(candidates):
         c_tokens = _tokenize(c["text"])
@@ -199,15 +273,21 @@ def retrieve(query: str, top_k: int = 3) -> list[dict]:
         # Bonus si le chunk contient réellement le terme thématique demandé
         # (ex. « agence », « branchement »). Générique, non codé sur un document.
         topic_hit = 1.0 if (q_topics & c_token_set) else 0.0
-        # score final : similarité dense + lexique + procédural - boilerplate
-        # Le poids dense est volontairement modéré : il sert à ordonner le
-        # pool, mais ne doit pas écraser un chunk procédural pertinent qui
-        # serait plus éloigné dans l'espace dense (ex. infos-branchement).
+        # Signal factuel : le chunk contient-il les coordonnées demandées ?
+        # Gated par query_flags => n'attire PAS un footer de contact vers une
+        # requête procédurale (branchement, paiement, ...).
+        factual = _factual_score(query_flags, _chunk_factual_flags(c["text"].lower()))
+        c["factual"] = factual
+        # score final : similarité dense + lexique + procédural + factuel - boilerplate
+        # Le signal factuel (poids 0.30) permet à un chunk court contenant
+        # exactement la coordonnée demandée de dépasser un long chunk
+        # procédural (proc=1) qui ne répondrait pas à la question.
         c["final"] = (
             0.28 * c["dense"]
             + 0.32 * c["lex"]
             + 0.25 * c["proc"]
             + 0.10 * topic_hit
+            + 0.30 * factual
             - 0.20 * bp_eff
         )
 
