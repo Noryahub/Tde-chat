@@ -190,14 +190,12 @@ def verify_token():
 
 @auth_bp.route(
     "/google/start",
-    methods=["POST"]
+    methods=["GET"]
 )
 def google_start():
 
-    data = request.get_json() or {}
-
-    session_id = data.get("session_id")
-    redirect_path = data.get("redirect_path", "/user/chat")
+    session_id = request.args.get("session_id")
+    redirect_path = request.args.get("redirect_path", "/user/chat")
 
     try:
         oauth_start = start_google_oauth(
@@ -211,21 +209,19 @@ def google_start():
             "message": e.message
         }), e.status_code
 
-    response = jsonify({
-        "status": "success",
-        "auth_url": oauth_start["auth_url"]
-    })
+    response = redirect(oauth_start["auth_url"])
 
     response.set_cookie(
         OAUTH_STATE_COOKIE_NAME,
         oauth_start["state"],
-        max_age=OAUTH_STATE_TTL_SECONDS,
         httponly=True,
         secure=OAUTH_COOKIE_SECURE,
-        samesite="Lax"
+        samesite="Lax",
+        max_age=OAUTH_STATE_TTL_SECONDS,
+        path="/"
     )
 
-    return response, 200
+    return response
 
 
 @auth_bp.route(

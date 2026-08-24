@@ -98,12 +98,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       sessionId: string,
       redirectPath = "/user/chat"
     ) => {
-      const response = await startGoogleLogin(
+      const url = startGoogleLogin(
         sessionId,
         redirectPath
       );
 
-      window.location.href = response.auth_url;
+      window.location.href = url;
     },
     []
   );

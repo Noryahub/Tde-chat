@@ -61,22 +61,18 @@ export function logout() {
 // GOOGLE OAUTH
 // =========================================
 
-export type GoogleStartResponse = {
-  status: "success";
-  auth_url: string;
-};
+const GOOGLE_OAUTH_BACKEND_URL = "http://localhost:5000";
 
-export async function startGoogleLogin(
+export function startGoogleLogin(
   sessionId: string,
   redirectPath = "/user/chat"
-) {
-  return post<GoogleStartResponse>(
-    "/auth/google/start",
-    {
-      session_id: sessionId,
-      redirect_path: redirectPath,
-    }
-  );
+): string {
+  const params = new URLSearchParams({
+    session_id: sessionId,
+    redirect_path: redirectPath,
+  });
+
+  return `${GOOGLE_OAUTH_BACKEND_URL}/auth/google/start?${params.toString()}`;
 }
 
 export async function exchangeGoogleLogin(

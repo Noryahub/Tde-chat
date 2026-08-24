@@ -5,7 +5,7 @@ GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "")
 GOOGLE_CALLBACK_URL = os.getenv(
     "GOOGLE_CALLBACK_URL",
-    "http://127.0.0.1:5000/auth/google/callback"
+    "http://localhost:5000/auth/google/callback"
 )
 FRONTEND_URL = os.getenv(
     "FRONTEND_URL",

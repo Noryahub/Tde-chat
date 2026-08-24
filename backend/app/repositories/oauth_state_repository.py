@@ -7,7 +7,7 @@ def create_oauth_state(
     state_hash,
     session_id,
     redirect_path,
-    expires_at
+    ttl_seconds
 ):
     conn = get_db_connection()
 
@@ -19,21 +19,21 @@ def create_oauth_state(
     try:
         cursor.execute(
             """
-            INSERT INTO oauth_login_states (
-                state_hash,
-                session_id,
-                redirect_path,
-                expires_at
-            )
-            VALUES (%s, %s, %s, %s)
-            """,
-            (
-                state_hash,
-                session_id,
-                redirect_path,
-                expires_at
-            )
+        INSERT INTO oauth_login_states (
+            state_hash,
+            session_id,
+            redirect_path,
+            expires_at
         )
+        VALUES (%s, %s, %s, UTC_TIMESTAMP() + INTERVAL %s SECOND)
+        """,
+        (
+            state_hash,
+            session_id,
+            redirect_path,
+            ttl_seconds
+        )
+    )
         conn.commit()
     except Exception as e:
         conn.rollback()
@@ -56,10 +56,10 @@ def consume_oauth_state(state_hash):
         cursor.execute(
             """
             UPDATE oauth_login_states
-            SET used_at = CURRENT_TIMESTAMP
+            SET used_at = UTC_TIMESTAMP()
             WHERE state_hash = %s
               AND used_at IS NULL
-              AND expires_at > CURRENT_TIMESTAMP
+              AND expires_at > UTC_TIMESTAMP()
             """,
             (state_hash,)
         )
@@ -99,7 +99,7 @@ def create_exchange_code(
     code_hash,
     user_id,
     attached_conversations,
-    expires_at
+    ttl_seconds
 ):
     conn = get_db_connection()
 
@@ -111,21 +111,21 @@ def create_exchange_code(
     try:
         cursor.execute(
             """
-            INSERT INTO oauth_exchange_codes (
-                code_hash,
-                user_id,
-                attached_conversations,
-                expires_at
-            )
-            VALUES (%s, %s, %s, %s)
-            """,
-            (
-                code_hash,
-                user_id,
-                attached_conversations,
-                expires_at
-            )
+        INSERT INTO oauth_exchange_codes (
+            code_hash,
+            user_id,
+            attached_conversations,
+            expires_at
         )
+        VALUES (%s, %s, %s, UTC_TIMESTAMP() + INTERVAL %s SECOND)
+        """,
+        (
+            code_hash,
+            user_id,
+            attached_conversations,
+            ttl_seconds
+        )
+    )
         conn.commit()
     except Exception as e:
         conn.rollback()
@@ -148,10 +148,10 @@ def consume_exchange_code(code_hash):
         cursor.execute(
             """
             UPDATE oauth_exchange_codes
-            SET used_at = CURRENT_TIMESTAMP
+            SET used_at = UTC_TIMESTAMP()
             WHERE code_hash = %s
               AND used_at IS NULL
-              AND expires_at > CURRENT_TIMESTAMP
+              AND expires_at > UTC_TIMESTAMP()
             """,
             (code_hash,)
         )

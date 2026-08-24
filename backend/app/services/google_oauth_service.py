@@ -2,12 +2,21 @@ import hashlib
 import json
 import logging
 import secrets
-from datetime import datetime, timedelta
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 import jwt
 from jwt import PyJWKClient
+from jwt.exceptions import (
+    DecodeError,
+    ExpiredSignatureError,
+    InvalidAudienceError,
+    InvalidIssuerError,
+    InvalidSignatureError,
+    InvalidTokenError,
+    MissingRequiredClaimError,
+    PyJWKClientError,
+)
 
 from backend.app.config.config import (
     ALLOWED_OAUTH_REDIRECT_PATHS,
@@ -53,10 +62,6 @@ def _hash_secret(value):
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
-def _expires_at(seconds):
-    return datetime.utcnow() + timedelta(seconds=seconds)
-
-
 def _validate_config():
     if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
         raise GoogleOAuthError(
@@ -91,7 +96,7 @@ def start_google_oauth(session_id, redirect_path="/user/chat"):
         state_hash=state_hash,
         session_id=session_id,
         redirect_path=safe_redirect_path,
-        expires_at=_expires_at(OAUTH_STATE_TTL_SECONDS)
+        ttl_seconds=OAUTH_STATE_TTL_SECONDS
     )
 
     params = {
@@ -171,7 +176,7 @@ def complete_google_callback(code, state, cookie_state):
         code_hash=_hash_secret(exchange_code),
         user_id=user["id"],
         attached_conversations=attached,
-        expires_at=_expires_at(OAUTH_EXCHANGE_CODE_TTL_SECONDS)
+        ttl_seconds=OAUTH_EXCHANGE_CODE_TTL_SECONDS
     )
 
     return {
@@ -252,7 +257,7 @@ def _validate_id_token(id_token):
         )
 
     try:
-        jwk_client = PyJWKClient(GOOGLE_JWKS_URL)
+        jwk_client = PyJWKClient(GOOGLE_JWKS_URL, cache_jwk_set=False)
         signing_key = jwk_client.get_signing_key_from_jwt(id_token)
         claims = jwt.decode(
             id_token,
@@ -270,8 +275,57 @@ def _validate_id_token(id_token):
                 ]
             }
         )
+    except PyJWKClientError as e:
+        logging.error("JWKS Google introuvable pour id_token : %s: %s", type(e).__name__, e)
+        raise GoogleOAuthError(
+            "Cle de signature Google introuvable",
+            401,
+            "invalid_google_signature"
+        )
+    except InvalidAudienceError as e:
+        logging.error("Audience id_token Google incorrecte (attendu=%s) : %s", GOOGLE_CLIENT_ID, e)
+        raise GoogleOAuthError(
+            "Audience token Google invalide",
+            401,
+            "invalid_google_audience"
+        )
+    except ExpiredSignatureError as e:
+        logging.error("id_token Google expire : %s", e)
+        raise GoogleOAuthError(
+            "Token Google expire",
+            401,
+            "expired_google_token"
+        )
+    except InvalidIssuerError as e:
+        logging.error("Issuer id_token Google invalide : %s", e)
+        raise GoogleOAuthError(
+            "Issuer token Google invalide",
+            401,
+            "invalid_google_issuer"
+        )
+    except InvalidSignatureError as e:
+        logging.error("Signature id_token Google invalide : %s", e)
+        raise GoogleOAuthError(
+            "Signature token Google invalide",
+            401,
+            "invalid_google_signature"
+        )
+    except MissingRequiredClaimError as e:
+        logging.error("Claim obligatoire manquant dans id_token Google : %s", e)
+        raise GoogleOAuthError(
+            "Claim Google manquant",
+            401,
+            "invalid_google_token"
+        )
+    except (DecodeError, InvalidTokenError) as e:
+        logging.error("id_token Google illisible : %s", e)
+        raise GoogleOAuthError(
+            "Token Google illisible",
+            401,
+            "invalid_google_token"
+        )
     except Exception as e:
-        logging.error(f"Erreur validation id_token Google : {e}")
+        logging.error("Erreur inattendue validation id_token Google : %s: %s", type(e).__name__, e)
         raise GoogleOAuthError(
             "Token Google invalide",
             401,
