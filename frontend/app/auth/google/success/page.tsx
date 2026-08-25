@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
@@ -10,23 +10,25 @@ function GoogleSuccessContent() {
   const searchParams = useSearchParams();
   const { completeGoogleLogin } = useAuth();
   const [error, setError] = useState<string | null>(null);
+  const exchangedRef = useRef(false);
+  const code = searchParams.get("code");
 
   useEffect(() => {
-    const code = searchParams.get("code");
-
-    if (!code) {
-      setError("Code Google manquant.");
+    if (!code || exchangedRef.current) {
       return;
     }
 
-    completeGoogleLogin(code).catch((err) => {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Connexion Google impossible."
-      );
-    });
-  }, [completeGoogleLogin, searchParams]);
+    exchangedRef.current = true;
+
+    completeGoogleLogin(code)
+      .catch((err) => {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Connexion Google impossible."
+        );
+      });
+  }, [completeGoogleLogin, searchParams, code]);
 
   if (error) {
     return (
@@ -37,6 +39,21 @@ function GoogleSuccessContent() {
           </h1>
           <p className="mt-2 text-sm text-[#6b7280]">
             {error}
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  if (!code) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#f7f8fb] px-4">
+        <div className="w-full max-w-md rounded-2xl border bg-white p-6 text-center shadow-sm">
+          <h1 className="text-lg font-semibold text-[#111827]">
+            Connexion Google impossible
+          </h1>
+          <p className="mt-2 text-sm text-[#6b7280]">
+            Code Google manquant.
           </p>
         </div>
       </main>

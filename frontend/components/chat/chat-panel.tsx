@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import {
   Bot,
@@ -42,6 +43,95 @@ const WELCOME_MESSAGE: Message = {
 
 import ChatHistory
 from "./chat-history";
+
+const OAUTH_ERROR_MESSAGES: Record<string, string> = {
+  invalid_oauth_state:
+    "La session de connexion Google a expiré ou est devenue invalide. Veuillez recommencer la connexion.",
+  invalid_exchange_code:
+    "Le code de connexion Google a déjà été utilisé ou a expiré. Veuillez recommencer.",
+  invalid_google_signature:
+    "La validation de la réponse Google a échoué. Veuillez recommencer.",
+  invalid_google_audience:
+    "La configuration Google OAuth est incorrecte.",
+  expired_google_token:
+    "Le jeton Google a expiré. Veuillez recommencer.",
+  google_email_not_verified:
+    "L'adresse e-mail Google n'est pas vérifiée.",
+  google_token_exchange_failed:
+    "L'échange avec Google a échoué. Veuillez recommencer.",
+  missing_google_id_token:
+    "Google n'a pas fourni les informations d'identification nécessaires.",
+  invalid_google_issuer:
+    "L'identité du fournisseur Google n'a pas pu être vérifiée.",
+  invalid_google_token:
+    "Le jeton Google est invalide.",
+  missing_google_subject:
+    "L'identité du compte Google n'a pas pu être déterminée.",
+  google_user_error:
+    "Une erreur est survenue lors de la création ou récupération du compte.",
+  user_not_found:
+    "Utilisateur introuvable.",
+  google_oauth_not_configured:
+    "La connexion Google n'est pas correctement configurée.",
+};
+
+function getOAuthErrorMessage(code: string | null): string | null {
+  if (!code) {
+    return null;
+  }
+  return (
+    OAUTH_ERROR_MESSAGES[code] ??
+    "La connexion Google a échoué. Veuillez réessayer."
+  );
+}
+
+function OAuthErrorBanner({ onRetry }: { onRetry: () => void }) {
+  const searchParams = useSearchParams();
+  const message = getOAuthErrorMessage(
+    searchParams.get("oauth_error")
+  );
+
+  if (!message) {
+    return null;
+  }
+
+  return (
+    <div className="mx-auto w-full max-w-4xl px-3 pt-6 sm:px-6 lg:px-10">
+      <div className="rounded-2xl border border-[#f3c2c2] bg-[#fdeced] px-4 py-3 text-sm text-[#8a1f1f]">
+        <div className="font-semibold text-[#a11d1d]">
+          Échec de la connexion Google
+        </div>
+        <p className="mt-1 leading-relaxed">{message}</p>
+
+        <button
+          type="button"
+          onClick={onRetry}
+          className="mt-3 inline-flex h-10 items-center gap-2 rounded-lg border border-[#d7b779] bg-white px-4 font-medium text-[#1f2937] transition hover:bg-[#fff3db]"
+        >
+          <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              fill="#4285F4"
+              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+            />
+            <path
+              fill="#34A853"
+              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+            />
+            <path
+              fill="#EA4335"
+              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+            />
+          </svg>
+          Réessayer avec Google
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function ChatPanel() {
 
@@ -377,6 +467,10 @@ async function handleGoogleLogin() {
         flex-col
       "
     >
+
+      <Suspense fallback={null}>
+        <OAuthErrorBanner onRetry={handleGoogleLogin} />
+      </Suspense>
 
       {/* ========================================= */}
       {/* CHAT AREA */}
